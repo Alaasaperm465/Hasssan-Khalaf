@@ -1,0 +1,12 @@
+﻿using Hassann_Khala.Domain;
+using HighSens.Domain.Interfaces;
+using static System.Collections.Specialized.BitVector32;
+
+namespace Hassann_Khala.Domain.Interfaces
+{
+    public interface ISectionRepository : IRepository<Section>
+    {
+        Task<Section?> GetByNameAsync(string name);
+        Task<IEnumerable<Section>> GetAllAsync();
+    }
+}

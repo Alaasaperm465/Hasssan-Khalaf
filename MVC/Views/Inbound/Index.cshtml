@@ -1,0 +1,130 @@
+﻿@model IEnumerable<MVC.ViewModels.Inbound.InboundListVM>
+@{
+    ViewData["Title"] = "المشتريات";
+}
+
+<style>
+    .glass-card {
+        backdrop-filter: blur(14px);
+        background: rgba(255,255,255,.75);
+        border-radius: 18px;
+        border: 1px solid rgba(255,255,255,.3);
+        box-shadow: 0 8px 32px rgba(0,0,0,.07);
+        transition: .3s;
+    }
+
+    .glass-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(0,0,0,.1);
+    }
+
+    .table thead {
+        background: #f8f9fc;
+    }
+
+    .dark-mode {
+        background: #0f172a !important;
+        color: #f1f5f9 !important;
+    }
+
+    .dark-mode .glass-card {
+        background: rgba(30,41,59,.7);
+        border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .dark-mode .table {
+        color: #f1f5f9;
+    }
+
+    .dark-mode .table thead {
+        background: #1e293b;
+    }
+
+    .dark-mode .text-muted {
+        color: #cbd5e1 !important;
+    }
+
+    .fade-in {
+        animation: fadeIn .6s ease-in-out;
+    }
+
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 30px;
+        color: #9ca3af;
+    }
+
+    .toggle-dark {
+        cursor: pointer;
+    }
+</style>
+
+<div class="container-fluid mt-3 fade-in">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 mb-0">المشتريات</h2>
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-secondary d-md-none" href="#" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar"><i class="bi bi-list"></i></a>
+            <a class="btn btn-primary" asp-action="Create">اذن مشتريات جديد</a>
+            <button class="btn btn-outline-dark toggle-dark d-none d-md-inline">
+                <i class="bi bi-moon"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="glass-card p-3">
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-striped table-hover table-bordered align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            @* <th>Id</th> *@
+                            <th>العميل</th>
+                            <th class="d-none d-sm-table-cell">تاريخ الإنشاء</th>
+                            <th>عدد السطور</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                @* <td class="align-middle">@item.Id</td> *@
+                                <td class="align-middle">@item.ClientName</td>
+                                <td class="align-middle d-none d-sm-table-cell">@item.CreatedAt.ToLocalTime().ToString("g")</td>
+                                <td class="align-middle">@item.LinesCount</td>
+                                <td class="align-middle text-end">
+                                    <a class="btn btn-sm btn-outline-primary rounded-pill" asp-action="Details" asp-route-id="@item.Id">تفاصيل</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="bi bi-inbox fs-2"></i>
+                <div class="mt-2">لا توجد مشتريات بعد</div>
+            </div>
+        }
+    </div>
+
+</div>
+
+<script>
+    // Dark Mode Toggle
+    document.querySelectorAll('.toggle-dark').forEach(btn => {
+        btn.addEventListener('click', function () {
+            document.body.classList.toggle('dark-mode');
+        });
+    });
+</script>

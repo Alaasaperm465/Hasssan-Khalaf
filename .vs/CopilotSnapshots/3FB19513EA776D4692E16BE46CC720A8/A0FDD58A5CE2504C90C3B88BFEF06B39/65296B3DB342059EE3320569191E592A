@@ -1,0 +1,124 @@
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+
+namespace InfraStructure.Context
+{
+    /// <summary>
+    /// Design-time factory for EF Core tools. Reads connection string from appsettings.json
+    /// (searches current directory and a few parent directories, and the MVC project's appsettings if present)
+    /// and configures the provider.
+    /// </summary>
+    public class DBContextFactory : IDesignTimeDbContextFactory<DBContext>
+    {
+        public DBContext CreateDbContext(string[] args)
+        {
+            var basePath = Directory.GetCurrentDirectory();
+
+            var connectionString = FindConnectionString(basePath);
+
+            var optionsBuilder = new DbContextOptionsBuilder<DBContext>();
+
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                // No connection string found — using in-memory will not support migrations. Throw with guidance.
+                throw new InvalidOperationException("No connection string found for design-time DbContext factory. Make sure MVC/appsettings.json contains ConnectionStrings:DefaultConnection, or set environment variable ConnectionStrings__DefaultConnection. When running `dotnet ef`, use --startup-project MVC.");
+            }
+
+            var migrationsAssembly = typeof(DBContext).Assembly.GetName().Name;
+            optionsBuilder.UseSqlServer(connectionString, b => b.MigrationsAssembly(migrationsAssembly))
+                          .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
+
+            return new DBContext(optionsBuilder.Options);
+        }
+
+        private static string? FindConnectionString(string startDirectory)
+        {
+            // 1) search current and parent directories for appsettings files
+            var dir = new DirectoryInfo(startDirectory);
+            for (int i = 0; i < 6 && dir != null; i++)
+            {
+                var cs = ReadConnectionStringFromFiles(dir.FullName);
+                if (!string.IsNullOrWhiteSpace(cs)) return cs;
+                dir = dir.Parent;
+            }
+
+            // 2) try to locate the solution root (a directory containing a .sln file) and check for MVC project appsettings
+            var solutionRoot = FindSolutionRoot(startDirectory);
+            if (!string.IsNullOrWhiteSpace(solutionRoot))
+            {
+                // common location: <solution>/MVC/appsettings.json
+                var mvcPath = Path.Combine(solutionRoot, "MVC");
+                if (Directory.Exists(mvcPath))
+                {
+                    var cs = ReadConnectionStringFromFiles(mvcPath);
+                    if (!string.IsNullOrWhiteSpace(cs)) return cs;
+                }
+
+                // also check solution root appsettings
+                var rootCs = ReadConnectionStringFromFiles(solutionRoot);
+                if (!string.IsNullOrWhiteSpace(rootCs)) return rootCs;
+            }
+
+            // 3) environment variable fallback
+            var env = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
+            if (!string.IsNullOrWhiteSpace(env)) return env;
+
+            return null;
+        }
+
+        private static string? ReadConnectionStringFromFiles(string folder)
+        {
+            foreach (var fileName in new[] { "appsettings.Development.json", "appsettings.json" })
+            {
+                var filePath = Path.Combine(folder, fileName);
+                if (!File.Exists(filePath)) continue;
+
+                try
+                {
+                    using var stream = File.OpenRead(filePath);
+                    using var doc = JsonDocument.Parse(stream);
+                    if (doc.RootElement.TryGetProperty("ConnectionStrings", out var cs) && cs.ValueKind == JsonValueKind.Object)
+                    {
+                        if (cs.TryGetProperty("DefaultConnection", out var val) && val.ValueKind == JsonValueKind.String)
+                        {
+                            var s = val.GetString();
+                            if (!string.IsNullOrWhiteSpace(s)) return s;
+                        }
+                    }
+                }
+                catch
+                {
+                    // ignore malformed files and continue
+                }
+            }
+
+            return null;
+        }
+
+        private static string? FindSolutionRoot(string startDirectory)
+        {
+            var dir = new DirectoryInfo(startDirectory);
+            for (int i = 0; i < 8 && dir != null; i++)
+            {
+                try
+                {
+                    var slns = dir.GetFiles("*.sln");
+                    if (slns.Length > 0) return dir.FullName;
+                }
+                catch
+                {
+                    // ignore and move up
+                }
+
+                dir = dir.Parent;
+            }
+
+            return null;
+        }
+    }
+}

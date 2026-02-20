@@ -1,0 +1,11 @@
+﻿using Hassann_Khala.Application.DTOs.Stock;
+
+namespace Hassann_Khala.Application.Interfaces.IServices
+{
+    public interface IStockService
+    {
+        Task<StockResponse> GetStockAsync(int clientId, int productId, int sectionId);
+        Task<decimal> GetStockQuantityAsync(int clientId, int productId, int sectionId);
+        Task<IEnumerable<object>> GetStocksByClientAsync(int clientId);
+    }
+}

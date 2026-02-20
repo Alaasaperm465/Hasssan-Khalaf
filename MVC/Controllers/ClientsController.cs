@@ -1,0 +1,222 @@
+using Microsoft.AspNetCore.Mvc;
+using InfraStructure.Context;
+using Hassann_Khala.Domain;
+using Microsoft.EntityFrameworkCore;
+using MVC.ViewModels.Clients;
+using System.Linq;
+
+namespace MVC.Controllers
+{
+    public class ClientsController : Controller
+    {
+        private readonly DBContext _db;
+        public ClientsController(DBContext db) => _db = db;
+
+        public IActionResult Index()
+        {
+            var clients = _db.Clients.ToList();
+            return View(clients);
+        }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View(new Client());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Client client)
+        {
+            if (!ModelState.IsValid) return View(client);
+            try
+            {
+                _db.Clients.Add(client);
+                _db.SaveChanges();
+                TempData["Success"] = "?? ????? ??????.";
+                return RedirectToAction("Index");
+            }
+            catch (System.Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "??? ??? ????? ????? ??????.");
+                return View(client);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var client = _db.Clients.Find(id);
+            if (client == null) return NotFound();
+            return View(client);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(Client client)
+        {
+            if (!ModelState.IsValid) return View(client);
+
+            var existing = _db.Clients.Find(client.Id);
+            if (existing == null) return NotFound();
+
+            // Update fields
+            existing.Name = client.Name?.Trim() ?? existing.Name;
+            existing.Address = client.Address?.Trim() ?? existing.Address;
+            existing.PhoneNumber = client.PhoneNumber;
+
+            try
+            {
+                _db.Clients.Update(existing);
+                _db.SaveChanges();
+                TempData["Success"] = "?? ????? ?????? ??????.";
+                return RedirectToAction("Index");
+            }
+            catch (System.Exception)
+            {
+                ModelState.AddModelError(string.Empty, "??? ??? ????? ??? ??????? ??????.");
+                return View(client);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            var client = _db.Clients.Find(id);
+            if (client == null) return NotFound();
+
+            try
+            {
+                _db.Clients.Remove(client);
+                _db.SaveChanges();
+                TempData["Success"] = "?? ??? ??????.";
+            }
+            catch (System.Exception)
+            {
+                // handle referential integrity errors if related records exist
+                TempData["Error"] = "?? ???? ??? ?????? ???? ????? ?????? ????.";
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (!id.HasValue)
+            {
+                TempData["Error"] = "????? ?????? ??? ????.";
+                return RedirectToAction("Index");
+            }
+
+            var client = await _db.Clients.FindAsync(id.Value);
+            if (client == null) return NotFound();
+
+            // Recent inbounds
+            var recentInbounds = await _db.Inbounds
+                .Where(i => i.ClientId == id.Value)
+                .OrderByDescending(i => i.CreatedAt)
+                .Take(5)
+                .Select(i => new MovementSummary { Id = i.Id, CreatedAt = i.CreatedAt, DetailsCount = i.Details.Count })
+                .ToListAsync();
+
+            var recentOutbounds = await _db.Outbounds
+                .Where(o => o.ClientId == id.Value)
+                .OrderByDescending(o => o.CreatedAt)
+                .Take(5)
+                .Select(o => new MovementSummary { Id = o.Id, CreatedAt = o.CreatedAt, DetailsCount = o.Details.Count })
+                .ToListAsync();
+
+            // Aggregations - per product
+            var inboundAgg = await (from d in _db.InboundDetails
+                                    join i in _db.Inbounds on d.InboundId equals i.Id
+                                    where i.ClientId == id.Value
+                                    group d by d.ProductId into g
+                                    select new { ProductId = g.Key, Cartons = g.Sum(x => (int?)x.Cartons) ?? 0, Pallets = g.Sum(x => (int?)x.Pallets) ?? 0 })
+                                    .ToListAsync();
+
+            var outboundAgg = await (from d in _db.OutboundDetails
+                                     join o in _db.Outbounds on d.OutboundId equals o.Id
+                                     where o.ClientId == id.Value
+                                     group d by d.ProductId into g
+                                     select new { ProductId = g.Key, Cartons = g.Sum(x => (int?)x.Cartons) ?? 0, Pallets = g.Sum(x => (int?)x.Pallets) ?? 0 })
+                                     .ToListAsync();
+
+            var prodMap = new Dictionary<int, (int cartons, int pallets)>();
+            foreach (var i in inboundAgg) prodMap[i.ProductId] = (i.Cartons, i.Pallets);
+            foreach (var o in outboundAgg)
+            {
+                if (!prodMap.ContainsKey(o.ProductId)) prodMap[o.ProductId] = (0, 0);
+                var cur = prodMap[o.ProductId];
+                prodMap[o.ProductId] = (cur.cartons - o.Cartons, cur.pallets - o.Pallets);
+            }
+
+            var productIds = prodMap.Keys.ToList();
+            var products = await _db.Products.Where(p => productIds.Contains(p.Id)).ToDictionaryAsync(p => p.Id, p => p.Name);
+
+            var productAgg = prodMap.Select(kv => new ProductAggregate
+            {
+                ProductId = kv.Key,
+                ProductName = products.ContainsKey(kv.Key) ? products[kv.Key] : "-",
+                Cartons = kv.Value.cartons,
+                Pallets = kv.Value.pallets
+            }).OrderByDescending(p => p.Cartons).ToList();
+
+            // Aggregations - per section
+            var inboundSec = await (from d in _db.InboundDetails
+                                    join i in _db.Inbounds on d.InboundId equals i.Id
+                                    where i.ClientId == id.Value
+                                    group d by d.SectionId into g
+                                    select new { SectionId = g.Key, Cartons = g.Sum(x => (int?)x.Cartons) ?? 0, Pallets = g.Sum(x => (int?)x.Pallets) ?? 0 })
+                                    .ToListAsync();
+
+            var outboundSec = await (from d in _db.OutboundDetails
+                                     join o in _db.Outbounds on d.OutboundId equals o.Id
+                                     where o.ClientId == id.Value
+                                     group d by d.SectionId into g
+                                     select new { SectionId = g.Key, Cartons = g.Sum(x => (int?)x.Cartons) ?? 0, Pallets = g.Sum(x => (int?)x.Pallets) ?? 0 })
+                                     .ToListAsync();
+
+            var secMap = new Dictionary<int, (int cartons, int pallets)>();
+            foreach (var i in inboundSec) secMap[i.SectionId] = (i.Cartons, i.Pallets);
+            foreach (var o in outboundSec)
+            {
+                if (!secMap.ContainsKey(o.SectionId)) secMap[o.SectionId] = (0, 0);
+                var cur = secMap[o.SectionId];
+                secMap[o.SectionId] = (cur.cartons - o.Cartons, cur.pallets - o.Pallets);
+            }
+
+            var sectionIds = secMap.Keys.ToList();
+            var sections = await _db.Sections.Where(s => sectionIds.Contains(s.Id)).ToDictionaryAsync(s => s.Id, s => s.Name);
+
+            var sectionAgg = secMap.Select(kv => new SectionAggregate
+            {
+                SectionId = kv.Key,
+                SectionName = sections.ContainsKey(kv.Key) ? sections[kv.Key] : "-",
+                Cartons = kv.Value.cartons,
+                Pallets = kv.Value.pallets
+            }).OrderByDescending(s => s.Cartons).ToList();
+
+            var totalCartons = productAgg.Sum(p => p.Cartons);
+            var totalPallets = productAgg.Sum(p => p.Pallets);
+
+            var vm = new ClientDetailsVM
+            {
+                ClientId = client.Id,
+                ClientName = client.Name,
+                Address = client.Address,
+                PhoneNumber = client.PhoneNumber,
+                RecentInbounds = recentInbounds,
+                RecentOutbounds = recentOutbounds,
+                Products = productAgg,
+                Sections = sectionAgg,
+                TotalCartons = totalCartons,
+                TotalPallets = totalPallets
+            };
+
+            return View(vm);
+        }
+
+    }
+}

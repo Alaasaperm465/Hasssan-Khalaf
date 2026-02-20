@@ -1,0 +1,82 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Hassann_Khala.Domain;
+using Hassann_Khala.Domain.Interfaces;
+using InfraStructure.Context;
+using Microsoft.EntityFrameworkCore;
+
+namespace InfraStructure.Repos
+{
+    public class InboundRepository : IRepository<Inbound>
+    {
+        private readonly DBContext _db;
+        public InboundRepository(DBContext db) { _db = db; }
+
+        public async Task AddAsync(Inbound entity)
+        {
+            await _db.Inbounds.AddAsync(entity);
+        }
+
+        public async Task<IEnumerable<Inbound>> GetAllAsync()
+        {
+            // Include Client and Details for mapping
+            return await _db.Inbounds
+                .Include(i => i.Client)
+                .Include(i => i.Details)
+                    .ThenInclude(d => d.Product)
+                .Include(i => i.Details)
+                    .ThenInclude(d => d.Section)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<Inbound?> GetByIdAsync(int id)
+        {
+            return await _db.Inbounds
+                .Include(i => i.Client)
+                .Include(i => i.Details)
+                    .ThenInclude(d => d.Product)
+                .Include(i => i.Details)
+                    .ThenInclude(d => d.Section)
+                .FirstOrDefaultAsync(i => i.Id == id);
+        }
+
+        public void Remove(Inbound entity)
+        {
+            _db.Inbounds.Remove(entity);
+        }
+
+        public void Update(Inbound entity)
+        {
+            _db.Inbounds.Update(entity);
+        }
+
+        public async Task<IEnumerable<Inbound>> GetDailyReportAsync()
+        {
+            var start = DateTime.UtcNow.Date;
+            var end = start.AddDays(1);
+            return await _db.Inbounds
+                .Where(i => i.CreatedAt >= start && i.CreatedAt < end)
+                .Include(i => i.Client)
+                .Include(i => i.Details)
+                    .ThenInclude(d => d.Product)
+                .Include(i => i.Details)
+                    .ThenInclude(d => d.Section)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Inbound>> GetByDateRangeAsync(DateTime start, DateTime end)
+        {
+            return await _db.Inbounds
+                .Where(i => i.CreatedAt >= start && i.CreatedAt < end)
+                .Include(i => i.Client)
+                .Include(i => i.Details)
+                    .ThenInclude(d => d.Product)
+                .Include(i => i.Details)
+                    .ThenInclude(d => d.Section)
+                .ToListAsync();
+        }
+    }
+}

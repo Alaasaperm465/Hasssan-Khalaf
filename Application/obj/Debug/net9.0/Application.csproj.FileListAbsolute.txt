@@ -1,0 +1,15 @@
+F:\.net\Hassan\Hassann_Khala\Application\bin\Debug\net9.0\Application.deps.json
+F:\.net\Hassan\Hassann_Khala\Application\bin\Debug\net9.0\Application.dll
+F:\.net\Hassan\Hassann_Khala\Application\bin\Debug\net9.0\Application.pdb
+F:\.net\Hassan\Hassann_Khala\Application\bin\Debug\net9.0\Domain.dll
+F:\.net\Hassan\Hassann_Khala\Application\bin\Debug\net9.0\Domain.pdb
+F:\.net\Hassan\Hassann_Khala\Application\obj\Debug\net9.0\Application.csproj.AssemblyReference.cache
+F:\.net\Hassan\Hassann_Khala\Application\obj\Debug\net9.0\Application.GeneratedMSBuildEditorConfig.editorconfig
+F:\.net\Hassan\Hassann_Khala\Application\obj\Debug\net9.0\Application.AssemblyInfoInputs.cache
+F:\.net\Hassan\Hassann_Khala\Application\obj\Debug\net9.0\Application.AssemblyInfo.cs
+F:\.net\Hassan\Hassann_Khala\Application\obj\Debug\net9.0\Application.csproj.CoreCompileInputs.cache
+F:\.net\Hassan\Hassann_Khala\Application\obj\Debug\net9.0\Applicat.44B5EDA2.Up2Date
+F:\.net\Hassan\Hassann_Khala\Application\obj\Debug\net9.0\Application.dll
+F:\.net\Hassan\Hassann_Khala\Application\obj\Debug\net9.0\refint\Application.dll
+F:\.net\Hassan\Hassann_Khala\Application\obj\Debug\net9.0\Application.pdb
+F:\.net\Hassan\Hassann_Khala\Application\obj\Debug\net9.0\ref\Application.dll

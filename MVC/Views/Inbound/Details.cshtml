@@ -1,0 +1,131 @@
+﻿@model MVC.ViewModels.Inbound.InboundDetailsVM
+@{
+    ViewData["Title"] = "تفاصيل المشتريات";
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg,#eef2f7,#e3e9f3);
+    }
+
+    .glass-card {
+        backdrop-filter: blur(14px);
+        background: rgba(255,255,255,.75);
+        border-radius: 18px;
+        border: 1px solid rgba(255,255,255,.3);
+        box-shadow: 0 8px 32px rgba(0,0,0,.07);
+        transition: .3s;
+    }
+
+        .glass-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0,0,0,.1);
+        }
+
+    .table thead {
+        background: #f8f9fc;
+    }
+
+    .dark-mode {
+        background: #0f172a !important;
+        color: #f1f5f9 !important;
+    }
+
+        .dark-mode .glass-card {
+            background: rgba(30,41,59,.7);
+            border: 1px solid rgba(255,255,255,.08);
+        }
+
+        .dark-mode .table {
+            color: #f1f5f9;
+        }
+
+            .dark-mode .table thead {
+                background: #1e293b;
+            }
+
+        .dark-mode .text-muted {
+            color: #cbd5e1 !important;
+        }
+
+    .fade-in {
+        animation: fadeIn .6s ease-in-out;
+    }
+
+    @@keyframes fadeIn {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .toggle-dark {
+        cursor: pointer;
+    }
+</style>
+
+<div class="container mt-4 fade-in">
+    <div class="glass-card p-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="fw-bold">اذن #@Model.Id</h4>
+            <button class="btn btn-outline-dark toggle-dark d-none d-md-inline">
+                <i class="bi bi-moon"></i>
+            </button>
+        </div>
+
+        <div class="mb-3 text-muted">
+            <div><strong>العميل:</strong> @Model.ClientName</div>
+            <div><strong>تاريخ الانشاء:</strong> @Model.CreatedAt.ToLocalTime().ToString("g")</div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-bordered align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>المنتج</th>
+                        <th>مخزن</th>
+                        <th class="text-end">عدد الكرتون</th>
+                        <th class="text-end">عدد البالتات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var d in Model.Details)
+                    {
+                        <tr>
+                            <td>@(string.IsNullOrWhiteSpace(d.ProductName) ? d.ProductId.ToString() : d.ProductName)</td>
+                            <td>@(string.IsNullOrWhiteSpace(d.SectionName) ? d.SectionId.ToString() : d.SectionName)</td>
+                            <td class="text-end">@d.Cartons</td>
+                            <td class="text-end">@d.Pallets</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="2">الاجمالي</th>
+                        <th class="text-end">@Model.TotalCartons</th>
+                        <th class="text-end">@Model.TotalPallets</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <a class="btn btn-secondary mt-3" asp-action="Index">عودة</a>
+    </div>
+</div>
+
+<script>
+    // Dark Mode Toggle
+    document.querySelectorAll('.toggle-dark').forEach(btn => {
+        btn.addEventListener('click', function () {
+            document.body.classList.toggle('dark-mode');
+        });
+    });
+</script>

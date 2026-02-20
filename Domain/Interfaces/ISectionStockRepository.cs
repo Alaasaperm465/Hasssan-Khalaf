@@ -1,0 +1,12 @@
+using System.Threading.Tasks;
+using Hassann_Khala.Domain;
+
+namespace Hassann_Khala.Domain.Interfaces
+{
+    public interface ISectionStockRepository
+    {
+        Task<SectionStock?> FindAsync(int clientId, int sectionId);
+        Task AddAsync(SectionStock stock);
+        void Update(SectionStock stock);
+    }
+}

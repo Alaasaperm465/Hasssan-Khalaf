@@ -1,0 +1,205 @@
+﻿@model MVC.ViewModels.Clients.ClientDetailsVM
+@{
+    ViewData["Title"] = "تفاصيل العميل";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <!-- Header Card -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-1 fw-bold">تفاصيل العميل</h4>
+                <div class="text-muted">@Model.ClientName</div>
+            </div>
+            <div>
+                <a asp-action="Index" class="btn btn-outline-secondary me-2">
+                    <i class="bi bi-arrow-right"></i> رجوع
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.ClientId" class="btn btn-primary">
+                    <i class="bi bi-pencil-square"></i> تعديل
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- معلومات عامة -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <h5 class="fw-bold mb-3 border-bottom pb-2">معلومات عامة</h5>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="text-muted">الاسم</div>
+                    <div class="fw-semibold">@Model.ClientName</div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="text-muted">العنوان</div>
+                    <div class="fw-semibold">@Model.Address</div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="text-muted">الهاتف</div>
+                    <div class="fw-semibold">@Model.PhoneNumber</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- الإجماليات -->
+    <div class="card shadow-sm border-0 mb-4 bg-light">
+        <div class="card-body">
+            <h5 class="fw-bold mb-3">إجمالي الصادرات / الواردات</h5>
+
+            <div class="row text-center">
+                <div class="col-md-6">
+                    <h6 class="text-muted">إجمالي الكرتون</h6>
+                    <h3 class="fw-bold text-primary">@Model.TotalCartons</h3>
+                </div>
+
+                <div class="col-md-6">
+                    <h6 class="text-muted">إجمالي البالتات</h6>
+                    <h3 class="fw-bold text-success">@Model.TotalPallets</h3>
+                </div>
+            </div>
+
+            <div class="text-end mt-3">
+                <a asp-controller="Query"
+                   asp-action="ClientTotalCsv"
+                   asp-route-clientId="@Model.ClientId"
+                   class="btn btn-outline-dark btn-sm">
+                    تصدير CSV
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- الحركات الأخيرة -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <h5 class="fw-bold mb-3">الحركات الأخيرة</h5>
+
+            @if ((Model.RecentInbounds?.Any() ?? false) || (Model.RecentOutbounds?.Any() ?? false))
+            {
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <h6 class="text-muted">الواردات</h6>
+                        @foreach (var i in Model.RecentInbounds)
+                        {
+                            <div class="border rounded p-2 mb-2 small">
+                                أذن #@i.Id —
+                                @i.CreatedAt.ToLocalTime().ToString("g")
+                                — خطوط: @i.DetailsCount
+                            </div>
+                        }
+                    </div>
+
+                    <div class="col-md-6">
+                        <h6 class="text-muted">الصادرات</h6>
+                        @foreach (var o in Model.RecentOutbounds)
+                        {
+                            <div class="border rounded p-2 mb-2 small">
+                                أذن #@o.Id —
+                                @o.CreatedAt.ToLocalTime().ToString("g")
+                                — خطوط: @o.DetailsCount
+                            </div>
+                        }
+                    </div>
+
+                </div>
+            }
+            else
+            {
+                <div class="text-muted">لا توجد حركات حديثة.</div>
+            }
+        </div>
+    </div>
+
+    <!-- تفصيل حسب المنتج -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <h5 class="fw-bold mb-3">تفصيل حسب المنتج</h5>
+
+            @if (Model.Products?.Any() ?? false)
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>المنتج</th>
+                                <th class="text-end">كرتون</th>
+                                <th class="text-end">بالت</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var p in Model.Products)
+                            {
+                                <tr>
+                                    <td>@p.ProductName</td>
+                                    <td class="text-end">@p.Cartons</td>
+                                    <td class="text-end">@p.Pallets</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot class="fw-bold">
+                            <tr>
+                                <td>الإجمالي</td>
+                                <td class="text-end">@Model.TotalCartons</td>
+                                <td class="text-end">@Model.TotalPallets</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-muted">لا توجد بيانات عن المنتجات.</div>
+            }
+        </div>
+    </div>
+
+    <!-- تفصيل حسب المخزن -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <h5 class="fw-bold mb-3">تفصيل حسب المخزن</h5>
+
+            @if (Model.Sections?.Any() ?? false)
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>المخزن</th>
+                                <th class="text-end">كرتون</th>
+                                <th class="text-end">بالت</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var s in Model.Sections)
+                            {
+                                <tr>
+                                    <td>@s.SectionName</td>
+                                    <td class="text-end">@s.Cartons</td>
+                                    <td class="text-end">@s.Pallets</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-muted">لا توجد بيانات عن المخازن.</div>
+            }
+        </div>
+    </div>
+
+</div>

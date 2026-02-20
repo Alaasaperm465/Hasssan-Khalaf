@@ -1,0 +1,17 @@
+F:\.net\Hassan\Hassann_Khala\InfraStructure\bin\Debug\net9.0\InfraStructure.deps.json
+F:\.net\Hassan\Hassann_Khala\InfraStructure\bin\Debug\net9.0\InfraStructure.dll
+F:\.net\Hassan\Hassann_Khala\InfraStructure\bin\Debug\net9.0\InfraStructure.pdb
+F:\.net\Hassan\Hassann_Khala\InfraStructure\bin\Debug\net9.0\Application.dll
+F:\.net\Hassan\Hassann_Khala\InfraStructure\bin\Debug\net9.0\Domain.dll
+F:\.net\Hassan\Hassann_Khala\InfraStructure\bin\Debug\net9.0\Application.pdb
+F:\.net\Hassan\Hassann_Khala\InfraStructure\bin\Debug\net9.0\Domain.pdb
+F:\.net\Hassan\Hassann_Khala\InfraStructure\obj\Debug\net9.0\InfraStructure.csproj.AssemblyReference.cache
+F:\.net\Hassan\Hassann_Khala\InfraStructure\obj\Debug\net9.0\InfraStructure.GeneratedMSBuildEditorConfig.editorconfig
+F:\.net\Hassan\Hassann_Khala\InfraStructure\obj\Debug\net9.0\InfraStructure.AssemblyInfoInputs.cache
+F:\.net\Hassan\Hassann_Khala\InfraStructure\obj\Debug\net9.0\InfraStructure.AssemblyInfo.cs
+F:\.net\Hassan\Hassann_Khala\InfraStructure\obj\Debug\net9.0\InfraStructure.csproj.CoreCompileInputs.cache
+F:\.net\Hassan\Hassann_Khala\InfraStructure\obj\Debug\net9.0\InfraStr.570FDCE2.Up2Date
+F:\.net\Hassan\Hassann_Khala\InfraStructure\obj\Debug\net9.0\InfraStructure.dll
+F:\.net\Hassan\Hassann_Khala\InfraStructure\obj\Debug\net9.0\refint\InfraStructure.dll
+F:\.net\Hassan\Hassann_Khala\InfraStructure\obj\Debug\net9.0\InfraStructure.pdb
+F:\.net\Hassan\Hassann_Khala\InfraStructure\obj\Debug\net9.0\ref\InfraStructure.dll

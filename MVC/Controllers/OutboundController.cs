@@ -1,0 +1,247 @@
+using Microsoft.AspNetCore.Mvc;
+using InfraStructure.Context;
+using Hassann_Khala.Domain;
+using Microsoft.EntityFrameworkCore;
+using MVC.ViewModels.Outbound;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using MVC.ViewModels.Ajax;
+
+namespace MVC.Controllers
+{
+    public class OutboundController : Controller
+    {
+        private readonly DBContext _db;
+        public OutboundController(DBContext db) => _db = db;
+
+        public IActionResult Index()
+        {
+            // simple list of outbounds
+            var outbounds = _db.Outbounds.ToList();
+            return View(outbounds);
+        }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            var vm = new OutboundCreateVM
+            {
+                Clients = _db.Clients.OrderBy(c => c.Name).Select(c => new SelectListItem(c.Name, c.Id.ToString())).ToList(),
+                Products = _db.Products.OrderBy(p => p.Name).Select(p => new SelectListItem(p.Name, p.Id.ToString())).ToList(),
+                Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new SelectListItem(s.Name, s.Id.ToString())).ToList(),
+                Details = new List<OutboundDetailVM> { new OutboundDetailVM() }
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(OutboundCreateVM vm)
+        {
+            // populate lookups in case of redisplay
+            vm.Clients = _db.Clients.OrderBy(c => c.Name).Select(c => new SelectListItem(c.Name, c.Id.ToString())).ToList();
+            vm.Products = _db.Products.OrderBy(p => p.Name).Select(p => new SelectListItem(p.Name, p.Id.ToString())).ToList();
+            vm.Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new SelectListItem(s.Name, s.Id.ToString())).ToList();
+
+            if (vm.Details == null || vm.Details.Count == 0)
+            {
+                ModelState.AddModelError(string.Empty, "??? ????? ??? ???? ??? ?????.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(vm);
+            }
+
+            // Validate client
+            var client = _db.Clients.FirstOrDefault(c => c.Id == vm.ClientId);
+            if (client == null)
+            {
+                ModelState.AddModelError(nameof(vm.ClientId), "?????? ??? ?????.");
+                return View(vm);
+            }
+
+            // Validate lines and check stock availability
+            foreach (var line in vm.Details.Select((l, idx) => (l, idx)))
+            {
+                var l = line.l;
+                var idx = line.idx;
+
+                if (l.Cartons < 0 || l.Pallets < 0)
+                {
+                    ModelState.AddModelError(string.Empty, $"????? {idx + 1}: ????? ??? ?? ???? ?????.");
+                    break;
+                }
+
+                var prodExists = _db.Products.Any(p => p.Id == l.ProductId && p.IsActive);
+                if (!prodExists)
+                {
+                    ModelState.AddModelError(string.Empty, $"????? {idx + 1}: ?????? ??? ?????.");
+                    break;
+                }
+
+                var secExists = _db.Sections.Any(s => s.Id == l.SectionId);
+                if (!secExists)
+                {
+                    ModelState.AddModelError(string.Empty, $"????? {idx + 1}: ?????? ??? ?????.");
+                    break;
+                }
+
+                var stock = _db.Stocks.FirstOrDefault(s => s.ClientId == vm.ClientId && s.ProductId == l.ProductId && s.SectionId == l.SectionId);
+                var availableCartons = stock?.Cartons ?? 0;
+                var availablePallets = stock?.Pallets ?? 0;
+                if (availableCartons < l.Cartons || availablePallets < l.Pallets)
+                {
+                    ModelState.AddModelError(string.Empty, $"????? {idx + 1}: ?????? ??? ????? ?? ?????? (????? {availableCartons} ?????? {availablePallets} ????).");
+                    break;
+                }
+            }
+
+            if (!ModelState.IsValid) return View(vm);
+
+            // All validation passed - create outbound and update stocks in transaction
+            using var tx = _db.Database.BeginTransaction();
+            try
+            {
+                var outbound = new Outbound { ClientId = vm.ClientId, CreatedAt = DateTime.UtcNow };
+                foreach (var l in vm.Details)
+                {
+                    var detail = new OutboundDetail
+                    {
+                        ProductId = l.ProductId,
+                        SectionId = l.SectionId,
+                        Cartons = l.Cartons,
+                        Pallets = l.Pallets,
+                        Quantity = l.Cartons + (l.Pallets * 100m)
+                    };
+                    outbound.Details.Add(detail);
+
+                    // adjust stock
+                    var stock = _db.Stocks.FirstOrDefault(s => s.ClientId == vm.ClientId && s.ProductId == l.ProductId && s.SectionId == l.SectionId);
+                    if (stock != null)
+                    {
+                        stock.Cartons -= l.Cartons;
+                        stock.Pallets -= l.Pallets;
+                        _db.Stocks.Update(stock);
+                    }
+
+                    // product stock
+                    var prodStock = _db.ProductStocks.FirstOrDefault(ps => ps.ClientId == vm.ClientId && ps.ProductId == l.ProductId);
+                    if (prodStock != null)
+                    {
+                        prodStock.Cartons -= l.Cartons;
+                        prodStock.Pallets -= l.Pallets;
+                        _db.ProductStocks.Update(prodStock);
+                    }
+
+                    // section stock
+                    var secStock = _db.SectionStocks.FirstOrDefault(ss => ss.ClientId == vm.ClientId && ss.SectionId == l.SectionId);
+                    if (secStock != null)
+                    {
+                        secStock.Cartons -= l.Cartons;
+                        secStock.Pallets -= l.Pallets;
+                        _db.SectionStocks.Update(secStock);
+                    }
+                }
+
+                _db.Outbounds.Add(outbound);
+                _db.SaveChanges();
+                tx.Commit();
+
+                TempData["Success"] = "?? ????? ??? ?????? ?????.";
+                return RedirectToAction("Index");
+            }
+            catch (System.Exception ex)
+            {
+                tx.Rollback();
+                ModelState.AddModelError(string.Empty, "??? ??? ????? ????? ?????.");
+                return View(vm);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("Outbound/AddLineAjax")]
+        public IActionResult AddLineAjax([FromBody] AddLineRequest req)
+        {
+            if (req == null) return BadRequest(new { success = false, error = "Request body required" });
+            if (req.ClientId <= 0) return BadRequest(new { success = false, error = "ClientId required" });
+            if (req.ProductId <= 0) return BadRequest(new { success = false, error = "ProductId required" });
+            if (req.SectionId <= 0) return BadRequest(new { success = false, error = "SectionId required" });
+            if (req.Cartons < 0 || req.Pallets < 0) return BadRequest(new { success = false, error = "Quantities must be non-negative" });
+
+            var client = _db.Clients.FirstOrDefault(c => c.Id == req.ClientId);
+            var product = _db.Products.FirstOrDefault(p => p.Id == req.ProductId && p.IsActive);
+            var section = _db.Sections.FirstOrDefault(s => s.Id == req.SectionId);
+
+            if (client == null || product == null || section == null)
+            {
+                return BadRequest(new { success = false, error = "Invalid client/product/section" });
+            }
+
+            // If outboundId provided, append detail
+            if (req.OutboundId.HasValue && req.OutboundId.Value > 0)
+            {
+                var outbound = _db.Outbounds.Include(o => o.Details).FirstOrDefault(o => o.Id == req.OutboundId.Value);
+                if (outbound == null) return NotFound(new { success = false, error = "Outbound not found" });
+                if (outbound.ClientId != req.ClientId) return BadRequest(new { success = false, error = "Client mismatch" });
+
+                var detail = new OutboundDetail
+                {
+                    OutboundId = outbound.Id,
+                    ProductId = req.ProductId,
+                    SectionId = req.SectionId,
+                    Cartons = req.Cartons,
+                    Pallets = req.Pallets,
+                    Quantity = req.Cartons + (req.Pallets * 100m)
+                };
+                outbound.Details.Add(detail);
+
+                // reduce stock
+                var stock = _db.Stocks.FirstOrDefault(s => s.ClientId == outbound.ClientId && s.ProductId == req.ProductId && s.SectionId == req.SectionId);
+                if (stock != null)
+                {
+                    stock.Cartons -= req.Cartons; stock.Pallets -= req.Pallets; _db.Stocks.Update(stock);
+                }
+
+                var prodStock = _db.ProductStocks.FirstOrDefault(ps => ps.ClientId == outbound.ClientId && ps.ProductId == req.ProductId);
+                if (prodStock != null) { prodStock.Cartons -= req.Cartons; prodStock.Pallets -= req.Pallets; _db.ProductStocks.Update(prodStock); }
+
+                var secStock = _db.SectionStocks.FirstOrDefault(ss => ss.ClientId == outbound.ClientId && ss.SectionId == req.SectionId);
+                if (secStock != null) { secStock.Cartons -= req.Cartons; secStock.Pallets -= req.Pallets; _db.SectionStocks.Update(secStock); }
+
+                _db.SaveChanges();
+                return Ok(new { success = true, id = outbound.Id });
+            }
+
+            // create new outbound with single line
+            using var tx = _db.Database.BeginTransaction();
+            try
+            {
+                var outbound = new Outbound { ClientId = req.ClientId, CreatedAt = DateTime.UtcNow };
+                var detail = new OutboundDetail { ProductId = req.ProductId, SectionId = req.SectionId, Cartons = req.Cartons, Pallets = req.Pallets, Quantity = req.Cartons + (req.Pallets * 100m) };
+                outbound.Details.Add(detail);
+
+                _db.Outbounds.Add(outbound);
+
+                var stock = _db.Stocks.FirstOrDefault(s => s.ClientId == req.ClientId && s.ProductId == req.ProductId && s.SectionId == req.SectionId);
+                if (stock != null) { stock.Cartons -= req.Cartons; stock.Pallets -= req.Pallets; _db.Stocks.Update(stock); }
+
+                var prodStock = _db.ProductStocks.FirstOrDefault(ps => ps.ClientId == req.ClientId && ps.ProductId == req.ProductId);
+                if (prodStock != null) { prodStock.Cartons -= req.Cartons; prodStock.Pallets -= req.Pallets; _db.ProductStocks.Update(prodStock); }
+
+                var secStock = _db.SectionStocks.FirstOrDefault(ss => ss.ClientId == req.ClientId && ss.SectionId == req.SectionId);
+                if (secStock != null) { secStock.Cartons -= req.Cartons; secStock.Pallets -= req.Pallets; _db.SectionStocks.Update(secStock); }
+
+                _db.SaveChanges();
+                tx.Commit();
+                return Ok(new { success = true, id = outbound.Id });
+            }
+            catch (System.Exception)
+            {
+                tx.Rollback();
+                return StatusCode(500, new { success = false, error = "Server error" });
+            }
+        }
+    }
+}

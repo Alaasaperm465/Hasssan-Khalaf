@@ -1,0 +1,171 @@
+﻿@model IEnumerable<Hassann_Khala.Domain.Client>
+
+@{
+    ViewData["Title"] = "العملاء";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .glass-card {
+        backdrop-filter: blur(14px);
+        background: rgba(255,255,255,.7);
+        border-radius: 18px;
+        border: 1px solid rgba(255,255,255,.3);
+        box-shadow: 0 8px 32px rgba(0,0,0,.07);
+        transition: .3s;
+    }
+
+        .glass-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(0,0,0,.12);
+        }
+
+    .modern-table thead {
+        background: #f8f9fc;
+    }
+
+    .modern-table tbody tr {
+        transition: .2s;
+    }
+
+        .modern-table tbody tr:hover {
+            background-color: rgba(78,115,223,.05);
+            transform: scale(1.01);
+        }
+
+    .search-box {
+        border-radius: 50px;
+        padding: 8px 18px;
+    }
+
+    .add-btn {
+        border-radius: 50px;
+        padding: 8px 20px;
+        font-weight: 500;
+        transition: .2s;
+    }
+
+        .add-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,.1);
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 0;
+        color: #888;
+    }
+</style>
+
+<div class="container-fluid">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h2 class="fw-bold mb-1">العملاء</h2>
+            <div class="text-muted small">إدارة جميع العملاء في النظام</div>
+        </div>
+
+        <a class="btn btn-primary add-btn d-flex align-items-center"
+           asp-controller="Clients"
+           asp-action="Create">
+            <i class="bi bi-person-plus me-2"></i>
+            إضافة عميل
+        </a>
+    </div>
+
+    <!-- Search -->
+    <div class="mb-3">
+        <input type="text"
+               id="clientSearch"
+               class="form-control search-box shadow-sm"
+               placeholder="🔍 بحث عن عميل..." />
+    </div>
+
+    <!-- Table -->
+    <div class="glass-card p-4">
+        <div class="table-responsive">
+            <table class="table modern-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>الاسم</th>
+                        <th>العنوان</th>
+                        <th>الهاتف</th>
+                        <th>الاجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="clientsTable">
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var c in Model)
+                        {
+                            <tr>
+                                <td class="fw-semibold">@Html.DisplayFor(m => c.Name)</td>
+                                <td class="fw-semibold">@Html.DisplayFor(m => c.Address)</td>
+                                <td class="fw-semibold">@Html.DisplayFor(m => c.PhoneNumber)</td>
+                                <td>
+                                    <div class="btn-group" role="group" aria-label="Client actions">
+                                        <a asp-controller="Clients"
+                                        asp-action="Details"
+                                           asp-route-id="@c.Id">
+                                            <i class="bi bi-pencil-square me-1"></i>
+                                           Details</a>
+                                        <a class="btn btn-sm btn-outline-primary"
+                                           asp-controller="Clients"
+                                           asp-action="Edit"
+                                           asp-route-id="@c.Id">
+                                            <i class="bi bi-pencil-square me-1"></i>
+                                            تعديل
+                                        </a>
+
+                                        <form asp-controller="Clients" asp-action="Delete" asp-route-id="@c.Id" method="post" onsubmit="return confirm('هل أنت متأكد من حذف هذا العميل؟');" style="display:inline-block;">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash me-1"></i>
+                                                حذف
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4">
+                                <div class="empty-state">
+                                    <i class="bi bi-people fs-1 d-block mb-3"></i>
+                                    لا يوجد عملاء حالياً
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Live Search
+    document.getElementById("clientSearch").addEventListener("keyup", function () {
+        let filter = this.value.toLowerCase();
+        let rows = document.querySelectorAll("#clientsTable tr");
+
+        rows.forEach(row => {
+            // skip empty-state row
+            if (row.querySelector('.empty-state')) return;
+            let text = row.innerText.toLowerCase();
+            row.style.display = text.includes(filter) ? "" : "none";
+        });
+    });
+</script>

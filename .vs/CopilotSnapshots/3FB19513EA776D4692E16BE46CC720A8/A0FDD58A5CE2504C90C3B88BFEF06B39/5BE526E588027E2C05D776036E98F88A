@@ -1,0 +1,12 @@
+﻿using System.Threading.Tasks;
+using Hassann_Khala.Domain;
+
+namespace Hassann_Khala.Domain.Interfaces
+{
+    public interface IProductStockRepository
+    {
+        Task<ProductStock?> FindAsync(int clientId, int productId);
+        Task AddAsync(ProductStock stock);
+        void Update(ProductStock stock);
+    }
+}

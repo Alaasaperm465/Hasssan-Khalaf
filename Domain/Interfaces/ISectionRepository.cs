@@ -1,0 +1,12 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Hassann_Khala.Domain;
+
+namespace Hassann_Khala.Domain.Interfaces
+{
+    public interface ISectionRepository : IRepository<Section>
+    {
+        Task<Section?> GetByNameAsync(string name);
+        Task<IEnumerable<Section>> GetAllAsync();
+    }
+}

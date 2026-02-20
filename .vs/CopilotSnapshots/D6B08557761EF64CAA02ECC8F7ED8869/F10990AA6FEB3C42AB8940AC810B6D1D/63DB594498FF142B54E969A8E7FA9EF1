@@ -1,0 +1,99 @@
+﻿using Hassann_Khala.Application.Interfaces.IServices;
+using InfraStructure.Context;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MVC.ViewModels.Stock;
+
+namespace MVC.Controllers
+{
+    public class StockController : Controller
+    {
+        private readonly DBContext _db;
+        private readonly IStockService _stockService;
+        public StockController(DBContext db, IStockService stockService)
+        {
+            _db = db;
+            _stockService = stockService;
+        }
+
+        public async Task<IActionResult> Index(int? clientId)
+        {
+            var clients = await _db.Clients.AsNoTracking().ToListAsync();
+            var products = await _db.Products.AsNoTracking().ToListAsync();
+            var sections = await _db.Sections.AsNoTracking().ToListAsync();
+
+            var query = _db.Stocks.AsQueryable();
+            if (clientId.HasValue) query = query.Where(s => s.ClientId == clientId.Value);
+
+            var stockList = await query
+                .Include(s => s.Client)
+                .Include(s => s.Product)
+                .Include(s => s.Section)
+                .AsNoTracking()
+                .ToListAsync();
+
+            var vm = new StockIndexVM
+            {
+                Clients = clients.Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(c.Name, c.Id.ToString())).ToList(),
+                SelectedClientId = clientId,
+                Stocks = stockList.Select(s => new StockRowVM
+                {
+                    ClientId = s.ClientId,
+                    ClientName = s.Client?.Name ?? string.Empty,
+                    ProductId = s.ProductId,
+                    ProductName = s.Product?.Name ?? string.Empty,
+                    SectionId = s.SectionId,
+                    SectionName = s.Section?.Name ?? string.Empty,
+                    Cartons = s.Cartons,
+                    Pallets = s.Pallets
+                }).ToList()
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public IActionResult Check(int clientId, int productId, int sectionId)
+        {
+            var stock = _db.Stocks.FirstOrDefault(s => s.ClientId == clientId && s.ProductId == productId && s.SectionId == sectionId);
+            if (stock == null)
+            {
+                ViewBag.Message = "No stock found.";
+                ViewBag.Cartons = 0;
+                ViewBag.Pallets = 0;
+            }
+            else
+            {
+                ViewBag.Message = "Stock found.";
+                ViewBag.Cartons = stock.Cartons;
+                ViewBag.Pallets = stock.Pallets;
+            }
+            return View("Index");
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetClientStocks(int clientId)
+        {
+            var stocks = await _stockService.GetStocksByClientAsync(clientId);
+
+            var products = stocks
+                .Select(s => new {
+                    value = s.ProductId,
+                    text = s.Product.Name
+                })
+                .Distinct()
+                .ToList();
+
+            var sections = stocks
+                .Select(s => new {
+                    value = s.SectionId,
+                    text = s.Section.Name
+                })
+                .Distinct()
+                .ToList();
+
+            return Json(new { products, sections });
+        }
+
+
+    }
+}

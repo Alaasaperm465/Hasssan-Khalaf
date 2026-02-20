@@ -1,0 +1,118 @@
+﻿@model MVC.Controllers.ClientSectionDTO
+@{
+    ViewData["Title"] = "عميل في قسم";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container mt-3">
+    <h3>مخزون عميل داخل قسم</h3>
+
+    <form method="post" class="row g-2 align-items-end" id="filterForm" onsubmit="return false;">
+        <div class="col-auto">
+            <label class="form-label">القسم</label>
+            <select id="sectionSelect" name="sectionId" class="form-select">
+                <option value="">-- اختر القسم --</option>
+                @foreach(Microsoft.AspNetCore.Mvc.Rendering.SelectListItem s in ViewBag.Sections)
+                {
+                    <option value="@s.Value">@s.Text</option>
+                }
+            </select>
+        </div>
+        <div class="col-auto">
+            <label class="form-label">العميل</label>
+            <select id="clientSelect" name="clientId" class="form-select">
+                <option value="">-- اختر العميل --</option>
+                @foreach(Microsoft.AspNetCore.Mvc.Rendering.SelectListItem c in ViewBag.Clients)
+                {
+                    <option value="@c.Value">@c.Text</option>
+                }
+            </select>
+        </div>
+    </form>
+
+    <div id="detailContainer" class="mt-3"></div>
+
+    @if (Model != null)
+    {
+        <div class="card mt-3 p-3">
+            <div>SectionId: <strong>@Model.SectionId</strong></div>
+            <div>ClientId: <strong>@Model.ClientId</strong></div>
+            <div>Total Cartons: <strong>@Model.TotalCartons</strong></div>
+            <div>Total Pallets: <strong>@Model.TotalPallets</strong></div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        (function(){
+            const sectionSelect = document.getElementById('sectionSelect');
+            const clientSelect = document.getElementById('clientSelect');
+            const detailContainer = document.getElementById('detailContainer');
+
+            async function loadDetails() {
+                const sectionId = sectionSelect.value;
+                const clientId = clientSelect.value;
+                detailContainer.innerHTML = '';
+                if (!sectionId || !clientId) return;
+
+                try {
+                    const resp = await fetch(`/Query/SectionDetails?sectionId=${encodeURIComponent(sectionId)}`);
+                    if (!resp.ok) throw new Error('Failed to load');
+                    const data = await resp.json();
+
+                    // data is { clients: [...], totals: {...} }
+                    const clients = data.clients || data.Clients || [];
+
+                    // find client
+                    const client = clients.find(c => c.clientId === parseInt(clientId, 10));
+                    if (!client) {
+                        detailContainer.innerHTML = '<div class="text-muted">لا توجد بيانات لهذا العميل في هذا القسم.</div>';
+                        return;
+                    }
+
+                    // build html
+                    let html = `
+                        <div class="card shadow-sm p-3">
+                            <div class="mb-2"><strong>العميل:</strong> ${escapeHtml(client.clientName || client.clientName || '')} </div>
+                            <div class="mb-2"><strong>إجمالي كرتون:</strong> ${client.totalCartons} &nbsp; <strong>إجمالي بالات:</strong> ${client.totalPallets}</div>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead><tr><th>المنتج</th><th class="text-end">كرتون</th><th class="text-end">بالت</th></tr></thead>
+                                    <tbody>
+                    `;
+
+                    const products = client.products || client.Products || [];
+                    products.forEach(p => {
+                        html += `<tr><td>${escapeHtml(p.productName || p.productName || '')}</td><td class="text-end">${p.cartons}</td><td class="text-end">${p.pallets}</td></tr>`;
+                    });
+
+                    html += `</tbody></table></div></div>`;
+
+                    detailContainer.innerHTML = html;
+                } catch (e) {
+                    console.error(e);
+                    detailContainer.innerHTML = '<div class="text-danger">فشل تحميل البيانات.</div>';
+                }
+            }
+
+            function escapeHtml(str){
+                if(!str) return '';
+                return str.replace(/[&<>"']/g, function(m){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m];});
+            }
+
+            sectionSelect.addEventListener('change', loadDetails);
+            clientSelect.addEventListener('change', loadDetails);
+
+            // Optionally preload if Model present
+            (function(){
+                const modelSection = '@(Model?.SectionId ?? 0)';
+                const modelClient = '@(Model?.ClientId ?? 0)';
+                if (modelSection && modelClient && modelSection !== '0' && modelClient !== '0') {
+                    sectionSelect.value = modelSection;
+                    clientSelect.value = modelClient;
+                    loadDetails();
+                }
+            })();
+        })();
+    </script>
+}

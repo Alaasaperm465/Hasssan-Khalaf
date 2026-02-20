@@ -1,0 +1,79 @@
+﻿using InfraStructure.Context;
+using Microsoft.EntityFrameworkCore;
+using Hassann_Khala.Application.Interfaces.IServices;
+using Hassann_Khala.Application.Services;
+using Hassann_Khala.Domain.Interfaces;
+using InfraStructure.Repos;
+using InfraStructure.UnitOfWork;
+using Hassann_Khala.Domain;
+
+namespace MVC
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
+
+            // Add services to the container.
+            builder.Services.AddControllersWithViews();
+
+            // Register DBContext for DI
+            var conn = builder.Configuration.GetConnectionString("DefaultConnection");
+            if (string.IsNullOrWhiteSpace(conn))
+            {
+                // fallback to environment variable if necessary
+                conn = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
+            }
+
+            if (!string.IsNullOrWhiteSpace(conn))
+            {
+                builder.Services.AddDbContext<DBContext>(options => options.UseSqlServer(conn));
+            }
+
+            // Repositories
+            builder.Services.AddScoped<IClientRepository, ClientRepository>();
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
+            builder.Services.AddScoped<ISectionRepository, SectionRepository>();
+            builder.Services.AddScoped<IStockRepository, StockRepository>();
+            builder.Services.AddScoped<IProductStockRepository, ProductStockRepository>();
+            builder.Services.AddScoped<ISectionStockRepository, SectionStockRepository>();
+            builder.Services.AddScoped<IRepository<Inbound>, InboundRepository>();
+
+            // Unit of Work
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            // Application services
+            builder.Services.AddScoped<IClientService, ClientService>();
+            builder.Services.AddScoped<ISectionService, SectionService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IStockService, StockService>();
+            builder.Services.AddScoped<IInboundService, InboundService>();
+            builder.Services.AddScoped<IOutboundService, OutboundService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
+
+            var app = builder.Build();
+
+            // Configure the HTTP request pipeline.
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseExceptionHandler("/Home/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.MapStaticAssets();
+            app.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}")
+                .WithStaticAssets();
+
+            app.Run();
+        }
+    }
+}

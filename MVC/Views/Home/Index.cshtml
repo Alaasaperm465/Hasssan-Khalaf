@@ -1,0 +1,250 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    body {
+        background: linear-gradient(135deg,#eef2f7,#e3e9f3);
+    }
+
+    .glass-card {
+        backdrop-filter: blur(14px);
+        background: rgba(255,255,255,.7);
+        border-radius: 18px;
+        border: 1px solid rgba(255,255,255,.3);
+        box-shadow: 0 8px 32px rgba(0,0,0,.07);
+        transition: .3s;
+    }
+
+    .glass-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 15px 40px rgba(0,0,0,.12);
+    }
+
+    .stat-icon {
+        width: 65px;
+        height: 65px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 26px;
+    }
+
+    .gradient-blue { background: linear-gradient(135deg,#4e73df,#224abe); }
+    .gradient-green { background: linear-gradient(135deg,#1cc88a,#13855c); }
+    .gradient-orange { background: linear-gradient(135deg,#f6c23e,#dda20a); }
+
+    .dashboard-btn {
+        border-radius: 50px;
+        padding: 10px 20px;
+        font-weight: 500;
+        transition: .2s;
+    }
+
+    .dashboard-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,0,0,.1);
+    }
+
+    .table thead {
+        background: #f8f9fc;
+    }
+
+    .mobile-action-bar {
+        background: rgba(255,255,255,.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 -4px 20px rgba(0,0,0,.08);
+    }
+
+    .dark-mode {
+        background: #111827 !important;
+        color: #f9fafb !important;
+    }
+
+    .dark-mode .glass-card {
+        background: rgba(30,41,59,.6);
+        border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .toggle-dark {
+        cursor: pointer;
+    }
+</style>
+
+<div class="container-fluid">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold">لوحة التحكم</h2>
+            <div class="text-muted small">مرحبًا بك في نظام إدارة المخزون</div>
+        </div>
+        <div>
+            <button class="btn btn-outline-dark toggle-dark">
+                <i class="bi bi-moon"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="glass-card p-4 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small">المنتجات</div>
+                    <div class="fs-3 fw-bold counter" data-target="@ViewBag.TotalProducts">0</div>
+                </div>
+                <div class="stat-icon gradient-blue">
+                    <i class="bi bi-box-seam"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="glass-card p-4 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small">مشتريات اليوم</div>
+                    <div class="fs-3 fw-bold counter" data-target="@ViewBag.TodayInbounds">0</div>
+                </div>
+                <div class="stat-icon gradient-green">
+                    <i class="bi bi-arrow-down-circle"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="glass-card p-4 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small">مبيعات اليوم</div>
+                    <div class="fs-3 fw-bold counter" data-target="@ViewBag.TodayOutbounds">0</div>
+                </div>
+                <div class="stat-icon gradient-orange">
+                    <i class="bi bi-arrow-up-circle"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="glass-card p-4 mb-4">
+        <h5 class="fw-bold mb-3">
+            <i class="bi bi-graph-up text-primary me-2"></i>
+            إحصائيات الحركة
+        </h5>
+        <canvas id="dashboardChart" height="100"></canvas>
+    </div>
+
+    <!-- Recent Inbounds -->
+    <div class="glass-card p-4">
+        <h5 class="fw-bold mb-3">
+            <i class="bi bi-clock-history text-primary me-2"></i>
+            المشتريات الأخيرة
+        </h5>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>العميل</th>
+                        <th>التاريخ</th>
+                        <th>الخطوط</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ViewBag.RecentInbounds != null)
+                    {
+                        foreach (var i in ViewBag.RecentInbounds)
+                        {
+                            <tr>
+                                <td>@i.Client.Name</td>
+                                <td>@i.CreatedAt.ToLocalTime().ToString("g")</td>
+                                <td>@i.Details.Count</td>
+                                <td>
+                                    <a class="btn btn-sm btn-outline-primary rounded-pill"
+                                       asp-controller="Inbound"
+                                       asp-action="Details"
+                                       asp-route-id="@i.Id">
+                                       عرض
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Action Bar -->
+<div class="mobile-action-bar d-md-none fixed-bottom py-3">
+    <div class="container">
+        <div class="d-flex gap-2">
+            <a class="btn btn-success rounded-pill flex-fill" asp-controller="Products" asp-action="Create">
+                <i class="bi bi-box me-2"></i>منتج
+            </a>
+            <a class="btn btn-primary rounded-pill flex-fill" asp-controller="Inbound" asp-action="Create">
+                <i class="bi bi-arrow-down-circle me-2"></i>وارد
+            </a>
+            <a class="btn btn-outline-primary rounded-pill flex-fill" asp-controller="Outbound" asp-action="Create">
+                <i class="bi bi-arrow-up-circle me-2"></i>صادر
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Animated Counters
+    document.querySelectorAll('.counter').forEach(counter => {
+        let target = +counter.getAttribute('data-target');
+        let count = 0;
+        let increment = target / 60;
+        let update = () => {
+            count += increment;
+            if (count < target) {
+                counter.innerText = Math.floor(count);
+                requestAnimationFrame(update);
+            } else {
+                counter.innerText = target;
+            }
+        };
+        update();
+    });
+
+    // Chart
+    const ctx = document.getElementById('dashboardChart');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['المنتجات', 'المشتريات', 'المبيعات'],
+            datasets: [{
+                label: 'الإحصائيات',
+                data: [
+                    @ViewBag.TotalProducts ?? 0,
+                    @ViewBag.TodayInbounds ?? 0,
+                    @ViewBag.TodayOutbounds ?? 0
+                ],
+                backgroundColor: [
+                    '#4e73df',
+                    '#1cc88a',
+                    '#f6c23e'
+                ],
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    // Dark Mode Toggle
+    document.querySelector('.toggle-dark').addEventListener('click', function () {
+        document.body.classList.toggle('dark-mode');
+    });
+</script>
