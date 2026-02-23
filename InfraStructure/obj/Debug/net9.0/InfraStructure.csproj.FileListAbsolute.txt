@@ -15,3 +15,4 @@ F:\.net\Hassan\Hassann_Khala\InfraStructure\obj\Debug\net9.0\InfraStructure.dll
 F:\.net\Hassan\Hassann_Khala\InfraStructure\obj\Debug\net9.0\refint\InfraStructure.dll
 F:\.net\Hassan\Hassann_Khala\InfraStructure\obj\Debug\net9.0\InfraStructure.pdb
 F:\.net\Hassan\Hassann_Khala\InfraStructure\obj\Debug\net9.0\ref\InfraStructure.dll
+F:\.net\Hassan\Hassann_Khala\InfraStructure\obj\Debug\net9.0\InfraStructure.sourcelink.json

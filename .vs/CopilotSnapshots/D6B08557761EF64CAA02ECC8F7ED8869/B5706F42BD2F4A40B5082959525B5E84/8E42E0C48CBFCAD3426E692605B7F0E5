@@ -1,0 +1,43 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using MVC.ViewModels.Issuance;
+using InfraStructure.Context;
+
+namespace MVC.Pages.Issuance
+{
+    public class CreateModel : PageModel
+    {
+        private readonly DBContext _db;
+        public CreateModel(DBContext db) { _db = db; }
+
+        [BindProperty]
+        public string SerialNumber { get; set; } = string.Empty;
+
+        [BindProperty]
+        public List<IssuanceItemVM> Items { get; set; } = new List<IssuanceItemVM>();
+
+        public void OnGet()
+        {
+            SerialNumber = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+            Items.Add(new IssuanceItemVM());
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (Items == null || Items.Count == 0) { ModelState.AddModelError(string.Empty, "At least one row is required."); return Page(); }
+            if (Items.Any(i => string.IsNullOrWhiteSpace(i.FieldValue))) { ModelState.AddModelError(string.Empty, "All fields are required."); return Page(); }
+
+            // Use fully-qualified domain types to avoid name conflicts with this page's namespace
+            var issuance = new Hassann_Khala.Domain.Issuance { SerialNumber = SerialNumber ?? Guid.NewGuid().ToString("N"), CreatedAt = DateTime.UtcNow };
+            for (int i = 0; i < Items.Count; i++)
+            {
+                issuance.Items.Add(new Hassann_Khala.Domain.IssuanceItem { ItemIndex = i, FieldValue = Items[i].FieldValue, ProductId = Items[i].ProductId, SectionId = Items[i].SectionId });
+            }
+
+            _db.Issuances.Add(issuance);
+            await _db.SaveChangesAsync();
+
+            return RedirectToPage("/Issuance/Details", new { id = issuance.Id });
+        }
+    }
+}

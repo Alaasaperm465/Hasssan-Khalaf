@@ -1,0 +1,31 @@
+﻿namespace Hassann_Khala.Domain
+{
+    using global::Domain;
+    using System.ComponentModel.DataAnnotations;
+
+    public class Client: BaseEntity
+
+    {
+        [Required]
+        [StringLength(200)]
+        public string Name { get; set; } = null!;
+
+        [Required]
+        [StringLength(500)]
+        public string Address { get; set; } = null!;
+
+        [Range(0, int.MaxValue)]
+        public int PhoneNumber { get; set; }
+        //رقم العقد 
+        [Required]
+        public int SerialContruct { get; set; }
+        //المفوضين 
+
+        [Required]
+        public List<Delegate>? delegates {  get; set; }
+
+        // bitmask flags representing allowed ProductType values for this client
+        public int AllowedProductTypes { get; set; } = 0;
+
+    }
+}

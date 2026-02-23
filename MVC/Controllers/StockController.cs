@@ -99,8 +99,19 @@ namespace MVC.Controllers
                 .Distinct()
                 .ToList();
 
-            // return products, sections and product-section pairs so client can build filters
-            return Json(new { products, sections, pairs });
+            // include per-stock quantities so client can update available counts
+            var stocksData = stocks
+                .Select(s => new {
+                    productId = s.ProductId,
+                    sectionId = s.SectionId,
+                    cartons = s.Cartons,
+                    pallets = s.Pallets
+                })
+                .Distinct()
+                .ToList();
+
+            // return products, sections, pairs and quantities
+            return Json(new { products, sections, pairs, stocks = stocksData });
         }
 
 

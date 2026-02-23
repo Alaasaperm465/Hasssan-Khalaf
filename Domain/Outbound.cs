@@ -8,6 +8,11 @@ namespace Hassann_Khala.Domain
     {
         public int ClientId { get; set; }
         public Client Client { get; set; } = null!;
+
+        // optional delegate who authorized the outbound
+        public int? DelegateId { get; set; }
+        public Delegate? Delegate { get; set; }
+
         // Navigation
         public IList<OutboundDetail> Details { get; set; } = new List<OutboundDetail>();
     }

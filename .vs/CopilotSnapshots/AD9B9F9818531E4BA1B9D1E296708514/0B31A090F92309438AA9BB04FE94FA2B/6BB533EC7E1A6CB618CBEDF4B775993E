@@ -1,0 +1,361 @@
+﻿@model MVC.ViewModels.Inbound.InboundCreateVM
+@{
+    ViewData["Title"] = "Create Inbound";
+}
+
+<div class="container-fluid mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 mb-0">المشتريات</h2>
+        <div>
+            <a class="btn btn-secondary" asp-action="Index">عودة</a>
+        </div>
+    </div>
+
+    <form asp-action="Create" method="post" id="inboundForm">
+        @Html.AntiForgeryToken()
+
+        <div class="row g-3 mb-3">
+            <div class="col-12 col-md-6">
+                <label asp-for="ClientId" class="form-label">العميل</label>
+                <select asp-for="ClientId" class="form-select" asp-items="Model.Clients">
+                    <option value="">-- اختر العميل --</option>
+                </select>
+                <span asp-validation-for="ClientId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <h5 class="mt-3 mb-2">Lines</h5>
+
+        <div class="card mb-3">
+            <div class="card-body p-2 p-sm-3">
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered mb-0" id="linesTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="w-35">المنتج</th>
+                                <th class="w-25 d-none d-sm-table-cell">المخزن</th>
+                                <th class="w-10">الكرتون</th>
+                                <th class="w-10">بالتات</th>
+                                <th class="w-10">العمليات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.Details.Count; i++)
+                            {
+                                <tr>
+                                    <td>
+                                        <select name="Details[@i].ProductId" class="form-select line-input">
+                                            <option value="">-- اختر المنتج --</option>
+                                            @foreach (var p in Model.Products)
+                                            {
+                                                if (p.Value == Model.Details[i].ProductId.ToString())
+                                                {
+                                                    <option value="@p.Value" selected>@p.Text</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@p.Value">@p.Text</option>
+                                                }
+                                            }
+                                        </select>
+                                        <span class="text-danger" data-valmsg-for="Details[@i].ProductId" data-valmsg-replace="true"></span>
+                                    </td>
+                                    <td class="d-none d-sm-table-cell">
+                                        <select name="Details[@i].SectionId" class="form-select line-input">
+                                            <option value="">-- اختر المخزن --</option>
+                                            @foreach (var s in Model.Sections)
+                                            {
+                                                if (s.Value == Model.Details[i].SectionId.ToString())
+                                                {
+                                                    <option value="@s.Value" selected>@s.Text</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@s.Value">@s.Text</option>
+                                                }
+                                            }
+                                        </select>
+                                        <span class="text-danger" data-valmsg-for="Details[@i].SectionId" data-valmsg-replace="true"></span>
+                                    </td>
+                                    <td>
+                                        <input type="number" name="Details[@i].Cartons" class="form-control line-input" value="@Model.Details[i].Cartons" min="0" />
+                                    </td>
+                                    <td>
+                                        <input type="number" name="Details[@i].Pallets" class="form-control line-input" value="@Model.Details[i].Pallets" min="0" />
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-danger remove-line">حذف</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-2 d-flex gap-2">
+                    <button type="button" id="addLine" class="btn btn-sm btn-outline-secondary">إضافة سطر (أو Enter)</button>
+                    <div class="text-muted small">اضغط Enter في آخر خانة لإضافة السطر التالي والانتقال إليه أو لحفظ السطر في قاعدة البيانات</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <strong>Totals:</strong> Cartons: <span id="totalCartons">@Model.TotalCartons</span> &nbsp; Pallets: <span id="totalPallets">@Model.TotalPallets</span>
+            </div>
+            <div class="d-none d-sm-block">
+                <button type="submit" class="btn btn-primary">حفظ المشتريات</button>
+            </div>
+        </div>
+
+        <div class="d-block d-sm-none mt-3">
+            <button type="submit" class="btn btn-primary w-100">حفظ المشتريات</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        (function() {
+            const products = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Products.Select(p => new { value = p.Value, text = p.Text })));
+            const sections = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Sections.Select(s => new { value = s.Value, text = s.Text })));
+
+            const initialProducts = products.map(p => ({ value: p.value, text: p.text }));
+            const initialSections = sections.map(s => ({ value: s.value, text: s.text }));
+
+            const clientSelect = document.querySelector('[name="ClientId"]');
+            const tbody = document.querySelector('#linesTable tbody');
+
+            function recalcTotals() {
+                let cartons = 0, pallets = 0;
+                document.querySelectorAll('#linesTable tbody tr').forEach(row => {
+                    const cEl = row.querySelector('input[name$=".Cartons"]');
+                    const pEl = row.querySelector('input[name$=".Pallets"]');
+                    const c = cEl ? parseInt(cEl.value || '0') : 0;
+                    const p = pEl ? parseInt(pEl.value || '0') : 0;
+                    cartons += isNaN(c) ? 0 : c;
+                    pallets += isNaN(p) ? 0 : p;
+                });
+                document.getElementById('totalCartons').innerText = cartons;
+                document.getElementById('totalPallets').innerText = pallets;
+            }
+
+            function addLine() {
+                const index = tbody.children.length;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `\
+                    <td>\
+                        <select name="Details[${index}].ProductId" class="form-select line-input">\
+                            <option value="">-- اختر المنتج --</option>\
+                            ${products.map(p => `<option value="${p.value}">${p.text}</option>`).join('')}\
+                        </select>\
+                    </td>\
+                    <td class="d-none d-sm-table-cell">\
+                        <select name="Details[${index}].SectionId" class="form-select line-input">\
+                            <option value="">-- اختر المخزن --</option>\
+                            ${sections.map(s => `<option value="${s.value}">${s.text}</option>`).join('')}\
+                        </select>\
+                    </td>\
+                    <td><input type="number" name="Details[${index}].Cartons" class="form-control line-input" value="0" min="0" /></td>\
+                    <td><input type="number" name="Details[${index}].Pallets" class="form-control line-input" value="0" min="0" /></td>\
+                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger remove-line">حذف</button></td>\
+                `;
+                tbody.appendChild(tr);
+                attachRowEvents(tr);
+                recalcTotals();
+                const first = tr.querySelector('.line-input');
+                if (first) first.focus();
+            }
+
+            function attachRowEvents(tr) {
+                const inputs = Array.from(tr.querySelectorAll('.line-input'));
+                inputs.forEach((inp, idx) => {
+                    inp.addEventListener('input', recalcTotals);
+                    inp.addEventListener('keydown', async function (ev) {
+                        if (ev.key === 'Enter') {
+                            ev.preventDefault();
+
+                            if (idx < inputs.length - 1) {
+                                inputs[idx + 1].focus();
+                                return;
+                            }
+
+                            // last input -> save via AJAX
+                            const row = inp.closest('tr');
+                            const clientId = parseInt(document.querySelector('[name="ClientId"]').value || '0');
+                            const productId = parseInt(row.querySelector('select[name$=".ProductId"]').value || '0');
+                            const sectionId = parseInt(row.querySelector('select[name$=".SectionId"]').value || '0');
+                            const cartons = parseInt(row.querySelector('input[name$=".Cartons"]').value || '0');
+                            const pallets = parseInt(row.querySelector('input[name$=".Pallets"]').value || '0');
+
+                            if (!clientId || !productId || !sectionId) {
+                                alert('الرجاء تحديد العميل والمنتج والمخزن قبل الحفظ.');
+                                return;
+                            }
+
+                            const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+                            const token = tokenInput ? tokenInput.value : null;
+
+                            const payload = {
+                                clientId: clientId,
+                                productId: productId,
+                                sectionId: sectionId,
+                                cartons: cartons,
+                                pallets: pallets
+                            };
+
+                            if (currentInboundId) payload.inboundId = currentInboundId;
+
+                            const rowInputs = Array.from(row.querySelectorAll('select, input'));
+                            rowInputs.forEach(el => el.disabled = true);
+
+                            try {
+                                const respRaw = await fetch('/Inbound/AddLineAjax', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'RequestVerificationToken': token
+                                    },
+                                    body: JSON.stringify(payload)
+                                });
+
+                                const data = await respRaw.json().catch(() => null);
+                                if (!respRaw.ok) throw data || new Error('Server error');
+                                if (!data || !data.success) throw data || new Error('Server error');
+
+                                // set inbound id for subsequent lines
+                                currentInboundId = data.id || currentInboundId;
+
+                                // update client-side stocks map (inbound increases stock)
+                                const key = `${productId}_${sectionId}`;
+                                const stock = stocksMap.get(key);
+                                if (stock) {
+                                    stock.cartons = (stock.cartons || 0) + cartons;
+                                    stock.pallets = (stock.pallets || 0) + pallets;
+                                }
+
+                                // show success
+                                row.classList.add('table-success');
+                                setTimeout(()=> row.classList.remove('table-success'), 800);
+
+                                // clear row inputs for next entry
+                                row.querySelectorAll('select, input').forEach(el => {
+                                    if (el.tagName.toLowerCase() === 'select') el.selectedIndex = 0; else el.value = 0;
+                                    el.disabled = false;
+                                });
+
+                                const allInputs = Array.from(document.querySelectorAll('.line-input'));
+                                const pos = allInputs.indexOf(inp);
+                                if (pos >= 0 && pos < allInputs.length - 1) {
+                                    allInputs[pos + 1].focus();
+                                } else {
+                                    addLine();
+                                }
+
+                                recalcTotals();
+                            } catch (err) {
+                                alert('فشل الحفظ: ' + (err && err.error ? err.error : (err && err.message ? err.message : '')));
+                                rowInputs.forEach(el => el.disabled = false);
+                            }
+                        }
+                    });
+                });
+
+                // when product select changes, update section select in same row
+                const prodSel = tr.querySelector('select[name$=".ProductId"]');
+                if (prodSel) {
+                    prodSel.addEventListener('change', function () {
+                        const sectionSel = tr.querySelector('select[name$=".SectionId"]');
+                        if (!sectionSel) return;
+                        const allowed = getSectionsForProduct(this.value);
+                        const secOptions = `<option value="">-- اختر المخزن --</option>` + allowed.map(s => `<option value="${s.value}">${s.text}</option>`).join('');
+                        const curSec = sectionSel.value;
+                        sectionSel.innerHTML = secOptions;
+                        if (curSec && allowed.some(s => String(s.value) === String(curSec))) sectionSel.value = curSec; else sectionSel.value = '';
+                    });
+                }
+
+                const btn = tr.querySelector('.remove-line');
+                if (btn) btn.addEventListener('click', function() {
+                    tr.remove();
+                    document.querySelectorAll('#linesTable tbody tr').forEach((r,i) => {
+                        r.querySelectorAll('select, input').forEach(el => {
+                            const name = el.getAttribute('name');
+                            if (!name) return;
+                            el.setAttribute('name', name.replace(/Details\[\d+\]/, `Details[${i}]`));
+                        });
+                    });
+                    recalcTotals();
+                });
+            }
+
+            document.getElementById('addLine').addEventListener('click', addLine);
+
+            let pairs = [];
+            const stocksMap = new Map();
+            let currentInboundId = null;
+
+            clientSelect.addEventListener('change', function () {
+                const clientId = this.value;
+
+                function applyListsToSelects() {
+                    const prodOptions = `<option value="">-- اختر المنتج --</option>` + products.map(p => `<option value="${p.value}">${p.text}</option>`).join('');
+
+                    document.querySelectorAll('select[name$=".ProductId"]').forEach(sel => {
+                        const cur = sel.value;
+                        sel.innerHTML = prodOptions;
+                        if (cur && products.some(p => String(p.value) === String(cur))) sel.value = cur; else sel.value = '';
+
+                        const row = sel.closest('tr');
+                        const sectionSel = row ? row.querySelector('select[name$=".SectionId"]') : null;
+                        if (sectionSel) {
+                            const allowed = getSectionsForProduct(sel.value);
+                            const secOptions = `<option value="">-- اختر المخزن --</option>` + allowed.map(s => `<option value="${s.value}">${s.text}</option>`).join('');
+                            const curSec = sectionSel.value;
+                            sectionSel.innerHTML = secOptions;
+                            if (curSec && allowed.some(s => String(s.value) === String(curSec))) sectionSel.value = curSec; else sectionSel.value = '';
+                        }
+                    });
+
+                    if (tbody.children.length === 0) addLine();
+                }
+
+                if (!clientId) {
+                    products.length = 0; initialProducts.forEach(p => products.push(p));
+                    sections.length = 0; initialSections.forEach(s => sections.push(s));
+                    pairs = [];
+                    applyListsToSelects();
+                    return;
+                }
+
+                fetch(`/Stock/GetClientStocks?clientId=${clientId}`)
+                    .then(res => { if (!res.ok) throw new Error('Network response was not ok'); return res.json(); })
+                    .then(data => {
+                        products.length = 0; (data.products || []).forEach(p => products.push(p));
+                        sections.length = 0; (data.sections || []).forEach(s => sections.push(s));
+                        pairs = data.pairs || [];
+                        stocksMap.clear();
+                        (data.stocks || []).forEach(s => {
+                            const key = `${s.productId}_${s.sectionId}`;
+                            stocksMap.set(key, { cartons: s.cartons || 0, pallets: s.pallets || 0 });
+                        });
+                        applyListsToSelects();
+                    })
+                    .catch(err => { console.error('Failed to load client stocks', err); });
+            });
+
+            function getSectionsForProduct(productId) {
+                if (!productId) return sections;
+                const allowedIds = pairs.filter(p => String(p.productId) === String(productId)).map(p => String(p.sectionId));
+                return sections.filter(s => allowedIds.includes(String(s.value)));
+            }
+
+            document.querySelectorAll('#linesTable tbody tr').forEach(tr => attachRowEvents(tr));
+            recalcTotals();
+
+            if (clientSelect && clientSelect.value) {
+                clientSelect.dispatchEvent(new Event('change'));
+            }
+        })();
+    </script>
+}

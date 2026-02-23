@@ -1,0 +1,305 @@
+﻿@model MVC.ViewModels.Inbound.InboundCreateVM
+@{
+    ViewData["Title"] = "Create Inbound";
+}
+
+<style>
+    /* hide remove buttons to keep fixed 6 rows */
+    #linesTable .remove-line { display: none; }
+</style>
+
+<div class="container-fluid mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 mb-0">المشتريات</h2>
+        <div>
+            <a class="btn btn-secondary" asp-action="Index">عودة</a>
+        </div>
+    </div>
+
+    <form asp-action="Create" method="post" id="inboundForm">
+        @Html.AntiForgeryToken()
+
+        <div class="row g-3 mb-3">
+            <div class="col-12 col-md-6">
+                <label asp-for="ClientId" class="form-label">العميل</label>
+                <select asp-for="ClientId" class="form-select" asp-items="Model.Clients">
+                    <option value="">-- اختر العميل --</option>
+                </select>
+                <span asp-validation-for="ClientId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <h5 class="mt-3 mb-2">Lines</h5>
+
+        <div class="card mb-3">
+            <div class="card-body p-2 p-sm-3">
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered mb-0" id="linesTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="w-35">المنتج</th>
+                                <th class="w-25 d-none d-sm-table-cell">المخزن</th>
+                                <th class="w-10">الكرتون</th>
+                                <th class="w-10">بالتات</th>
+                                <th class="w-10">العمليات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.Details.Count; i++)
+                            {
+                                <tr>
+                                    <td>
+                                        <select name="Details[@i].ProductId" class="form-select line-input">
+                                            <option value="">-- اختر المنتج --</option>
+                                            @foreach (var p in Model.Products)
+                                            {
+                                                if (p.Value == Model.Details[i].ProductId.ToString())
+                                                {
+                                                    <option value="@p.Value" selected>@p.Text</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@p.Value">@p.Text</option>
+                                                }
+                                            }
+                                        </select>
+                                        <span class="text-danger" data-valmsg-for="Details[@i].ProductId" data-valmsg-replace="true"></span>
+                                    </td>
+                                    <td class="d-none d-sm-table-cell">
+                                        <select name="Details[@i].SectionId" class="form-select line-input">
+                                            <option value="">-- اختر المخزن --</option>
+                                            @foreach (var s in Model.Sections)
+                                            {
+                                                if (s.Value == Model.Details[i].SectionId.ToString())
+                                                {
+                                                    <option value="@s.Value" selected>@s.Text</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@s.Value">@s.Text</option>
+                                                }
+                                            }
+                                        </select>
+                                        <span class="text-danger" data-valmsg-for="Details[@i].SectionId" data-valmsg-replace="true"></span>
+                                    </td>
+                                    <td>
+                                        <input type="number" name="Details[@i].Cartons" class="form-control line-input" value="@Model.Details[i].Cartons" min="0" />
+                                    </td>
+                                    <td>
+                                        <input type="number" name="Details[@i].Pallets" class="form-control line-input" value="@Model.Details[i].Pallets" min="0" />
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-danger remove-line">حذف</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-2 d-flex gap-2">
+                    <button type="button" id="addLine" class="btn btn-sm btn-outline-secondary">إضافة سطر (أو Enter)</button>
+                    <div class="text-muted small">اضغط Enter في آخر خانة لحفظ السطر في قاعدة البيانات والانتقال للسطر التالي</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <strong>Totals:</strong> Cartons: <span id="totalCartons">@Model.TotalCartons</span> &nbsp; Pallets: <span id="totalPallets">@Model.TotalPallets</span>
+            </div>
+            <div class="d-none d-sm-block">
+                <button type="submit" class="btn btn-primary">حفظ المشتريات</button>
+            </div>
+        </div>
+
+        <div class="d-block d-sm-none mt-3">
+            <button type="submit" class="btn btn-primary w-100">حفظ المشتريات</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            (function() {
+                const products = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Products.Select(p => new { value = p.Value, text = p.Text })));
+                const sections = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Sections.Select(s => new { value = s.Value, text = s.Text })));
+
+                const MAX_ROWS = 6;
+                const initialProducts = products.map(p => ({ value: p.value, text: p.text }));
+                const initialSections = sections.map(s => ({ value: s.value, text: s.text }));
+
+                const clientSelect = document.querySelector('[name="ClientId"]');
+                const tbody = document.querySelector('#linesTable tbody');
+
+                let currentInboundId = null;
+
+                function recalcTotals() {
+                    let cartons = 0, pallets = 0;
+                    document.querySelectorAll('#linesTable tbody tr').forEach(row => {
+                        const cEl = row.querySelector('input[name$=".Cartons"]');
+                        const pEl = row.querySelector('input[name$=".Pallets"]');
+                        const c = cEl ? parseInt(cEl.value || '0') : 0;
+                        const p = pEl ? parseInt(pEl.value || '0') : 0;
+                        cartons += isNaN(c) ? 0 : c;
+                        pallets += isNaN(p) ? 0 : p;
+                    });
+                    document.getElementById('totalCartons').innerText = cartons;
+                    document.getElementById('totalPallets').innerText = pallets;
+                }
+
+                function addLine() {
+                    if (tbody.children.length >= MAX_ROWS) return;
+                    const index = tbody.children.length;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `\\
+                        <td>\\
+                            <select name="Details[${index}].ProductId" class="form-select line-input">\\
+                                <option value="">-- اختر المنتج --</option>\\
+                                ${products.map(p => `<option value="${p.value}">${p.text}</option>`).join('')}\\
+                            </select>\\
+                        </td>\\
+                        <td class="d-none d-sm-table-cell">\\
+                            <select name="Details[${index}].SectionId" class="form-select line-input">\\
+                                <option value="">-- اختر المخزن --</option>\\
+                                ${sections.map(s => `<option value="${s.value}">${s.text}</option>`).join('')}\\
+                            </select>\\
+                        </td>\\
+                        <td><input type="number" name="Details[${index}].Cartons" class="form-control line-input" value="0" min="0" /></td>\\
+                        <td><input type="number" name="Details[${index}].Pallets" class="form-control line-input" value="0" min="0" /></td>\\
+                        <td class="text-center"><button type="button" class="btn btn-sm btn-danger remove-line">حذف</button></td>\\
+                    `;
+                    tbody.appendChild(tr);
+                    attachRowEvents(tr);
+                    recalcTotals();
+                    const first = tr.querySelector('.line-input');
+                    if (first) first.focus();
+                }
+
+                async function saveLineToServer(clientId, productId, sectionId, cartons, pallets) {
+                    const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+                    const token = tokenInput ? tokenInput.value : null;
+                    const body = { clientId, productId, sectionId, cartons, pallets };
+                    if (currentInboundId) body.inboundId = currentInboundId;
+                    try {
+                        const resp = await fetch('/Inbound/AddLineAjax', {
+                            method: 'POST',
+                            credentials: 'same-origin',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'RequestVerificationToken': token,
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: JSON.stringify(body)
+                        });
+
+                        let data = null;
+                        const txt = await resp.text();
+                        try { data = txt ? JSON.parse(txt) : null; } catch(e) { data = null; }
+
+                        console.log('AddLineAjax response', resp.status, data || txt);
+
+                        if (!resp.ok) {
+                            const err = data && data.error ? data.error : `Server returned ${resp.status}`;
+                            return { success: false, error: err };
+                        }
+
+                        if (!data || !data.success) {
+                            const err = data && data.error ? data.error : 'Unknown server error';
+                            return { success: false, error: err };
+                        }
+
+                        return { success: true, id: data.id };
+                    } catch (e) {
+                        console.error('Network error when calling AddLineAjax', e);
+                        return { success: false, error: e.message || 'Network error' };
+                    }
+                }
+
+                function attachRowEvents(tr) {
+                    const inputs = Array.from(tr.querySelectorAll('.line-input'));
+                    inputs.forEach((inp, idx) => {
+                        inp.addEventListener('input', recalcTotals);
+                        inp.addEventListener('keydown', async function (ev) {
+                            if (ev.key === 'Enter') {
+                                ev.preventDefault();
+                                // if not last input in row -> focus next
+                                if (idx < inputs.length - 1) {
+                                    inputs[idx + 1].focus();
+                                    return;
+                                }
+                                // last input: save this row to server
+                                const clientId = parseInt(document.querySelector('[name="ClientId"]').value || '0');
+                                const productId = parseInt(tr.querySelector('select[name$=".ProductId"]').value || '0');
+                                const sectionId = parseInt(tr.querySelector('select[name$=".SectionId"]').value || '0');
+                                const cartons = parseInt(tr.querySelector('input[name$=".Cartons"]').value || '0');
+                                const pallets = parseInt(tr.querySelector('input[name$=".Pallets"]').value || '0');
+
+                                if (!clientId || !productId || !sectionId) {
+                                    alert('الرجاء تحديد العميل والمنتج والمخزن قبل الحفظ.');
+                                    return;
+                                }
+
+                                // disable row inputs to prevent double submit
+                                const rowInputs = Array.from(tr.querySelectorAll('select, input'));
+                                rowInputs.forEach(el => el.disabled = true);
+
+                                const res = await saveLineToServer(clientId, productId, sectionId, cartons, pallets);
+                                if (!res.success) {
+                                    alert('فشل الحفظ: ' + (res.error || ''));
+                                    rowInputs.forEach(el => el.disabled = false);
+                                    return;
+                                }
+
+                                // on success set currentInboundId
+                                if (res.id) currentInboundId = res.id;
+
+                                // show success highlight
+                                tr.classList.add('table-success');
+                                setTimeout(()=> tr.classList.remove('table-success'), 800);
+
+                                // clear inputs in this row for next entry
+                                tr.querySelectorAll('select, input').forEach(el => {
+                                    if (el.tagName.toLowerCase() === 'select') el.selectedIndex = 0; else el.value = 0;
+                                    el.disabled = false;
+                                });
+
+                                // focus next row's first input or add a row if below exists and under max
+                                const nextRow = tr.nextElementSibling;
+                                if (nextRow) {
+                                    const firstNext = nextRow.querySelector('.line-input');
+                                    if (firstNext) firstNext.focus();
+                                } else {
+                                    // if we can add another row, do so and focus
+                                    if (tbody.children.length < MAX_ROWS) {
+                                        addLine();
+                                    } else {
+                                        // if reached max, loop back to first row
+                                        const firstRow = tbody.querySelector('tr');
+                                        if (firstRow) firstRow.querySelector('.line-input')?.focus();
+                                    }
+                                }
+
+                                recalcTotals();
+                            }
+                        });
+                    });
+
+                    // hide remove button (maintain fixed rows)
+                    const btn = tr.querySelector('.remove-line');
+                    if (btn) btn.style.display = 'none';
+                }
+
+                // ensure exactly MAX_ROWS rows exist on load
+                while (tbody.children.length < MAX_ROWS) addLine();
+
+                document.getElementById('addLine').addEventListener('click', addLine);
+
+                document.querySelectorAll('#linesTable tbody tr').forEach(tr => attachRowEvents(tr));
+                recalcTotals();
+            })();
+        });
+    </script>
+}

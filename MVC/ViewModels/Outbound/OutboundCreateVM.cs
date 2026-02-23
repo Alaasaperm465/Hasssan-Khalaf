@@ -9,6 +9,14 @@ namespace MVC.ViewModels.Outbound
         [Required]
         public int ClientId { get; set; }
         public IEnumerable<SelectListItem> Clients { get; set; } = new List<SelectListItem>();
+
+        // Delegate support (similar to Inbound)
+        public int? DelegateId { get; set; }
+        public IEnumerable<SelectListItem> Delegates { get; set; } = new List<SelectListItem>();
+
+        // Top-level section selection (applies to lines filtering)
+        public int? SectionId { get; set; }
+
         public IEnumerable<SelectListItem> Products { get; set; } = new List<SelectListItem>();
         public IEnumerable<SelectListItem> Sections { get; set; } = new List<SelectListItem>();
         public List<OutboundDetailVM> Details { get; set; } = new List<OutboundDetailVM>();

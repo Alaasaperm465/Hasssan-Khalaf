@@ -1,0 +1,37 @@
+﻿using InfraStructure.Context;
+using Hassann_Khala.Domain;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace MVC.Controllers
+{
+    public class DelegatesController : Controller
+    {
+        private readonly DBContext _db;
+        public DelegatesController(DBContext db) => _db = db;
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            ViewBag.Clients = _db.Clients.OrderBy(c => c.Name).Select(c => new SelectListItem(c.Name, c.Id.ToString())).ToList();
+            return View(new Domain.Delegate());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Domain.Delegate model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Clients = _db.Clients.OrderBy(c => c.Name).Select(c => new SelectListItem(c.Name, c.Id.ToString())).ToList();
+                return View(model);
+            }
+
+            model.CreatedAt = DateTime.UtcNow;
+            _db.Delegates.Add(model);
+            _db.SaveChanges();
+            TempData["Success"] = "تم إضافة المفوض بنجاح";
+            return RedirectToAction("Index", "Clients");
+        }
+    }
+}

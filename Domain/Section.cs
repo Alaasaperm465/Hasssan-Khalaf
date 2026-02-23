@@ -1,6 +1,7 @@
+using global::Domain;
+
 namespace Hassann_Khala.Domain
 {
-    using global::Domain;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 

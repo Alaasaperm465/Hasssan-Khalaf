@@ -9,7 +9,13 @@ namespace MVC.ViewModels.Inbound
         [Display(Name = "Client")]
         public int ClientId { get; set; }
 
+        public int? DelegateId { get; set; }
+
+        // Top-level section selection applied to lines
+        public int? SectionId { get; set; }
+
         public IEnumerable<SelectListItem> Clients { get; set; } = new List<SelectListItem>();
+        public IEnumerable<SelectListItem> Delegates { get; set; } = new List<SelectListItem>();
         public IEnumerable<SelectListItem> Products { get; set; } = new List<SelectListItem>();
         public IEnumerable<SelectListItem> Sections { get; set; } = new List<SelectListItem>();
 

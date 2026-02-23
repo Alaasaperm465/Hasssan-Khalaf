@@ -29,16 +29,26 @@ namespace MVC.Controllers
         public IActionResult Create(Client client)
         {
             if (!ModelState.IsValid) return View(client);
+
+            // read AllowedProductTypes from form (multiple checkbox values)
+            var vals = Request.Form["AllowedProductTypes"].ToArray();
+            int mask = 0;
+            foreach (var v in vals)
+            {
+                if (int.TryParse(v, out var iv)) mask |= iv;
+            }
+            client.AllowedProductTypes = mask;
+
             try
             {
                 _db.Clients.Add(client);
                 _db.SaveChanges();
-                TempData["Success"] = "?? ????? ??????.";
+                TempData["Success"] = "?? ????? ?????? ?????.";
                 return RedirectToAction("Index");
             }
             catch (System.Exception ex)
             {
-                ModelState.AddModelError(string.Empty, "??? ??? ????? ????? ??????.");
+                ModelState.AddModelError(string.Empty, "??? ????? ??????.");
                 return View(client);
             }
         }
@@ -65,16 +75,25 @@ namespace MVC.Controllers
             existing.Address = client.Address?.Trim() ?? existing.Address;
             existing.PhoneNumber = client.PhoneNumber;
 
+            // bind AllowedProductTypes checkboxes
+            var vals = Request.Form["AllowedProductTypes"].ToArray();
+            int mask = 0;
+            foreach (var v in vals)
+            {
+                if (int.TryParse(v, out var iv)) mask |= iv;
+            }
+            existing.AllowedProductTypes = mask;
+
             try
             {
                 _db.Clients.Update(existing);
                 _db.SaveChanges();
-                TempData["Success"] = "?? ????? ?????? ??????.";
+                TempData["Success"] = "?? ????? ??????.";
                 return RedirectToAction("Index");
             }
             catch (System.Exception)
             {
-                ModelState.AddModelError(string.Empty, "??? ??? ????? ??? ??????? ??????.");
+                ModelState.AddModelError(string.Empty, "??? ????? ??????.");
                 return View(client);
             }
         }
@@ -94,8 +113,7 @@ namespace MVC.Controllers
             }
             catch (System.Exception)
             {
-                // handle referential integrity errors if related records exist
-                TempData["Error"] = "?? ???? ??? ?????? ???? ????? ?????? ????.";
+                TempData["Error"] = "??? ??? ??????.";
             }
 
             return RedirectToAction("Index");
@@ -106,7 +124,7 @@ namespace MVC.Controllers
         {
             if (!id.HasValue)
             {
-                TempData["Error"] = "????? ?????? ??? ????.";
+                TempData["Error"] = "?? ??? ????? ??????.";
                 return RedirectToAction("Index");
             }
 
@@ -209,13 +227,30 @@ namespace MVC.Controllers
                 PhoneNumber = client.PhoneNumber,
                 RecentInbounds = recentInbounds,
                 RecentOutbounds = recentOutbounds,
-                Products = productAgg,
-                Sections = sectionAgg,
-                TotalCartons = totalCartons,
-                TotalPallets = totalPallets
+                Products = new List<ProductAggregate>(),
+                Sections = new List<SectionAggregate>(),
+                TotalCartons = 0,
+                TotalPallets = 0
             };
 
             return View(vm);
+        }
+
+        [HttpGet]
+        public IActionResult GetAllowedProductTypes(int clientId)
+        {
+            var client = _db.Clients.Find(clientId);
+            if (client == null) return Json(new { types = new int[0] });
+
+            var mask = client.AllowedProductTypes;
+            var list = new List<int>();
+            foreach (var val in Enum.GetValues(typeof(Hassann_Khala.Domain.ProductType)).Cast<Hassann_Khala.Domain.ProductType>())
+            {
+                var bit = (int)val;
+                if ((mask & bit) == bit) list.Add(bit);
+            }
+
+            return Json(new { types = list });
         }
 
     }

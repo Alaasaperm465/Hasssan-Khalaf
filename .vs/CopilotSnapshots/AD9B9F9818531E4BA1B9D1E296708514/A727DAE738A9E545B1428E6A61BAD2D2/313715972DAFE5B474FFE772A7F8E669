@@ -1,0 +1,409 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using InfraStructure.Context;
+using Hassann_Khala.Domain;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using MVC.ViewModels.Products;
+using Hassann_Khala.Application.DTOs.Product;
+
+namespace MVC.Controllers
+{
+    public class ProductsController : Controller
+    {
+        private readonly DBContext _db;
+        private readonly IWebHostEnvironment _env;
+        private const int DefaultPageSize = 10;
+
+        public ProductsController(DBContext db, IWebHostEnvironment env) { _db = db; _env = env; }
+
+        public IActionResult Index(string? search, int page = 1, int pageSize = DefaultPageSize)
+        {
+            var query = _db.Products.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(p => p.Name.Contains(search) || (p.Description ?? string.Empty).Contains(search));
+            }
+
+            var total = query.Count();
+            var items = query.OrderBy(p => p.Name)
+                             .Skip((page - 1) * pageSize)
+                             .Take(pageSize)
+                             .ToList();
+
+            var vm = new ProductIndexVM
+            {
+                Products = items,
+                Search = search,
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = total
+            };
+
+            return View(vm);
+        }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View(new Product());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Product product, Microsoft.AspNetCore.Http.IFormFile? imageFile)
+        {
+            if (!ModelState.IsValid) return View(product);
+
+            // handle image upload if provided
+            if (imageFile != null && imageFile.Length > 0)
+            {
+                var uploads = Path.Combine(_env.WebRootPath ?? "wwwroot", "images", "products");
+                if (!Directory.Exists(uploads)) Directory.CreateDirectory(uploads);
+                var fileName = Path.GetRandomFileName() + Path.GetExtension(imageFile.FileName);
+                var filePath = Path.Combine(uploads, fileName);
+                using (var fs = System.IO.File.Create(filePath))
+                {
+                    imageFile.CopyTo(fs);
+                }
+                // store relative url
+                product.ImageUrl = "/images/products/" + fileName;
+            }
+
+            try
+            {
+                _db.Products.Add(product);
+                _db.SaveChanges();
+                TempData["Success"] = "تم اضافة المنتج بنجاح.";
+                return RedirectToAction("Index");
+            }
+            catch (System.Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "حدث خطأ أثناء إضافة المنتج.");
+                return View(product);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var product = _db.Products.Find(id);
+            if (product == null) return NotFound();
+            return View(product);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(Product product, Microsoft.AspNetCore.Http.IFormFile? imageFile)
+        {
+            if (!ModelState.IsValid) return View(product);
+            var existing = _db.Products.Find(product.Id);
+            if (existing == null) return NotFound();
+
+            // handle image upload and delete old file if replaced
+            if (imageFile != null && imageFile.Length > 0)
+            {
+                var uploads = Path.Combine(_env.WebRootPath ?? "wwwroot", "images", "products");
+                if (!Directory.Exists(uploads)) Directory.CreateDirectory(uploads);
+                var fileName = Path.GetRandomFileName() + Path.GetExtension(imageFile.FileName);
+                var filePath = Path.Combine(uploads, fileName);
+                using (var fs = System.IO.File.Create(filePath))
+                {
+                    imageFile.CopyTo(fs);
+                }
+                // delete old local file if exists and is under images/products
+                try
+                {
+                    if (!string.IsNullOrWhiteSpace(existing.ImageUrl) && existing.ImageUrl.StartsWith("/images/products/"))
+                    {
+                        var oldName = existing.ImageUrl.Substring("/images/products/".Length);
+                        var oldPath = Path.Combine(_env.WebRootPath ?? "wwwroot", "images", "products", oldName);
+                        if (System.IO.File.Exists(oldPath)) System.IO.File.Delete(oldPath);
+                    }
+                }
+                catch { }
+
+                existing.ImageUrl = "/images/products/" + fileName;
+            }
+
+            existing.Name = product.Name?.Trim() ?? existing.Name;
+            existing.Description = product.Description;
+            existing.IsActive = product.IsActive;
+            existing.Price = product.Price;
+            existing.Type = product.Type;
+            existing.ImageUrl = existing.ImageUrl ?? product.ImageUrl; // if not replaced, allow manual url edit through product.ImageUrl binding
+
+            try
+            {
+                _db.Products.Update(existing);
+                _db.SaveChanges();
+                TempData["Success"] = "تم تحديث المنتج بنجاح";
+                return RedirectToAction("Index");
+            }
+            catch (System.Exception)
+            {
+                ModelState.AddModelError(string.Empty, "حدث خطا");
+                return View(product);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            var product = _db.Products.Find(id);
+            if (product == null) return NotFound();
+
+            try
+            {
+                // delete image file if local
+                try
+                {
+                    if (!string.IsNullOrWhiteSpace(product.ImageUrl) && product.ImageUrl.StartsWith("/images/products/"))
+                    {
+                        var name = product.ImageUrl.Substring("/images/products/".Length);
+                        var path = Path.Combine(_env.WebRootPath ?? "wwwroot", "images", "products", name);
+                        if (System.IO.File.Exists(path)) System.IO.File.Delete(path);
+                    }
+                }
+                catch { }
+
+                _db.Products.Remove(product);
+                _db.SaveChanges();
+                TempData["Success"] = "تم حذف المنتج.";
+            }
+            catch (System.Exception)
+            {
+                TempData["Error"] = "فشل حذف المنتج.";
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult OverlapForm()
+        {
+            ViewBag.Clients = _db.Clients.OrderBy(c => c.Name).Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(c.Name, c.Id.ToString())).ToList();
+            ViewBag.Products = _db.Products.Where(p => p.IsActive).OrderBy(p => p.Name).Select(p => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(p.Name, p.Id.ToString())).ToList();
+            ViewBag.Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(s.Name, s.Id.ToString())).ToList();
+            return View(new ProductOverlapDto());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProductOverlap(ProductOverlapDto dto)
+        {
+            // repopulate view bags when returning view
+            void PopulateLists()
+            {
+                ViewBag.Clients = _db.Clients.OrderBy(c => c.Name).Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(c.Name, c.Id.ToString())).ToList();
+                ViewBag.Products = _db.Products.Where(p => p.IsActive).OrderBy(p => p.Name).Select(p => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(p.Name, p.Id.ToString())).ToList();
+                ViewBag.Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(s.Name, s.Id.ToString())).ToList();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                PopulateLists();
+                return View("OverlapForm", dto);
+            }
+
+            if (dto.SourceProductId == dto.TargetProductId)
+            {
+                ModelState.AddModelError(string.Empty, "???? ?????? ?????? ??? ?? ????? ???????.");
+                PopulateLists();
+                return View("OverlapForm", dto);
+            }
+
+            if (dto.Cartons <= 0 && dto.Pallets <= 0)
+            {
+                ModelState.AddModelError(string.Empty, "??? ?? ???? ?????? ???? ?? ???.");
+                PopulateLists();
+                return View("OverlapForm", dto);
+            }
+
+            // Resolve client
+            Client? client = null;
+            if (dto.ClientId.HasValue)
+            {
+                client = await _db.Clients.FirstOrDefaultAsync(c => c.Id == dto.ClientId.Value);
+            }
+            if (client == null && !string.IsNullOrWhiteSpace(dto.ClientName))
+            {
+                var name = dto.ClientName.Trim();
+                client = await _db.Clients.FirstOrDefaultAsync(c => c.Name == name);
+            }
+
+            if (client == null)
+            {
+                ModelState.AddModelError(string.Empty, "?????? ??? ?????.");
+                PopulateLists();
+                return View("OverlapForm", dto);
+            }
+
+            var sectionExists = await _db.Sections.AnyAsync(s => s.Id == dto.SectionId);
+            if (!sectionExists)
+            {
+                ModelState.AddModelError(string.Empty, "????? ??? ?????.");
+                PopulateLists();
+                return View("OverlapForm", dto);
+            }
+
+            var sourceProduct = await _db.Products.FirstOrDefaultAsync(p => p.Id == dto.SourceProductId && p.IsActive);
+            var targetProduct = await _db.Products.FirstOrDefaultAsync(p => p.Id == dto.TargetProductId && p.IsActive);
+
+            if (sourceProduct == null || targetProduct == null)
+            {
+                ModelState.AddModelError(string.Empty, "?????? ??? ?????.");
+                PopulateLists();
+                return View("OverlapForm", dto);
+            }
+
+            var inboundCartons = await (
+                from d in _db.InboundDetails
+                join i in _db.Inbounds on d.InboundId equals i.Id
+                where d.SectionId == dto.SectionId
+                      && i.ClientId == client.Id
+                      && d.ProductId == dto.SourceProductId
+                select (int?)d.Cartons
+            ).SumAsync() ?? 0;
+
+            var outboundCartons = await (
+                from d in _db.OutboundDetails
+                join o in _db.Outbounds on d.OutboundId equals o.Id
+                where d.SectionId == dto.SectionId
+                      && o.ClientId == client.Id
+                      && d.ProductId == dto.SourceProductId
+                select (int?)d.Cartons
+            ).SumAsync() ?? 0;
+
+            var inboundPallets = await (
+                from d in _db.InboundDetails
+                join i in _db.Inbounds on d.InboundId equals i.Id
+                where d.SectionId == dto.SectionId
+                      && i.ClientId == client.Id
+                      && d.ProductId == dto.SourceProductId
+                select (int?)d.Pallets
+            ).SumAsync() ?? 0;
+
+            var outboundPallets = await (
+                from d in _db.OutboundDetails
+                join o in _db.Outbounds on d.OutboundId equals o.Id
+                where d.SectionId == dto.SectionId
+                      && o.ClientId == client.Id
+                      && d.ProductId == dto.SourceProductId
+                select (int?)d.Pallets
+            ).SumAsync() ?? 0;
+
+            var availableCartons = inboundCartons - outboundCartons;
+            var availablePallets = inboundPallets - outboundPallets;
+
+            if (availableCartons < dto.Cartons || availablePallets < dto.Pallets)
+            {
+                ModelState.AddModelError(string.Empty, "??????? ??? ????.");
+                PopulateLists();
+                return View("OverlapForm", dto);
+            }
+
+            await using var tx = await _db.Database.BeginTransactionAsync();
+
+            try
+            {
+                var outbound = new Outbound
+                {
+                    ClientId = client.Id,
+                    CreatedAt = DateTime.UtcNow,
+                    Details = new List<OutboundDetail>
+                    {
+                        new OutboundDetail { ProductId = dto.SourceProductId, SectionId = dto.SectionId, Cartons = dto.Cartons, Pallets = dto.Pallets }
+                    }
+                };
+
+                var inbound = new Inbound
+                {
+                    ClientId = client.Id,
+                    CreatedAt = DateTime.UtcNow,
+                    Details = new List<InboundDetail>
+                    {
+                        new InboundDetail { ProductId = dto.TargetProductId, SectionId = dto.SectionId, Cartons = dto.Cartons, Pallets = dto.Pallets }
+                    }
+                };
+
+                _db.Outbounds.Add(outbound);
+                _db.Inbounds.Add(inbound);
+
+                await _db.SaveChangesAsync();
+                await tx.CommitAsync();
+
+                TempData["Success"] = "?? ????? ??????? ?????";
+                return RedirectToAction("Details", "Clients", new { id = client.Id });
+            }
+            catch
+            {
+                await tx.RollbackAsync();
+                ModelState.AddModelError(string.Empty, "??? ???????.");
+                PopulateLists();
+                return View("OverlapForm", dto);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult TransferForm()
+        {
+            ViewBag.Clients = _db.Clients.OrderBy(c => c.Name).Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(c.Name, c.Id.ToString())).ToList();
+            ViewBag.Products = _db.Products.Where(p => p.IsActive).OrderBy(p => p.Name).Select(p => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(p.Name, p.Id.ToString())).ToList();
+            ViewBag.Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(s.Name, s.Id.ToString())).ToList();
+            return View(new ProductTransferDto());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProductTransfer(ProductTransferDto dto)
+        {
+            void PopulateLists()
+            {
+                ViewBag.Clients = _db.Clients.OrderBy(c => c.Name).Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(c.Name, c.Id.ToString())).ToList();
+                ViewBag.Products = _db.Products.Where(p => p.IsActive).OrderBy(p => p.Name).Select(p => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(p.Name, p.Id.ToString())).ToList();
+                ViewBag.Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(s.Name, s.Id.ToString())).ToList();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                PopulateLists();
+                return View("TransferForm", dto);
+            }
+
+            var client = await _db.Clients.FindAsync(dto.ClientId);
+            if (client == null)
+            {
+                ModelState.AddModelError(string.Empty, "?????? ??? ?????.");
+                PopulateLists();
+                return View("TransferForm", dto);
+            }
+
+            var product = await _db.Products.FirstOrDefaultAsync(p => p.Id == dto.ProductId && p.IsActive);
+            if (product == null)
+            {
+                ModelState.AddModelError(string.Empty, "?????? ??? ?????.");
+                PopulateLists();
+                return View("TransferForm", dto);
+            }
+
+            var inboundCartons = await (
+                from d in _db.InboundDetails
+                join i in _db.Inbounds on d.InboundId equals i.Id
+                where d.SectionId == dto.FromSectionId && i.ClientId == dto.ClientId && d.ProductId == dto.ProductId
+                select (int?)d.Cartons
+            ).SumAsync() ?? 0;
+
+            var outboundCartons = await (
+                from d in _db.OutboundDetails
+                join o in _db.Outbounds on d.OutboundId equals o.Id
+                where d.SectionId == dto.FromSectionId && o.ClientId == dto.ClientId && d.ProductId == dto.ProductId
+                select (int?)d.Cartons
+            ).SumAsync() ?? 0;
+
+            var availableCartons = inboundCartons - outboundCartons;
+
+            if (availableCartons < dto.Cartons)
+            {
+                ModelState.AddModelError(string.Empty, "??????? ?? ????? ?????? ??? ????.");

@@ -1,0 +1,426 @@
+﻿@model MVC.ViewModels.Inbound.InboundCreateVM
+@{
+    ViewData["Title"] = "Create Inbound";
+}
+
+<style>
+    /* show remove buttons for each row */
+    #linesTable .remove-line { display: inline-block; }
+</style>
+
+<div class="container-fluid mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 mb-0">المشتريات</h2>
+        <div>
+            <a class="btn btn-secondary" asp-action="Index">عودة</a>
+        </div>
+    </div>
+
+    <form asp-action="Create" method="post" id="inboundForm">
+        @Html.AntiForgeryToken()
+
+        <div class="row g-3 mb-3">
+            <div class="col-12 col-md-6">
+                <label asp-for="ClientId" class="form-label">العميل</label>
+                <select asp-for="ClientId" id="clientSelect" class="form-select" asp-items="Model.Clients">
+                    <option value="">-- اختر العميل --</option>
+                </select>
+                <span asp-validation-for="ClientId" class="text-danger"></span>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <label asp-for="DelegateId" class="form-label">المفوض</label>
+                <select asp-for="DelegateId" id="delegateSelect" class="form-select" asp-items="Model.Delegates">
+                    <option value="">-- اختر المفوض --</option>
+                </select>
+                <span asp-validation-for="DelegateId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <h5 class="mt-3 mb-2">Lines</h5>
+
+        <div class="card mb-3">
+            <div class="card-body p-2 p-sm-3">
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered mb-0" id="linesTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="w-35">المنتج</th>
+                                <th class="w-25 d-none d-sm-table-cell">المخزن</th>
+                                <th class="w-10">الكرتون</th>
+                                <th class="w-10">بالتات</th>
+                                <th class="w-10">العمليات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.Details.Count; i++)
+                            {
+                                <tr>
+                                    <td>
+                                        <select name="Details[@i].ProductId" class="form-select line-input">
+                                            <option value="">-- اختر المنتج --</option>
+                                        </select>
+                                        <span class="text-danger" data-valmsg-for="Details[@i].ProductId" data-valmsg-replace="true"></span>
+                                    </td>
+                                    <td class="d-none d-sm-table-cell">
+                                        <select name="Details[@i].SectionId" class="form-select line-input">
+                                            <option value="">-- اختر المخزن --</option>
+                                            @foreach (var s in Model.Sections)
+                                            {
+                                                <option value="@s.Value">@s.Text</option>
+                                            }
+                                        </select>
+                                        <span class="text-danger" data-valmsg-for="Details[@i].SectionId" data-valmsg-replace="true"></span>
+                                    </td>
+                                    <td>
+                                        <input type="number" name="Details[@i].Cartons" class="form-control line-input" value="@Model.Details[i].Cartons" min="0" />
+                                    </td>
+                                    <td>
+                                        <input type="number" name="Details[@i].Pallets" class="form-control line-input" value="@Model.Details[i].Pallets" min="0" />
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-danger remove-line">حذف</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-2 d-flex gap-2">
+                    <button type="button" id="addLine" class="btn btn-sm btn-outline-secondary">إضافة سطر (أو Enter)</button>
+                    <div class="text-muted small">اضغط Enter في آخر خانة لحفظ السطر في قاعدة البيانات والالحتفاظ به، وزر الحذف سيحذف السطر من قاعدة البيانات ويعيد الرصيد.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <strong>Totals:</strong> Cartons: <span id="totalCartons">@Model.TotalCartons</span> &nbsp; Pallets: <span id="totalPallets">@Model.TotalPallets</span>
+            </div>
+            <div class="d-none d-sm-block">
+                <button type="submit" class="btn btn-primary">حفظ المشتريات</button>
+            </div>
+        </div>
+
+        <div class="d-block d-sm-none mt-3">
+            <button type="submit" class="btn btn-primary w-100">حفظ المشتريات</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            (function() {
+                // products now will include {value,text,type}
+                let products = [];
+                const sections = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Sections.Select(s => new { value = s.Value, text = s.Text })));
+
+                const MAX_ROWS = 6;
+                const initialSections = sections.map(s => ({ value: s.value, text: s.text }));
+
+                const clientSelect = document.querySelector('[name="ClientId"]');
+                const delegateSelect = document.getElementById('delegateSelect');
+                const tbody = document.querySelector('#linesTable tbody');
+
+                let currentInboundId = null;
+                let allowedTypes = null; // array of allowed product type ints for selected client
+
+                async function loadAllProducts() {
+                    try {
+                        const resp = await fetch('/Products/GetProductsWithTypes');
+                        const data = await resp.json();
+                        products = data || [];
+                    } catch (e) {
+                        console.error('Failed to load products with types', e);
+                        products = [];
+                    }
+                }
+
+                function recalcTotals() {
+                    let cartons = 0, pallets = 0;
+                    document.querySelectorAll('#linesTable tbody tr').forEach(row => {
+                        const cEl = row.querySelector('input[name$=".Cartons"]');
+                        const pEl = row.querySelector('input[name$=".Pallets"]');
+                        const c = cEl ? parseInt(cEl.value || '0') : 0;
+                        const p = pEl ? parseInt(pEl.value || '0') : 0;
+                        cartons += isNaN(c) ? 0 : c;
+                        pallets += isNaN(p) ? 0 : p;
+                    });
+                    document.getElementById('totalCartons').innerText = cartons;
+                    document.getElementById('totalPallets').innerText = pallets;
+                }
+
+                function productOptionsForClient() {
+                    // filter products based on allowedTypes; if allowedTypes is null -> show all
+                    const list = (allowedTypes && allowedTypes.length > 0) ? products.filter(p => allowedTypes.includes(parseInt(p.type))) : products;
+                    return '<option value="">-- اختر المنتج --</option>' + list.map(p => `<option value="${p.value}">${p.text}</option>`).join('');
+                }
+
+                function setDelegateOptions(list) {
+                    // list is array of {value,text}
+                    const html = '<option value="">-- اختر المفوض --</option>' + (list || []).map(d => `<option value="${d.value}">${d.text}</option>`).join('');
+                    if (delegateSelect) delegateSelect.innerHTML = html;
+                }
+
+                function addLine() {
+                    if (tbody.children.length >= MAX_ROWS) return;
+                    const index = tbody.children.length;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `\\
+                        <td>\\
+                            <select name="Details[${index}].ProductId" class="form-select line-input">\\
+                                ${productOptionsForClient()}\\
+                            </select>\\
+                        </td>\\
+                        <td class="d-none d-sm-table-cell">\\
+                            <select name="Details[${index}].SectionId" class="form-select line-input">\\
+                                <option value="">-- اختر المخزن --</option>\\
+                                ${sections.map(s => `<option value="${s.value}">${s.text}</option>`).join('')}\\
+                            </select>\\
+                        </td>\\
+                        <td><input type="number" name="Details[${index}].Cartons" class="form-control line-input" value="0" min="0" /></td>\\
+                        <td><input type="number" name="Details[${index}].Pallets" class="form-control line-input" value="0" min="0" /></td>\\
+                        <td class="text-center"><button type="button" class="btn btn-sm btn-danger remove-line">حذف</button></td>\\
+                    `;
+                    tbody.appendChild(tr);
+                    attachRowEvents(tr);
+                    recalcTotals();
+                    const first = tr.querySelector('.line-input');
+                    if (first) first.focus();
+                }
+
+                async function saveLineToServer(clientId, productId, sectionId, cartons, pallets) {
+                    const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+                    const token = tokenInput ? tokenInput.value : null;
+                    const body = { clientId, productId, sectionId, cartons, pallets };
+                    if (currentInboundId) body.inboundId = currentInboundId;
+                    try {
+                        const resp = await fetch('/Inbound/AddLineAjax', {
+                            method: 'POST',
+                            credentials: 'same-origin',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'RequestVerificationToken': token,
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: JSON.stringify(body)
+                        });
+
+                        let data = null;
+                        const txt = await resp.text();
+                        try { data = txt ? JSON.parse(txt) : null; } catch(e) { data = null; }
+
+                        console.log('AddLineAjax response', resp.status, data || txt);
+
+                        if (!resp.ok) {
+                            const err = data && data.error ? data.error : `Server returned ${resp.status}`;
+                            return { success: false, error: err };
+                        }
+
+                        if (!data || !data.success) {
+                            const err = data && data.error ? data.error : 'Unknown server error';
+                            return { success: false, error: err };
+                        }
+
+                        return { success: true, id: data.id, detailId: data.detailId };
+                    } catch (e) {
+                        console.error('Network error when calling AddLineAjax', e);
+                        return { success: false, error: e.message || 'Network error' };
+                    }
+                }
+
+                function attachRowEvents(tr) {
+                    const inputs = Array.from(tr.querySelectorAll('.line-input'));
+                    inputs.forEach((inp, idx) => {
+                        inp.addEventListener('input', recalcTotals);
+                        inp.addEventListener('keydown', async function (ev) {
+                            if (ev.key === 'Enter') {
+                                ev.preventDefault();
+                                // if not last input in row -> focus next
+                                if (idx < inputs.length - 1) {
+                                    inputs[idx + 1].focus();
+                                    return;
+                                }
+                                // last input: save this row to server
+                                const clientId = parseInt(document.querySelector('[name="ClientId"]').value || '0');
+                                const productId = parseInt(tr.querySelector('select[name$=".ProductId"]').value || '0');
+                                const sectionId = parseInt(tr.querySelector('select[name$=".SectionId"]').value || '0');
+                                const cartons = parseInt(tr.querySelector('input[name$=".Cartons"]').value || '0');
+                                const pallets = parseInt(tr.querySelector('input[name$=".Pallets"]').value || '0');
+
+                                if (!clientId || !productId || !sectionId) {
+                                    alert('الرجاء تحديد العميل والمنتج والمخزن قبل الحفظ.');
+                                    return;
+                                }
+
+                                // disable row inputs to prevent double submit
+                                const rowInputs = Array.from(tr.querySelectorAll('select, input'));
+                                rowInputs.forEach(el => el.disabled = true);
+
+                                const res = await saveLineToServer(clientId, productId, sectionId, cartons, pallets);
+                                if (!res.success) {
+                                    alert('فشل الحفظ: ' + (res.error || ''));
+                                    rowInputs.forEach(el => el.disabled = false);
+                                    return;
+                                }
+
+                                // on success set currentInboundId
+                                if (res.id) currentInboundId = res.id;
+                                // store returned detailId on the row element for deletion later
+                                if (res.detailId) tr.setAttribute('data-detail-id', res.detailId);
+
+                                // show success highlight
+                                tr.classList.add('table-success');
+                                setTimeout(()=> tr.classList.remove('table-success'), 800);
+
+                                // keep inputs values visible and mark row as saved (disable editing)
+                                tr.setAttribute('data-saved', 'true');
+                                rowInputs.forEach(el => {
+                                    // keep current value, disable to prevent edits
+                                    el.disabled = true;
+                                });
+
+                                // focus next row's first input or add a row if below exists and under max
+                                const nextRow = tr.nextElementSibling;
+                                if (nextRow) {
+                                    const firstNext = nextRow.querySelector('.line-input');
+                                    if (firstNext) firstNext.focus();
+                                } else {
+                                    // if we can add another row, do so and focus
+                                    if (tbody.children.length < MAX_ROWS) {
+                                        addLine();
+                                    } else {
+                                        // if reached max, loop back to first unsaved row or first row
+                                        const unsaved = Array.from(tbody.querySelectorAll('tr')).find(r => !r.getAttribute('data-saved'));
+                                        if (unsaved) unsaved.querySelector('.line-input')?.focus();
+                                        else tbody.querySelector('tr')?.querySelector('.line-input')?.focus();
+                                    }
+                                }
+
+                                recalcTotals();
+                            }
+                        });
+                    });
+
+                    // enable delete button to remove saved/unsaved row
+                    const btn = tr.querySelector('.remove-line');
+                    if (btn) btn.addEventListener('click', async function() {
+                        const detailId = parseInt(tr.getAttribute('data-detail-id') || '0');
+                        if (detailId > 0) {
+                            if (!confirm('هل تريد حذف هذا السطر واسترجاع الكميات من المخزون؟')) return;
+                            const del = await deleteLineFromServer(detailId);
+                            if (!del.success) { alert('فشل الحذف: ' + (del.error || '')); return; }
+                            tr.remove();
+                        } else {
+                            // unsaved row -> just remove from UI
+                            tr.remove();
+                        }
+
+                        // reindex names
+                        document.querySelectorAll('#linesTable tbody tr').forEach((r,i) => {
+                            r.querySelectorAll('select, input').forEach(el => {
+                                const name = el.getAttribute('name');
+                                if (!name) return;
+                                el.setAttribute('name', name.replace(/Details\[\d+\]/, `Details[${i}]`));
+                            });
+                        });
+                        recalcTotals();
+                    });
+                }
+
+                async function deleteLineFromServer(detailId) {
+                    const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+                    const token = tokenInput ? tokenInput.value : null;
+                    try {
+                        const resp = await fetch('/Inbound/DeleteLineAjax', {
+                            method: 'POST',
+                            credentials: 'same-origin',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'RequestVerificationToken': token,
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: JSON.stringify({ detailId })
+                        });
+                        const data = await resp.json().catch(()=>null);
+                        if (!resp.ok || !data || !data.success) {
+                            return { success: false, error: data && data.error ? data.error : `Server ${resp.status}` };
+                        }
+                        return { success: true };
+                    } catch (e) {
+                        return { success: false, error: e.message || 'Network error' };
+                    }
+                }
+
+                // prevent Enter submitting form when focus is inside a .line-input
+                document.addEventListener('keydown', function(ev) {
+                    if (ev.key === 'Enter' && document.activeElement && document.activeElement.classList.contains('line-input')) {
+                        ev.preventDefault();
+                    }
+                }, true);
+
+                // when client changes, fetch allowed types, delegates and refresh product selects
+                async function onClientChange() {
+                    const clientId = parseInt(clientSelect.value || '0');
+                    if (!clientId) {
+                        allowedTypes = null;
+                        setDelegateOptions([]);
+                    } else {
+                        // fetch allowed product types
+                        try {
+                            const resp = await fetch(`/Clients/GetAllowedProductTypes?clientId=${clientId}`);
+                            const data = await resp.json();
+                            allowedTypes = (data && data.types) ? data.types.map(t => parseInt(t)) : null;
+                        } catch (e) {
+                            console.error('Failed to load allowed types', e);
+                            allowedTypes = null;
+                        }
+
+                        // fetch delegates for client
+                        try {
+                            const r2 = await fetch(`/Inbound/GetDelegatesForClient?clientId=${clientId}`);
+                            if (r2.ok) {
+                                const ddata = await r2.json();
+                                setDelegateOptions(ddata);
+                            } else {
+                                setDelegateOptions([]);
+                            }
+                        } catch (e) {
+                            console.error('Failed to load delegates', e);
+                            setDelegateOptions([]);
+                        }
+                    }
+
+                    // refresh all product selects
+                    document.querySelectorAll('select[name$=".ProductId"]').forEach(sel => {
+                        const cur = sel.value;
+                        sel.innerHTML = productOptionsForClient();
+                        if (cur && Array.from(sel.options).some(o => o.value === cur)) sel.value = cur; else sel.value = '';
+                    });
+                }
+
+                clientSelect.addEventListener('change', onClientChange);
+
+                // initial load: fetch products and ensure rows exist
+                (async function init() {
+                    await loadAllProducts();
+                    while (tbody.children.length < MAX_ROWS) addLine();
+
+                    // if client already selected (e.g. when returning with validation errors), trigger fetching delegates/types
+                    if (clientSelect && clientSelect.value) {
+                        onClientChange();
+                    }
+                })();
+
+                document.getElementById('addLine').addEventListener('click', addLine);
+
+                document.querySelectorAll('#linesTable tbody tr').forEach(tr => attachRowEvents(tr));
+                recalcTotals();
+            })();
+        });
+    </script>
+}

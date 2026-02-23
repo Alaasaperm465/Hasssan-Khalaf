@@ -1,0 +1,143 @@
+@model MVC.ViewModels.Issuance.IssuanceCreateVM
+@{
+    ViewData["Title"] = "Create Issuance";
+}
+
+<div class="container mt-3">
+    <h3>??? ??? (Issuance Form)</h3>
+    <form asp-action="Create" method="post" id="issuanceForm">
+        @Html.AntiForgeryToken()
+
+        <div class="mb-3">
+            <label class="form-label">Serial Number / ??? ?????</label>
+            <input asp-for="SerialNumber" class="form-control" />
+            <span asp-validation-for="SerialNumber" class="text-danger"></span>
+        </div>
+
+        <input type="hidden" asp-for="ClientId" />
+
+        <table class="table table-bordered" id="issuanceTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Field / ????</th>
+                    <th>Product (optional)</th>
+                    <th>Section (optional)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Items.Count == 0)
+                {
+                    <tr>
+                        <td>1</td>
+                        <td><input name="Items[0].FieldValue" class="form-control issuance-input" /></td>
+                        <td><input name="Items[0].ProductId" class="form-control" /></td>
+                        <td><input name="Items[0].SectionId" class="form-control" /></td>
+                        <td><button type="button" class="btn btn-sm btn-danger remove-row">???</button></td>
+                    </tr>
+                }
+                else
+                {
+                    for (int i = 0; i < Model.Items.Count; i++)
+                    {
+                        <tr>
+                            <td>@(i+1)</td>
+                            <td><input name="Items[@i].FieldValue" value="@Model.Items[i].FieldValue" class="form-control issuance-input" /></td>
+                            <td><input name="Items[@i].ProductId" value="@Model.Items[i].ProductId" class="form-control" /></td>
+                            <td><input name="Items[@i].SectionId" value="@Model.Items[i].SectionId" class="form-control" /></td>
+                            <td><button type="button" class="btn btn-sm btn-danger remove-row">???</button></td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+        <div class="mb-3">
+            <button type="button" id="addRow" class="btn btn-outline-secondary">Add Row / ????? ????</button>
+            <button type="submit" class="btn btn-primary">Save Issuance / ???</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        (function(){
+            const table = document.getElementById('issuanceTable').querySelector('tbody');
+            const addRowBtn = document.getElementById('addRow');
+
+            function reindex(){
+                Array.from(table.children).forEach((tr, idx) => {
+                    tr.querySelector('td:first-child').innerText = idx+1;
+                    tr.querySelectorAll('input, select').forEach(el => {
+                        const name = el.getAttribute('name');
+                        if(!name) return;
+                        // replace index
+                        el.setAttribute('name', name.replace(/Items\[\d+\]/, `Items[${idx}]`));
+                    });
+                });
+            }
+
+            function addRow(value=''){
+                const idx = table.children.length;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `\
+                    <td>${idx+1}</td>\
+                    <td><input name="Items[${idx}].FieldValue" class="form-control issuance-input" value="${escapeHtml(value)}" /></td>\
+                    <td><input name="Items[${idx}].ProductId" class="form-control" /></td>\
+                    <td><input name="Items[${idx}].SectionId" class="form-control" /></td>\
+                    <td><button type="button" class="btn btn-sm btn-danger remove-row">???</button></td>\
+                `;
+                table.appendChild(tr);
+                attachRow(tr);
+            }
+
+            function attachRow(tr){
+                const inputs = Array.from(tr.querySelectorAll('.issuance-input'));
+                inputs.forEach((inp, i) => {
+                    inp.addEventListener('keydown', function(ev){
+                        if(ev.key === 'Enter'){
+                            ev.preventDefault();
+                            // focus next input in next row
+                            const all = Array.from(document.querySelectorAll('.issuance-input'));
+                            const idx = all.indexOf(inp);
+                            if(idx >= 0 && idx < all.length - 1){
+                                all[idx+1].focus();
+                            } else {
+                                // add new row and focus its input
+                                addRow();
+                                const updated = Array.from(document.querySelectorAll('.issuance-input'));
+                                updated[updated.length-1].focus();
+                            }
+                        }
+                    });
+                });
+
+                const btn = tr.querySelector('.remove-row');
+                btn.addEventListener('click', function(){
+                    tr.remove();
+                    reindex();
+                });
+            }
+
+            // attach existing rows
+            document.querySelectorAll('#issuanceTable tbody tr').forEach(tr => attachRow(tr));
+
+            addRowBtn.addEventListener('click', function(){ addRow(); });
+
+            // helper
+            function escapeHtml(str){ return String(str).replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]; }); }
+
+            // client-side validation before submit
+            document.getElementById('issuanceForm').addEventListener('submit', function(ev){
+                const inputs = Array.from(document.querySelectorAll('input[name$=".FieldValue"]'));
+                const hasEmpty = inputs.some(i => !i.value.trim());
+                if(hasEmpty){
+                    ev.preventDefault();
+                    alert('Please fill all fields before saving.\n?????? ????? ???? ??????? ??? ?????.');
+                    inputs.find(i=>!i.value.trim()).focus();
+                }
+            });
+        })();
+    </script>
+}

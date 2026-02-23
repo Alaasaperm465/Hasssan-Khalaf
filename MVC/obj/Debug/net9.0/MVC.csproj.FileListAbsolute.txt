@@ -227,3 +227,4 @@ F:\.net\Hassan\Hassann_Khala\MVC\obj\Debug\net9.0\MVC.genruntimeconfig.cache
 F:\.net\Hassan\Hassann_Khala\MVC\obj\Debug\net9.0\ref\MVC.dll
 F:\.net\Hassan\Hassann_Khala\MVC\bin\Debug\net9.0\Microsoft.EntityFrameworkCore.InMemory.dll
 F:\.net\Hassan\Hassann_Khala\MVC\bin\Debug\net9.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+F:\.net\Hassan\Hassann_Khala\MVC\obj\Debug\net9.0\MVC.sourcelink.json

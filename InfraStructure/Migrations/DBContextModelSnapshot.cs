@@ -35,6 +35,9 @@ namespace InfraStructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<int>("AllowedProductTypes")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -46,6 +49,9 @@ namespace InfraStructure.Migrations
                     b.Property<int>("PhoneNumber")
                         .HasColumnType("int");
 
+                    b.Property<int>("SerialContruct")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -55,6 +61,40 @@ namespace InfraStructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Clients");
+                });
+
+            modelBuilder.Entity("Hassann_Khala.Domain.Delegate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ClientId1")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("ClientId1");
+
+                    b.ToTable("Delegate", (string)null);
                 });
 
             modelBuilder.Entity("Hassann_Khala.Domain.Inbound", b =>
@@ -124,6 +164,63 @@ namespace InfraStructure.Migrations
                     b.ToTable("InboundDetails");
                 });
 
+            modelBuilder.Entity("Hassann_Khala.Domain.Issuance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SerialNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SerialNumber")
+                        .IsUnique();
+
+                    b.ToTable("Issuances");
+                });
+
+            modelBuilder.Entity("Hassann_Khala.Domain.IssuanceItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FieldValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("IssuanceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ItemIndex")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SectionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IssuanceId");
+
+                    b.ToTable("IssuanceItems");
+                });
+
             modelBuilder.Entity("Hassann_Khala.Domain.Outbound", b =>
                 {
                     b.Property<int>("Id")
@@ -138,12 +235,17 @@ namespace InfraStructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("DelegateId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("DelegateId");
 
                     b.ToTable("Outbounds");
                 });
@@ -220,6 +322,9 @@ namespace InfraStructure.Migrations
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -464,6 +569,21 @@ namespace InfraStructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Hassann_Khala.Domain.Delegate", b =>
+                {
+                    b.HasOne("Hassann_Khala.Domain.Client", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Hassann_Khala.Domain.Client", null)
+                        .WithMany("Delegates")
+                        .HasForeignKey("ClientId1");
+
+                    b.Navigation("Client");
+                });
+
             modelBuilder.Entity("Hassann_Khala.Domain.Inbound", b =>
                 {
                     b.HasOne("Hassann_Khala.Domain.Client", "Client")
@@ -502,6 +622,15 @@ namespace InfraStructure.Migrations
                     b.Navigation("Section");
                 });
 
+            modelBuilder.Entity("Hassann_Khala.Domain.IssuanceItem", b =>
+                {
+                    b.HasOne("Hassann_Khala.Domain.Issuance", null)
+                        .WithMany("Items")
+                        .HasForeignKey("IssuanceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Hassann_Khala.Domain.Outbound", b =>
                 {
                     b.HasOne("Hassann_Khala.Domain.Client", "Client")
@@ -510,7 +639,13 @@ namespace InfraStructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Hassann_Khala.Domain.Delegate", "Delegate")
+                        .WithMany()
+                        .HasForeignKey("DelegateId");
+
                     b.Navigation("Client");
+
+                    b.Navigation("Delegate");
                 });
 
             modelBuilder.Entity("Hassann_Khala.Domain.OutboundDetail", b =>
@@ -605,9 +740,19 @@ namespace InfraStructure.Migrations
                     b.Navigation("Section");
                 });
 
+            modelBuilder.Entity("Hassann_Khala.Domain.Client", b =>
+                {
+                    b.Navigation("Delegates");
+                });
+
             modelBuilder.Entity("Hassann_Khala.Domain.Inbound", b =>
                 {
                     b.Navigation("Details");
+                });
+
+            modelBuilder.Entity("Hassann_Khala.Domain.Issuance", b =>
+                {
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("Hassann_Khala.Domain.Outbound", b =>

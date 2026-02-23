@@ -1,0 +1,68 @@
+﻿using InfraStructure.Context;
+using Hassann_Khala.Domain;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace MVC.Controllers
+{
+    public class IssuanceController : Controller
+    {
+        private readonly DBContext _db;
+        public IssuanceController(DBContext db) { _db = db; }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(IssuanceCreateVM vm)
+        {
+            if (!ModelState.IsValid) return View(vm);
+
+            if (vm.Items == null || vm.Items.Count == 0)
+            {
+                ModelState.AddModelError(string.Empty, "At least one row is required.\nالرجاء إضافة سطر واحد على الأقل.");
+                return View(vm);
+            }
+
+            // Validate no empty fields
+            if (vm.Items.Any(i => string.IsNullOrWhiteSpace(i.FieldValue)))
+            {
+                ModelState.AddModelError(string.Empty, "All fields are required.\nجميع الخانات مطلوبة.");
+                return View(vm);
+            }
+
+            var issuance = new Issuance
+            {
+                SerialNumber = vm.SerialNumber ?? Guid.NewGuid().ToString("N"),
+                ClientId = vm.ClientId,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            for (int i = 0; i < vm.Items.Count; i++)
+            {
+                issuance.Items.Add(new IssuanceItem
+                {
+                    ItemIndex = i,
+                    FieldValue = vm.Items[i].FieldValue,
+                    ProductId = vm.Items[i].ProductId,
+                    SectionId = vm.Items[i].SectionId
+                });
+            }
+
+            _db.Issuances.Add(issuance);
+            await _db.SaveChangesAsync();
+
+            return RedirectToAction("Details", new { id = issuance.Id });
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var issuance = await _db.Issuances.Include(i => i.Items).FirstOrDefaultAsync(i => i.Id == id);
+            if (issuance == null) return NotFound();
+            return View(issuance);
+        }
+    }
+}

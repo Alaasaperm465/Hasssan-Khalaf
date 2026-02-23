@@ -1,0 +1,17 @@
+﻿using global::Domain;
+using System.ComponentModel.DataAnnotations;
+
+namespace Hassann_Khala.Domain
+{
+    public class Delegate : BaseEntity
+    {
+        [Required]
+        [StringLength(200)]
+        public string Name { get; set; } = null!;
+
+        [Required]
+        public int ClientId { get; set; }
+
+        public Client? Client { get; set; }
+    }
+}

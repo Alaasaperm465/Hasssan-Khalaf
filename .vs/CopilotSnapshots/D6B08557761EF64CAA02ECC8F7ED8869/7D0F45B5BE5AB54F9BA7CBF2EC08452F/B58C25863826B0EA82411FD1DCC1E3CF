@@ -1,0 +1,56 @@
+﻿@page "{id:int}"
+@model dynamic
+@using Hassann_Khala.Domain
+@{
+    var issuance = (Hassann_Khala.Domain.Issuance)Model; // simple cast if you adapt
+}
+<div class="container mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h4>Issuance: @issuance.SerialNumber</h4>
+        <div>
+            <!-- Print button: prepares page for printing and opens print dialog -->
+            <button id="printBtn" class="btn btn-outline-primary">طباعة الإذن</button>
+        </div>
+    </div>
+
+    <div id="printArea">
+        <div>Created: @issuance.CreatedAt.ToString("g")</div>
+        <table class="table table-sm table-striped mt-3">
+            <thead><tr><th>#</th><th>Value</th><th>Product</th><th>Section</th></tr></thead>
+            <tbody>
+                @for(int i=0;i<issuance.Items.Count;i++){
+                    <tr>
+                        <td>@(i+1)</td>
+                        <td>@issuance.Items[i].FieldValue</td>
+                        <td>@issuance.Items[i].ProductId</td>
+                        <td>@issuance.Items[i].SectionId</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        /* Print-friendly adjustments: hide non-essential UI and adjust spacing */
+        @media print {
+            body * { visibility: hidden; }
+            #printArea, #printArea * { visibility: visible; }
+            #printArea { position: absolute; left: 0; top: 0; width: 100%; }
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        (function(){
+            const btn = document.getElementById('printBtn');
+            btn.addEventListener('click', function(){
+                // Optionally, you can perform last-minute layout adjustments here
+                // Then call browser print dialog
+                window.print();
+            });
+        })();
+    </script>
+}

@@ -8,6 +8,7 @@ using MVC.ViewModels.Ajax;
 using InfraStructure.Context;
 using Hassann_Khala.Domain;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace MVC.Controllers
 {
@@ -52,9 +53,10 @@ namespace MVC.Controllers
             var vm = new InboundCreateVM
             {
                 Clients = clients.Select(c => new SelectListItem(c.Name, c.Id.ToString())),
+                Delegates = Enumerable.Empty<SelectListItem>(),
                 Products = products.Select(p => new SelectListItem(p.Name, p.Id.ToString())),
                 Sections = sections.Select(s => new SelectListItem(s.Name, s.Id.ToString())),
-                Details = new List<InboundDetailVM> { new InboundDetailVM() }
+                Details = Enumerable.Range(0, 6).Select(_ => new InboundDetailVM()).ToList()
             };
 
             return View(vm);
@@ -74,6 +76,16 @@ namespace MVC.Controllers
                 vm.Clients = clients.Select(c => new SelectListItem(c.Name, c.Id.ToString()));
                 vm.Products = products.Select(p => new SelectListItem(p.Name, p.Id.ToString()));
                 vm.Sections = sections.Select(s => new SelectListItem(s.Name, s.Id.ToString()));
+
+                // also repopulate delegates for selected client
+                if (vm.ClientId > 0)
+                {
+                    vm.Delegates = _db.Delegates.Where(d => d.ClientId == vm.ClientId).OrderBy(d => d.Name).Select(d => new SelectListItem(d.Name, d.Id.ToString()));
+                }
+                else
+                {
+                    vm.Delegates = Enumerable.Empty<SelectListItem>();
+                }
             }
 
             if (!ModelState.IsValid)
@@ -172,10 +184,24 @@ namespace MVC.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         [Route("Inbound/AddLineAjax")]
-        public async Task<IActionResult> AddLineAjax([FromBody] AddLineRequest req)
+        public async Task<IActionResult> AddLineAjax([FromBody] AddLineRequest? req)
         {
+            // support form-encoded fallback
+            if (req == null && Request.HasFormContentType)
+            {
+                var f = Request.Form;
+                req = new AddLineRequest
+                {
+                    InboundId = int.TryParse(f["inboundId"], out var iid) ? iid : (int?)null,
+                    ClientId = int.TryParse(f["clientId"], out var cid) ? cid : 0,
+                    ProductId = int.TryParse(f["productId"], out var pid) ? pid : 0,
+                    SectionId = int.TryParse(f["sectionId"], out var sid) ? sid : 0,
+                    Cartons = int.TryParse(f["cartons"], out var c) ? c : 0,
+                    Pallets = int.TryParse(f["pallets"], out var p) ? p : 0
+                };
+            }
+
             if (req == null) return BadRequest(new { success = false, error = "Request body required" });
             if (req.ClientId <= 0) return BadRequest(new { success = false, error = "ClientId required" });
             if (req.ProductId <= 0) return BadRequest(new { success = false, error = "ProductId required" });
@@ -194,68 +220,81 @@ namespace MVC.Controllers
             // If inboundId provided -> add detail to existing inbound
             if (req.InboundId.HasValue && req.InboundId.Value > 0)
             {
-                var inbound = await _db.Inbounds.Include(i => i.Details).FirstOrDefaultAsync(i => i.Id == req.InboundId.Value);
-                if (inbound == null) return NotFound(new { success = false, error = "Inbound not found" });
-                if (inbound.ClientId != req.ClientId) return BadRequest(new { success = false, error = "Client mismatch" });
+                using var tx = await _db.Database.BeginTransactionAsync();
+                try
+                {
+                    var inbound = await _db.Inbounds.Include(i => i.Details).FirstOrDefaultAsync(i => i.Id == req.InboundId.Value);
+                    if (inbound == null) return NotFound(new { success = false, error = "Inbound not found" });
+                    if (inbound.ClientId != req.ClientId) return BadRequest(new { success = false, error = "Client mismatch" });
 
-                var detail = new InboundDetail
-                {
-                    InboundId = inbound.Id,
-                    ProductId = req.ProductId,
-                    SectionId = req.SectionId,
-                    Cartons = req.Cartons,
-                    Pallets = req.Pallets,
-                    Quantity = req.Cartons + (req.Pallets * 100m)
-                };
+                    var detail = new InboundDetail
+                    {
+                        InboundId = inbound.Id,
+                        ProductId = req.ProductId,
+                        SectionId = req.SectionId,
+                        Cartons = req.Cartons,
+                        Pallets = req.Pallets,
+                        Quantity = req.Cartons + (req.Pallets * 100m)
+                    };
 
-                inbound.Details.Add(detail);
+                    inbound.Details.Add(detail);
 
-                // update stocks
-                var stock = await _db.Stocks.FirstOrDefaultAsync(s => s.ClientId == inbound.ClientId && s.ProductId == req.ProductId && s.SectionId == req.SectionId);
-                if (stock == null)
-                {
-                    stock = new Stock { ClientId = inbound.ClientId, ProductId = req.ProductId, SectionId = req.SectionId, Cartons = req.Cartons, Pallets = req.Pallets };
-                    await _db.Stocks.AddAsync(stock);
-                }
-                else
-                {
-                    stock.Cartons += req.Cartons;
-                    stock.Pallets += req.Pallets;
-                    _db.Stocks.Update(stock);
-                }
+                    // update stocks
+                    var stock = await _db.Stocks.FirstOrDefaultAsync(s => s.ClientId == inbound.ClientId && s.ProductId == req.ProductId && s.SectionId == req.SectionId);
+                    if (stock == null)
+                    {
+                        stock = new Stock { ClientId = inbound.ClientId, ProductId = req.ProductId, SectionId = req.SectionId, Cartons = req.Cartons, Pallets = req.Pallets };
+                        await _db.Stocks.AddAsync(stock);
+                    }
+                    else
+                    {
+                        stock.Cartons += req.Cartons;
+                        stock.Pallets += req.Pallets;
+                        _db.Stocks.Update(stock);
+                    }
 
-                var prodStock = await _db.ProductStocks.FirstOrDefaultAsync(ps => ps.ClientId == inbound.ClientId && ps.ProductId == req.ProductId);
-                if (prodStock == null)
-                {
-                    prodStock = new ProductStock { ClientId = inbound.ClientId, ProductId = req.ProductId, Cartons = req.Cartons, Pallets = req.Pallets };
-                    await _db.ProductStocks.AddAsync(prodStock);
-                }
-                else
-                {
-                    prodStock.Cartons += req.Cartons;
-                    prodStock.Pallets += req.Pallets;
-                    _db.ProductStocks.Update(prodStock);
-                }
+                    var prodStock = await _db.ProductStocks.FirstOrDefaultAsync(ps => ps.ClientId == inbound.ClientId && ps.ProductId == req.ProductId);
+                    if (prodStock == null)
+                    {
+                        prodStock = new ProductStock { ClientId = inbound.ClientId, ProductId = req.ProductId, Cartons = req.Cartons, Pallets = req.Pallets };
+                        await _db.ProductStocks.AddAsync(prodStock);
+                    }
+                    else
+                    {
+                        prodStock.Cartons += req.Cartons;
+                        prodStock.Pallets += req.Pallets;
+                        _db.ProductStocks.Update(prodStock);
+                    }
 
-                var secStock = await _db.SectionStocks.FirstOrDefaultAsync(ss => ss.ClientId == inbound.ClientId && ss.SectionId == req.SectionId);
-                if (secStock == null)
-                {
-                    secStock = new SectionStock { ClientId = inbound.ClientId, SectionId = req.SectionId, Cartons = req.Cartons, Pallets = req.Pallets };
-                    await _db.SectionStocks.AddAsync(secStock);
-                }
-                else
-                {
-                    secStock.Cartons += req.Cartons;
-                    secStock.Pallets += req.Pallets;
-                    _db.SectionStocks.Update(secStock);
-                }
+                    var secStock = await _db.SectionStocks.FirstOrDefaultAsync(ss => ss.ClientId == inbound.ClientId && ss.SectionId == req.SectionId);
+                    if (secStock == null)
+                    {
+                        secStock = new SectionStock { ClientId = inbound.ClientId, SectionId = req.SectionId, Cartons = req.Cartons, Pallets = req.Pallets };
+                        await _db.SectionStocks.AddAsync(secStock);
+                    }
+                    else
+                    {
+                        secStock.Cartons += req.Cartons;
+                        secStock.Pallets += req.Pallets;
+                        _db.SectionStocks.Update(secStock);
+                    }
 
-                await _db.SaveChangesAsync();
-                return Ok(new { success = true, id = inbound.Id });
+                    await _db.SaveChangesAsync();
+                    await tx.CommitAsync();
+
+                    // ensure detail id is loaded
+                    var savedDetailId = detail.Id;
+                    return Ok(new { success = true, id = inbound.Id, detailId = savedDetailId });
+                }
+                catch (System.Exception ex)
+                {
+                    await tx.RollbackAsync();
+                    return StatusCode(500, new { success = false, error = ex.Message });
+                }
             }
 
             // Otherwise create new inbound with this single line
-            using var tx = await _db.Database.BeginTransactionAsync();
+            using var tx2 = await _db.Database.BeginTransactionAsync();
             try
             {
                 var inbound = new Inbound { ClientId = client.Id, CreatedAt = DateTime.UtcNow };
@@ -312,13 +351,77 @@ namespace MVC.Controllers
                 }
 
                 await _db.SaveChangesAsync();
+                await tx2.CommitAsync();
+
+                var savedInboundId = inbound.Id;
+                var savedDetailId = detail.Id;
+                return Ok(new { success = true, id = savedInboundId, detailId = savedDetailId });
+            }
+            catch (System.Exception ex)
+            {
+                await tx2.RollbackAsync();
+                return StatusCode(500, new { success = false, error = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [Route("Inbound/DeleteLineAjax")]
+        public async Task<IActionResult> DeleteLineAjax([FromBody] DeleteLineRequest req)
+        {
+            if (req == null) return BadRequest(new { success = false, error = "Request body required" });
+            if (req.DetailId <= 0) return BadRequest(new { success = false, error = "DetailId required" });
+
+            using var tx = await _db.Database.BeginTransactionAsync();
+            try
+            {
+                var detail = await _db.InboundDetails.FirstOrDefaultAsync(d => d.Id == req.DetailId);
+                if (detail == null) return NotFound(new { success = false, error = "Detail not found" });
+
+                var inbound = await _db.Inbounds.FirstOrDefaultAsync(i => i.Id == detail.InboundId);
+                if (inbound == null) return NotFound(new { success = false, error = "Inbound not found" });
+
+                // remove detail
+                _db.InboundDetails.Remove(detail);
+
+                // revert stocks (subtract the added quantities)
+                var stock = await _db.Stocks.FirstOrDefaultAsync(s => s.ClientId == inbound.ClientId && s.ProductId == detail.ProductId && s.SectionId == detail.SectionId);
+                if (stock != null)
+                {
+                    stock.Cartons -= detail.Cartons;
+                    stock.Pallets -= detail.Pallets;
+                    if (stock.Cartons < 0) stock.Cartons = 0;
+                    if (stock.Pallets < 0) stock.Pallets = 0;
+                    _db.Stocks.Update(stock);
+                }
+
+                var prodStock = await _db.ProductStocks.FirstOrDefaultAsync(ps => ps.ClientId == inbound.ClientId && ps.ProductId == detail.ProductId);
+                if (prodStock != null)
+                {
+                    prodStock.Cartons -= detail.Cartons;
+                    prodStock.Pallets -= detail.Pallets;
+                    if (prodStock.Cartons < 0) prodStock.Cartons = 0;
+                    if (prodStock.Pallets < 0) prodStock.Pallets = 0;
+                    _db.ProductStocks.Update(prodStock);
+                }
+
+                var secStock = await _db.SectionStocks.FirstOrDefaultAsync(ss => ss.ClientId == inbound.ClientId && ss.SectionId == detail.SectionId);
+                if (secStock != null)
+                {
+                    secStock.Cartons -= detail.Cartons;
+                    secStock.Pallets -= detail.Pallets;
+                    if (secStock.Cartons < 0) secStock.Cartons = 0;
+                    if (secStock.Pallets < 0) secStock.Pallets = 0;
+                    _db.SectionStocks.Update(secStock);
+                }
+
+                await _db.SaveChangesAsync();
                 await tx.CommitAsync();
-                return Ok(new { success = true, id = inbound.Id });
+                return Ok(new { success = true, id = req.DetailId });
             }
             catch (System.Exception ex)
             {
                 await tx.RollbackAsync();
-                return StatusCode(500, new { success = false, error = "Server error" });
+                return StatusCode(500, new { success = false, error = ex.Message });
             }
         }
 
@@ -331,5 +434,15 @@ namespace MVC.Controllers
             var vm = _mapper.Map<InboundDetailsVM>(inbound);
             return View(vm);
         }
+
+        [HttpGet]
+        public IActionResult GetDelegatesForClient(int clientId)
+        {
+            var list = _db.Delegates.Where(d => d.ClientId == clientId).OrderBy(d => d.Name)
+                .Select(d => new { value = d.Id, text = d.Name })
+                .ToList();
+            return Json(list);
+        }
+
     }
 }

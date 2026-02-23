@@ -95,6 +95,7 @@
             <table class="table modern-table align-middle mb-0">
                 <thead>
                     <tr>
+                        <th>id</th>
                         <th>الاسم</th>
                         <th>العنوان</th>
                         <th>الهاتف</th>
@@ -107,6 +108,7 @@
                         foreach (var c in Model)
                         {
                             <tr>
+                                <td class="fw-semibold">@Html.DisplayFor(m => c.Id)</td>
                                 <td class="fw-semibold">@Html.DisplayFor(m => c.Name)</td>
                                 <td class="fw-semibold">@Html.DisplayFor(m => c.Address)</td>
                                 <td class="fw-semibold">@Html.DisplayFor(m => c.PhoneNumber)</td>

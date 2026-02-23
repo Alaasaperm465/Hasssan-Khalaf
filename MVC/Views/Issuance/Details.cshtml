@@ -1,0 +1,22 @@
+@model Hassann_Khala.Domain.Issuance
+@{
+    ViewData["Title"] = "Issuance Details";
+}
+
+<div class="container mt-3">
+    <h4>Issuance: @Model.SerialNumber</h4>
+    <div>Created: @Model.CreatedAt.ToString("g")</div>
+    <table class="table table-sm table-striped mt-3">
+        <thead><tr><th>#</th><th>Value</th><th>Product</th><th>Section</th></tr></thead>
+        <tbody>
+            @for(int i=0;i<Model.Items.Count;i++){
+                <tr>
+                    <td>@(i+1)</td>
+                    <td>@Model.Items[i].FieldValue</td>
+                    <td>@Model.Items[i].ProductId</td>
+                    <td>@Model.Items[i].SectionId</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

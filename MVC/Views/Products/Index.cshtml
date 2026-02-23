@@ -28,29 +28,20 @@
         <table class="table table-striped align-middle">
             <thead>
                 <tr>
+                    <th>Id</th>
                     <th>الاسم</th>
-                    <th>السعر</th>
                     <th>الوصف</th>
-                    <th>الصورة</th>
+                    <th>النوع</th>
                     <th>الاجراءات</th>
                 </tr>
             </thead>
             <tbody>
             @foreach(var p in Model.Products) {
                 <tr>
+                        <td>@p.Id</td>
                     <td>@p.Name</td>
-                    <td>@p.Price.ToString("C")</td>
                     <td>@(p.Description ?? "-")</td>
-                    <td>
-                        @if(!string.IsNullOrWhiteSpace(p.ImageUrl))
-                        {
-                            <img src="@p.ImageUrl" alt="@p.Name" style="height:48px; width:auto;" />
-                        }
-                        else
-                        {
-                            <span class="text-muted">لا توجد</span>
-                        }
-                    </td>
+                    <td>@p.Type</td>
                     <td>
                         <div class="d-flex gap-2">
                             <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@p.Id">تعديل</a>

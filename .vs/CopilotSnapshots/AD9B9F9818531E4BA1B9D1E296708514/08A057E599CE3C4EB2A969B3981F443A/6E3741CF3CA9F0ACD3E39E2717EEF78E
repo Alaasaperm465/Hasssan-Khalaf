@@ -1,0 +1,43 @@
+﻿@model Hassann_Khala.Domain.Product
+@{
+    ViewData["Title"] = "إضافة منتج";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-3">
+    <div class="card p-3">
+        <h4>إضافة منتج جديد</h4>
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="mb-3">
+                <label class="form-label">الاسم</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">السعر</label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">الوصف</label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">صورة المنتج</label>
+                <input type="file" name="imageFile" accept="image/*" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">رابط الصورة (اختياري)</label>
+                <input asp-for="ImageUrl" class="form-control" />
+                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary">حفظ</button>
+                <a asp-action="Index" class="btn btn-secondary">إلغاء</a>
+            </div>
+        </form>
+    </div>
+</div>

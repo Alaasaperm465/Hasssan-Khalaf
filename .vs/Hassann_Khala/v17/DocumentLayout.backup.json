@@ -3,12 +3,104 @@
   "WorkspaceRootPath": "F:\\.net\\Hassan\\Hassann_Khala\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|F:\\.net\\Hassan\\Hassann_Khala\\InfraStructure\\Migrations\\20260223213734_delegate3.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:InfraStructure\\Migrations\\20260223213734_delegate3.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\controllers\\outboundcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\controllers\\outboundcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\products\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\products\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\inbound\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\inbound\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44F5AA23-1ED8-4172-8496-7B6855FFB317}|InfraStructure\\InfraStructure.csproj|f:\\.net\\hassan\\hassann_khala\\infrastructure\\migrations\\20260223210018_delegates2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{44F5AA23-1ED8-4172-8496-7B6855FFB317}|InfraStructure\\InfraStructure.csproj|solutionrelative:infrastructure\\migrations\\20260223210018_delegates2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\controllers\\delegatescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\controllers\\delegatescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A040D513-C3A4-48AF-B9DF-3F1DCEF430CA}|Domain\\Domain.csproj|f:\\.net\\hassan\\hassann_khala\\domain\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A040D513-C3A4-48AF-B9DF-3F1DCEF430CA}|Domain\\Domain.csproj|solutionrelative:domain\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A040D513-C3A4-48AF-B9DF-3F1DCEF430CA}|Domain\\Domain.csproj|f:\\.net\\hassan\\hassann_khala\\domain\\section.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A040D513-C3A4-48AF-B9DF-3F1DCEF430CA}|Domain\\Domain.csproj|solutionrelative:domain\\section.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A040D513-C3A4-48AF-B9DF-3F1DCEF430CA}|Domain\\Domain.csproj|f:\\.net\\hassan\\hassann_khala\\domain\\delegate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A040D513-C3A4-48AF-B9DF-3F1DCEF430CA}|Domain\\Domain.csproj|solutionrelative:domain\\delegate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\delegates\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\delegates\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\delegates\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\delegates\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\products\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\products\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\clients\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\clients\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\controllers\\clientscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\controllers\\clientscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\controllers\\productscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\controllers\\productscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\products\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\products\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A040D513-C3A4-48AF-B9DF-3F1DCEF430CA}|Domain\\Domain.csproj|f:\\.net\\hassan\\hassann_khala\\domain\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A040D513-C3A4-48AF-B9DF-3F1DCEF430CA}|Domain\\Domain.csproj|solutionrelative:domain\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\outbound\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\outbound\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66DF61FA-A9EB-40F1-83CC-D86C9E36B62F}|Application\\Application.csproj|f:\\.net\\hassan\\hassann_khala\\application\\dtos\\product\\createproductdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66DF61FA-A9EB-40F1-83CC-D86C9E36B62F}|Application\\Application.csproj|solutionrelative:application\\dtos\\product\\createproductdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\controllers\\querycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\controllers\\querycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\stock\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\stock\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\controllers\\inboundcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\controllers\\inboundcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\inbound\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\inbound\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\pages\\issuance\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\pages\\issuance\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\controllers\\stockcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -23,32 +115,8 @@
       "RelativeMoniker": "D:0:0:{66DF61FA-A9EB-40F1-83CC-D86C9E36B62F}|Application\\Application.csproj|solutionrelative:application\\interfaces\\iservices\\istockservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{44F5AA23-1ED8-4172-8496-7B6855FFB317}|InfraStructure\\InfraStructure.csproj|f:\\.net\\hassan\\hassann_khala\\infrastructure\\repos\\stockrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{44F5AA23-1ED8-4172-8496-7B6855FFB317}|InfraStructure\\InfraStructure.csproj|solutionrelative:infrastructure\\repos\\stockrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A040D513-C3A4-48AF-B9DF-3F1DCEF430CA}|Domain\\Domain.csproj|f:\\.net\\hassan\\hassann_khala\\domain\\interfaces\\istockrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A040D513-C3A4-48AF-B9DF-3F1DCEF430CA}|Domain\\Domain.csproj|solutionrelative:domain\\interfaces\\istockrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\controllers\\clientscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\controllers\\clientscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\inbound\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\inbound\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{66DF61FA-A9EB-40F1-83CC-D86C9E36B62F}|Application\\Application.csproj|f:\\.net\\hassan\\hassann_khala\\application\\services\\inboundservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{66DF61FA-A9EB-40F1-83CC-D86C9E36B62F}|Application\\Application.csproj|solutionrelative:application\\services\\inboundservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\products\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\products\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\clients\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\clients\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\clients\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -59,60 +127,64 @@
       "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\products\\transferform.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\products\\overlapform.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\products\\overlapform.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\products\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\products\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\products\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\products\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\outbound\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\outbound\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\clients\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\clients\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\clients\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\clients\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{66DF61FA-A9EB-40F1-83CC-D86C9E36B62F}|Application\\Application.csproj|f:\\.net\\hassan\\hassann_khala\\application\\services\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{66DF61FA-A9EB-40F1-83CC-D86C9E36B62F}|Application\\Application.csproj|solutionrelative:application\\services\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{44F5AA23-1ED8-4172-8496-7B6855FFB317}|InfraStructure\\InfraStructure.csproj|f:\\.net\\hassan\\hassann_khala\\infrastructure\\context\\dbcontextfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{44F5AA23-1ED8-4172-8496-7B6855FFB317}|InfraStructure\\InfraStructure.csproj|solutionrelative:infrastructure\\context\\dbcontextfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A040D513-C3A4-48AF-B9DF-3F1DCEF430CA}|Domain\\Domain.csproj|f:\\.net\\hassan\\hassann_khala\\domain\\interfaces\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A040D513-C3A4-48AF-B9DF-3F1DCEF430CA}|Domain\\Domain.csproj|solutionrelative:domain\\interfaces\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A040D513-C3A4-48AF-B9DF-3F1DCEF430CA}|Domain\\Domain.csproj|f:\\.net\\hassan\\hassann_khala\\domain\\interfaces\\iclientrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A040D513-C3A4-48AF-B9DF-3F1DCEF430CA}|Domain\\Domain.csproj|solutionrelative:domain\\interfaces\\iclientrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A040D513-C3A4-48AF-B9DF-3F1DCEF430CA}|Domain\\Domain.csproj|f:\\.net\\hassan\\hassann_khala\\domain\\interfaces\\irepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A040D513-C3A4-48AF-B9DF-3F1DCEF430CA}|Domain\\Domain.csproj|solutionrelative:domain\\interfaces\\irepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A040D513-C3A4-48AF-B9DF-3F1DCEF430CA}|Domain\\Domain.csproj|f:\\.net\\hassan\\hassann_khala\\domain\\interfaces\\iproductstockrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A040D513-C3A4-48AF-B9DF-3F1DCEF430CA}|Domain\\Domain.csproj|solutionrelative:domain\\interfaces\\iproductstockrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A040D513-C3A4-48AF-B9DF-3F1DCEF430CA}|Domain\\Domain.csproj|f:\\.net\\hassan\\hassann_khala\\domain\\interfaces\\isectionstockrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A040D513-C3A4-48AF-B9DF-3F1DCEF430CA}|Domain\\Domain.csproj|solutionrelative:domain\\interfaces\\isectionstockrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A040D513-C3A4-48AF-B9DF-3F1DCEF430CA}|Domain\\Domain.csproj|f:\\.net\\hassan\\hassann_khala\\domain\\issuance.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A040D513-C3A4-48AF-B9DF-3F1DCEF430CA}|Domain\\Domain.csproj|solutionrelative:domain\\issuance.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44F5AA23-1ED8-4172-8496-7B6855FFB317}|InfraStructure\\InfraStructure.csproj|f:\\.net\\hassan\\hassann_khala\\infrastructure\\context\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{44F5AA23-1ED8-4172-8496-7B6855FFB317}|InfraStructure\\InfraStructure.csproj|solutionrelative:infrastructure\\context\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\issuance\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\issuance\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\issuance\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\issuance\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\pages\\issuance\\create.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\pages\\issuance\\create.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\pages\\issuance\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\pages\\issuance\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\viewmodels\\ajax\\deletelinerequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\viewmodels\\ajax\\deletelinerequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\views\\clients\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\clients\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\.net\\hassan\\hassann_khala\\mvc\\viewmodels\\inbound\\inboundcreatevm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\viewmodels\\inbound\\inboundcreatevm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44F5AA23-1ED8-4172-8496-7B6855FFB317}|InfraStructure\\InfraStructure.csproj|f:\\.net\\hassan\\hassann_khala\\infrastructure\\migrations\\20260223201230_delegates1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{44F5AA23-1ED8-4172-8496-7B6855FFB317}|InfraStructure\\InfraStructure.csproj|solutionrelative:infrastructure\\migrations\\20260223201230_delegates1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44F5AA23-1ED8-4172-8496-7B6855FFB317}|InfraStructure\\InfraStructure.csproj|f:\\.net\\hassan\\hassann_khala\\infrastructure\\migrations\\20260223191720_delegates.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{44F5AA23-1ED8-4172-8496-7B6855FFB317}|InfraStructure\\InfraStructure.csproj|solutionrelative:infrastructure\\migrations\\20260223191720_delegates.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A040D513-C3A4-48AF-B9DF-3F1DCEF430CA}|Domain\\Domain.csproj|f:\\.net\\hassan\\hassann_khala\\domain\\outbound.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A040D513-C3A4-48AF-B9DF-3F1DCEF430CA}|Domain\\Domain.csproj|solutionrelative:domain\\outbound.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -122,7 +194,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 11,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -134,7 +206,434 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "20260223213734_delegate3.cs",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\InfraStructure\\Migrations\\20260223213734_delegate3.cs",
+              "RelativeDocumentMoniker": "InfraStructure\\Migrations\\20260223213734_delegate3.cs",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\InfraStructure\\Migrations\\20260223213734_delegate3.cs",
+              "RelativeToolTip": "InfraStructure\\Migrations\\20260223213734_delegate3.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-23T21:37:35.576Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 45,
+              "Title": "Outbound.cs",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Outbound.cs",
+              "RelativeDocumentMoniker": "Domain\\Outbound.cs",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Outbound.cs",
+              "RelativeToolTip": "Domain\\Outbound.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAEBUwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-23T21:24:41.981Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 4,
+              "Title": "20260223210018_delegates2.cs",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\InfraStructure\\Migrations\\20260223210018_delegates2.cs",
+              "RelativeDocumentMoniker": "InfraStructure\\Migrations\\20260223210018_delegates2.cs",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\InfraStructure\\Migrations\\20260223210018_delegates2.cs",
+              "RelativeToolTip": "InfraStructure\\Migrations\\20260223210018_delegates2.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-23T21:00:19.712Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Section.cs",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Section.cs",
+              "RelativeDocumentMoniker": "Domain\\Section.cs",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Section.cs",
+              "RelativeToolTip": "Domain\\Section.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-23T20:21:15.43Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 43,
+              "Title": "20260223201230_delegates1.cs",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\InfraStructure\\Migrations\\20260223201230_delegates1.cs",
+              "RelativeDocumentMoniker": "InfraStructure\\Migrations\\20260223201230_delegates1.cs",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\InfraStructure\\Migrations\\20260223201230_delegates1.cs",
+              "RelativeToolTip": "InfraStructure\\Migrations\\20260223201230_delegates1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-23T20:12:32.126Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Delegates\\Index.cshtml",
+              "RelativeDocumentMoniker": "MVC\\Views\\Delegates\\Index.cshtml",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Delegates\\Index.cshtml",
+              "RelativeToolTip": "MVC\\Views\\Delegates\\Index.cshtml",
+              "ViewState": "AgIAACoAAAAAAAAAAAAvwAoAAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-23T19:56:27.521Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 42,
+              "Title": "InboundCreateVM.cs",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\ViewModels\\Inbound\\InboundCreateVM.cs",
+              "RelativeDocumentMoniker": "MVC\\ViewModels\\Inbound\\InboundCreateVM.cs",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\ViewModels\\Inbound\\InboundCreateVM.cs",
+              "RelativeToolTip": "MVC\\ViewModels\\Inbound\\InboundCreateVM.cs",
+              "ViewState": "AgIAABgAAAAAAAAAAEBUwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-23T19:41:08Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "MVC\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "MVC\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAHYAAAAAAAAAAAAtwEAAAAC2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-23T19:26:12.144Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "DelegatesController.cs",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Controllers\\DelegatesController.cs",
+              "RelativeDocumentMoniker": "MVC\\Controllers\\DelegatesController.cs",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Controllers\\DelegatesController.cs",
+              "RelativeToolTip": "MVC\\Controllers\\DelegatesController.cs",
+              "ViewState": "AgIAACIAAAAAAAAAAAAcwCgAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-23T19:25:19.71Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Delegates\\Create.cshtml",
+              "RelativeDocumentMoniker": "MVC\\Views\\Delegates\\Create.cshtml",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Delegates\\Create.cshtml",
+              "RelativeToolTip": "MVC\\Views\\Delegates\\Create.cshtml",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAtwBMAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-23T19:25:00.086Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 44,
+              "Title": "20260223191720_delegates.cs",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\InfraStructure\\Migrations\\20260223191720_delegates.cs",
+              "RelativeDocumentMoniker": "InfraStructure\\Migrations\\20260223191720_delegates.cs",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\InfraStructure\\Migrations\\20260223191720_delegates.cs",
+              "RelativeToolTip": "InfraStructure\\Migrations\\20260223191720_delegates.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-23T19:17:21.465Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Delegate.cs",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Delegate.cs",
+              "RelativeDocumentMoniker": "Domain\\Delegate.cs",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Delegate.cs",
+              "RelativeToolTip": "Domain\\Delegate.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-23T19:11:04.967Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Clients\\Index.cshtml",
+              "RelativeDocumentMoniker": "MVC\\Views\\Clients\\Index.cshtml",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Clients\\Index.cshtml",
+              "RelativeToolTip": "MVC\\Views\\Clients\\Index.cshtml",
+              "ViewState": "AgIAAGAAAAAAAAAAAAAAAGIAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-23T18:33:58.131Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Edit.cshtml",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Products\\Edit.cshtml",
+              "RelativeDocumentMoniker": "MVC\\Views\\Products\\Edit.cshtml",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Products\\Edit.cshtml",
+              "RelativeToolTip": "MVC\\Views\\Products\\Edit.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-23T18:15:37.172Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Products\\Index.cshtml",
+              "RelativeDocumentMoniker": "MVC\\Views\\Products\\Index.cshtml",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Products\\Index.cshtml",
+              "RelativeToolTip": "MVC\\Views\\Products\\Index.cshtml",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAAACgAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-23T17:42:57.867Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "ClientsController.cs",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Controllers\\ClientsController.cs",
+              "RelativeDocumentMoniker": "MVC\\Controllers\\ClientsController.cs",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Controllers\\ClientsController.cs",
+              "RelativeToolTip": "MVC\\Controllers\\ClientsController.cs",
+              "ViewState": "AgIAAAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-23T17:16:09.696Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 41,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Clients\\Create.cshtml",
+              "RelativeDocumentMoniker": "MVC\\Views\\Clients\\Create.cshtml",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Clients\\Create.cshtml",
+              "RelativeToolTip": "MVC\\Views\\Clients\\Create.cshtml",
+              "ViewState": "AgIAAJwAAAAAAAAAAIBJwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-23T17:13:53.924Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "ProductsController.cs",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Controllers\\ProductsController.cs",
+              "RelativeDocumentMoniker": "MVC\\Controllers\\ProductsController.cs",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Controllers\\ProductsController.cs",
+              "RelativeToolTip": "MVC\\Controllers\\ProductsController.cs",
+              "ViewState": "AgIAAFoBAAAAAAAAAAAawGIBAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-23T16:53:45.217Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "CreateProductDto.cs",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\Application\\DTOs\\Product\\CreateProductDto.cs",
+              "RelativeDocumentMoniker": "Application\\DTOs\\Product\\CreateProductDto.cs",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\Application\\DTOs\\Product\\CreateProductDto.cs",
+              "RelativeToolTip": "Application\\DTOs\\Product\\CreateProductDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-23T16:47:01.817Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "Product.cs",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Product.cs",
+              "RelativeDocumentMoniker": "Domain\\Product.cs",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Product.cs",
+              "RelativeToolTip": "Domain\\Product.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAQAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-23T16:45:09.455Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Client.cs",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Client.cs",
+              "RelativeDocumentMoniker": "Domain\\Client.cs",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Client.cs",
+              "RelativeToolTip": "Domain\\Client.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAAtwCAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-23T16:44:48.877Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "QueryController.cs",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Controllers\\QueryController.cs",
+              "RelativeDocumentMoniker": "MVC\\Controllers\\QueryController.cs",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Controllers\\QueryController.cs",
+              "RelativeToolTip": "MVC\\Controllers\\QueryController.cs",
+              "ViewState": "AgIAABYAAAAAAAAAAAAgwB4AAABHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-23T16:43:39.779Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Stock\\Index.cshtml",
+              "RelativeDocumentMoniker": "MVC\\Views\\Stock\\Index.cshtml",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Stock\\Index.cshtml",
+              "RelativeToolTip": "MVC\\Views\\Stock\\Index.cshtml",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAwAAABlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-23T15:35:57.494Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 40,
+              "Title": "DeleteLineRequest.cs",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\ViewModels\\Ajax\\DeleteLineRequest.cs",
+              "RelativeDocumentMoniker": "MVC\\ViewModels\\Ajax\\DeleteLineRequest.cs",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\ViewModels\\Ajax\\DeleteLineRequest.cs",
+              "RelativeToolTip": "MVC\\ViewModels\\Ajax\\DeleteLineRequest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T20:26:31.785Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "InboundController.cs",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Controllers\\InboundController.cs",
+              "RelativeDocumentMoniker": "MVC\\Controllers\\InboundController.cs",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Controllers\\InboundController.cs",
+              "RelativeToolTip": "MVC\\Controllers\\InboundController.cs",
+              "ViewState": "AgIAALIBAAAAAAAAAAAvwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T19:27:37.404Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Inbound\\Details.cshtml",
+              "RelativeDocumentMoniker": "MVC\\Views\\Inbound\\Details.cshtml",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Inbound\\Details.cshtml",
+              "RelativeToolTip": "MVC\\Views\\Inbound\\Details.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-22T18:06:53.627Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Outbound\\Create.cshtml",
+              "RelativeDocumentMoniker": "MVC\\Views\\Outbound\\Create.cshtml",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Outbound\\Create.cshtml",
+              "RelativeToolTip": "MVC\\Views\\Outbound\\Create.cshtml",
+              "ViewState": "AgIAAO4AAAAAAAAAAABRwAQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-21T19:23:28.129Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "OutboundController.cs",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Controllers\\OutboundController.cs",
+              "RelativeDocumentMoniker": "MVC\\Controllers\\OutboundController.cs",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Controllers\\OutboundController.cs",
+              "RelativeToolTip": "MVC\\Controllers\\OutboundController.cs",
+              "ViewState": "AgIAADwAAAAAAAAAAAAcwEIAAAA/AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-21T19:06:04.976Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 39,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Pages\\Issuance\\Details.cshtml",
+              "RelativeDocumentMoniker": "MVC\\Pages\\Issuance\\Details.cshtml",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Pages\\Issuance\\Details.cshtml",
+              "RelativeToolTip": "MVC\\Pages\\Issuance\\Details.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAxwBYAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-20T21:50:00.866Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 38,
+              "Title": "Create.cshtml.cs",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Pages\\Issuance\\Create.cshtml.cs",
+              "RelativeDocumentMoniker": "MVC\\Pages\\Issuance\\Create.cshtml.cs",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Pages\\Issuance\\Create.cshtml.cs",
+              "RelativeToolTip": "MVC\\Pages\\Issuance\\Create.cshtml.cs",
+              "ViewState": "AgIAACcAAAAAAAAAAEBVwCsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-20T21:49:36.619Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Pages\\Issuance\\Create.cshtml",
+              "RelativeDocumentMoniker": "MVC\\Pages\\Issuance\\Create.cshtml",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Pages\\Issuance\\Create.cshtml",
+              "RelativeToolTip": "MVC\\Pages\\Issuance\\Create.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-20T21:49:05.965Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 37,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Issuance\\Details.cshtml",
+              "RelativeDocumentMoniker": "MVC\\Views\\Issuance\\Details.cshtml",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Issuance\\Details.cshtml",
+              "RelativeToolTip": "MVC\\Views\\Issuance\\Details.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-20T21:37:08.366Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 36,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Issuance\\Create.cshtml",
+              "RelativeDocumentMoniker": "MVC\\Views\\Issuance\\Create.cshtml",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Issuance\\Create.cshtml",
+              "RelativeToolTip": "MVC\\Views\\Issuance\\Create.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAI8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-20T21:35:58.26Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "DBContext.cs",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\InfraStructure\\Context\\DBContext.cs",
+              "RelativeDocumentMoniker": "InfraStructure\\Context\\DBContext.cs",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\InfraStructure\\Context\\DBContext.cs",
+              "RelativeToolTip": "InfraStructure\\Context\\DBContext.cs",
+              "ViewState": "AgIAAI8AAAAAAAAAAABBwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-20T21:33:43.135Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "Issuance.cs",
+              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Issuance.cs",
+              "RelativeDocumentMoniker": "Domain\\Issuance.cs",
+              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Issuance.cs",
+              "RelativeToolTip": "Domain\\Issuance.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-20T21:33:19.088Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
               "Title": "IStockService.cs",
               "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\Application\\Interfaces\\IServices\\IStockService.cs",
               "RelativeDocumentMoniker": "Application\\Interfaces\\IServices\\IStockService.cs",
@@ -142,24 +641,11 @@
               "RelativeToolTip": "Application\\Interfaces\\IServices\\IStockService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-20T19:59:52.172Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-20T19:59:52.172Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "StockRepository.cs",
-              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\InfraStructure\\Repos\\StockRepository.cs",
-              "RelativeDocumentMoniker": "InfraStructure\\Repos\\StockRepository.cs",
-              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\InfraStructure\\Repos\\StockRepository.cs",
-              "RelativeToolTip": "InfraStructure\\Repos\\StockRepository.cs",
-              "ViewState": "AgIAABcAAAAAAAAAAAAIwBwAAAAjAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-20T19:06:21.63Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 26,
               "Title": "StockService.cs",
               "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\Application\\Services\\StockService.cs",
               "RelativeDocumentMoniker": "Application\\Services\\StockService.cs",
@@ -167,62 +653,36 @@
               "RelativeToolTip": "Application\\Services\\StockService.cs",
               "ViewState": "AgIAADkAAAAAAAAAAAAAADkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-20T19:01:28.55Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-20T19:01:28.55Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Create.cshtml",
-              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Outbound\\Create.cshtml",
-              "RelativeDocumentMoniker": "MVC\\Views\\Outbound\\Create.cshtml",
-              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Outbound\\Create.cshtml",
-              "RelativeToolTip": "MVC\\Views\\Outbound\\Create.cshtml",
-              "ViewState": "AgIAAIoAAAAAAAAAAAApwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-20T19:02:46.322Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 25,
               "Title": "StockController.cs",
               "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Controllers\\StockController.cs",
               "RelativeDocumentMoniker": "MVC\\Controllers\\StockController.cs",
               "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Controllers\\StockController.cs",
               "RelativeToolTip": "MVC\\Controllers\\StockController.cs",
-              "ViewState": "AgIAAFoAAAAAAAAAAAApwF8AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAHMAAAAAAAAAAABRwF8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-20T19:00:39.677Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-20T19:00:39.677Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "ClientsController.cs",
-              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Controllers\\ClientsController.cs",
-              "RelativeDocumentMoniker": "MVC\\Controllers\\ClientsController.cs",
-              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Controllers\\ClientsController.cs",
-              "RelativeToolTip": "MVC\\Controllers\\ClientsController.cs",
-              "ViewState": "AgIAANoAAAAAAAAAAAAUwNsAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-20T18:59:37.653Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 3,
               "Title": "Create.cshtml",
               "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Inbound\\Create.cshtml",
               "RelativeDocumentMoniker": "MVC\\Views\\Inbound\\Create.cshtml",
               "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Inbound\\Create.cshtml",
               "RelativeToolTip": "MVC\\Views\\Inbound\\Create.cshtml",
-              "ViewState": "AgIAAO0AAAAAAAAAAAAUwPgAAAAjAAAAAAAAAA==",
+              "ViewState": "AgIAALQBAAAAAAAAAIBJwLYBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-20T18:49:02.56Z"
+              "WhenOpened": "2026-02-20T18:49:02.56Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 28,
               "Title": "InboundService.cs",
               "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\Application\\Services\\InboundService.cs",
               "RelativeDocumentMoniker": "Application\\Services\\InboundService.cs",
@@ -234,44 +694,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Products\\Index.cshtml",
-              "RelativeDocumentMoniker": "MVC\\Views\\Products\\Index.cshtml",
-              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Products\\Index.cshtml",
-              "RelativeToolTip": "MVC\\Views\\Products\\Index.cshtml",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAABQAAAA9AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-19T21:42:20.267Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Program.cs",
-              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Program.cs",
-              "RelativeDocumentMoniker": "MVC\\Program.cs",
-              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Program.cs",
-              "RelativeToolTip": "MVC\\Program.cs",
-              "ViewState": "AgIAAGwAAAAAAAAAAAAAAEEAAABOAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-19T21:15:58.817Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Clients\\Index.cshtml",
-              "RelativeDocumentMoniker": "MVC\\Views\\Clients\\Index.cshtml",
-              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Clients\\Index.cshtml",
-              "RelativeToolTip": "MVC\\Views\\Clients\\Index.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAACAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-19T21:11:58.617Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 30,
               "Title": "TransferForm.cshtml",
               "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Products\\TransferForm.cshtml",
               "RelativeDocumentMoniker": "MVC\\Views\\Products\\TransferForm.cshtml",
@@ -283,43 +706,19 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "OverlapForm.cshtml",
-              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Products\\OverlapForm.cshtml",
-              "RelativeDocumentMoniker": "MVC\\Views\\Products\\OverlapForm.cshtml",
-              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Products\\OverlapForm.cshtml",
-              "RelativeToolTip": "MVC\\Views\\Products\\OverlapForm.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAUAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-19T21:07:48.695Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "Edit.cshtml",
-              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Products\\Edit.cshtml",
-              "RelativeDocumentMoniker": "MVC\\Views\\Products\\Edit.cshtml",
-              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Products\\Edit.cshtml",
-              "RelativeToolTip": "MVC\\Views\\Products\\Edit.cshtml",
-              "ViewState": "AgIAAC0AAAAAAAAAAAAAADEAAABGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-19T21:07:42.41Z"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 16,
               "Title": "Create.cshtml",
               "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Products\\Create.cshtml",
               "RelativeDocumentMoniker": "MVC\\Views\\Products\\Create.cshtml",
               "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Products\\Create.cshtml",
               "RelativeToolTip": "MVC\\Views\\Products\\Create.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAUAAAAAAAAAA==",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAgwBQAAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2026-02-19T21:07:29.952Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 31,
               "Title": "Index.cshtml",
               "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Outbound\\Index.cshtml",
               "RelativeDocumentMoniker": "MVC\\Views\\Outbound\\Index.cshtml",
@@ -331,67 +730,19 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 29,
               "Title": "Edit.cshtml",
               "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Clients\\Edit.cshtml",
               "RelativeDocumentMoniker": "MVC\\Views\\Clients\\Edit.cshtml",
               "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Clients\\Edit.cshtml",
               "RelativeToolTip": "MVC\\Views\\Clients\\Edit.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAUAAAAAAAAAA==",
+              "ViewState": "AgIAADYAAAAAAAAAAIBJwAAAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2026-02-19T21:06:59.266Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "Details.cshtml",
-              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Clients\\Details.cshtml",
-              "RelativeDocumentMoniker": "MVC\\Views\\Clients\\Details.cshtml",
-              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Clients\\Details.cshtml",
-              "RelativeToolTip": "MVC\\Views\\Clients\\Details.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-19T21:06:35.996Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 18,
-              "Title": "Create.cshtml",
-              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Clients\\Create.cshtml",
-              "RelativeDocumentMoniker": "MVC\\Views\\Clients\\Create.cshtml",
-              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\Clients\\Create.cshtml",
-              "RelativeToolTip": "MVC\\Views\\Clients\\Create.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAZAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-19T21:06:25.365Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 20,
-              "Title": "_ViewImports.cshtml",
-              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\_ViewImports.cshtml",
-              "RelativeDocumentMoniker": "MVC\\Views\\_ViewImports.cshtml",
-              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\Views\\_ViewImports.cshtml",
-              "RelativeToolTip": "MVC\\Views\\_ViewImports.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAARAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-19T20:55:23.725Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 21,
-              "Title": "ProductService.cs",
-              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\Application\\Services\\ProductService.cs",
-              "RelativeDocumentMoniker": "Application\\Services\\ProductService.cs",
-              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\Application\\Services\\ProductService.cs",
-              "RelativeToolTip": "Application\\Services\\ProductService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAbAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-18T21:43:21.415Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 32,
               "Title": "DBContextFactory.cs",
               "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\InfraStructure\\Context\\DBContextFactory.cs",
               "RelativeDocumentMoniker": "InfraStructure\\Context\\DBContextFactory.cs",
@@ -403,31 +754,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
-              "Title": "IUserRepository.cs",
-              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Interfaces\\IUserRepository.cs",
-              "RelativeDocumentMoniker": "Domain\\Interfaces\\IUserRepository.cs",
-              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Interfaces\\IUserRepository.cs",
-              "RelativeToolTip": "Domain\\Interfaces\\IUserRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAATAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-18T21:20:48.691Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 24,
-              "Title": "IClientRepository.cs",
-              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Interfaces\\IClientRepository.cs",
-              "RelativeDocumentMoniker": "Domain\\Interfaces\\IClientRepository.cs",
-              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Interfaces\\IClientRepository.cs",
-              "RelativeToolTip": "Domain\\Interfaces\\IClientRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAATAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-18T21:20:17.476Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 33,
               "Title": "ISectionStockRepository.cs",
               "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Interfaces\\ISectionStockRepository.cs",
               "RelativeDocumentMoniker": "Domain\\Interfaces\\ISectionStockRepository.cs",
@@ -436,42 +763,6 @@
               "ViewState": "AgIAAAoAAAAAAAAAAAAgwAIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-18T21:13:38.591Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "IStockRepository.cs",
-              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Interfaces\\IStockRepository.cs",
-              "RelativeDocumentMoniker": "Domain\\Interfaces\\IStockRepository.cs",
-              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Interfaces\\IStockRepository.cs",
-              "RelativeToolTip": "Domain\\Interfaces\\IStockRepository.cs",
-              "ViewState": "AgIAAAcAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-18T21:13:30.499Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 26,
-              "Title": "IProductStockRepository.cs",
-              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Interfaces\\IProductStockRepository.cs",
-              "RelativeDocumentMoniker": "Domain\\Interfaces\\IProductStockRepository.cs",
-              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Interfaces\\IProductStockRepository.cs",
-              "RelativeToolTip": "Domain\\Interfaces\\IProductStockRepository.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAQwAIAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-18T21:12:14.529Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 25,
-              "Title": "IRepository.cs",
-              "DocumentMoniker": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Interfaces\\IRepository.cs",
-              "RelativeDocumentMoniker": "Domain\\Interfaces\\IRepository.cs",
-              "ToolTip": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Interfaces\\IRepository.cs",
-              "RelativeToolTip": "Domain\\Interfaces\\IRepository.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAgwBAAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-18T21:09:14.496Z"
             }
           ]
         }

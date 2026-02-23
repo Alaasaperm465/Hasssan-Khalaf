@@ -1,0 +1,124 @@
+﻿@page
+@model MVC.Pages.Issuance.CreateModel
+@{
+    ViewData["Title"] = "Create Issuance";
+}
+
+<div class="container mt-3">
+    <h3>اذن صرف — Issuance</h3>
+
+    <form method="post" id="issuanceForm">
+        @Html.AntiForgeryToken()
+
+        <div class="mb-3">
+            <label class="form-label">Serial / رقم مسلسل</label>
+            <input asp-for="SerialNumber" class="form-control" />
+            <span asp-validation-for="SerialNumber" class="text-danger"></span>
+        </div>
+
+        <table class="table table-bordered" id="issuanceTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Field / خانة</th>
+                    <th>Product (optional)</th>
+                    <th>Section (optional)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Items.Count; i++)
+                {
+                    <tr>
+                        <td>@(i+1)</td>
+                        <td>
+                            <input name="Items[@i].FieldValue" value="@Model.Items[i].FieldValue" class="form-control issuance-input" />
+                        </td>
+                        <td>
+                            <input name="Items[@i].ProductId" value="@Model.Items[i].ProductId" class="form-control" />
+                        </td>
+                        <td>
+                            <input name="Items[@i].SectionId" value="@Model.Items[i].SectionId" class="form-control" />
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-danger remove-row">حذف</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="mb-3">
+            <button type="button" id="addRow" class="btn btn-outline-secondary">Add Row / إضافة خانة</button>
+            <button type="submit" class="btn btn-primary">Save / حفظ</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+<script>
+(function(){
+    const tbody = document.querySelector('#issuanceTable tbody');
+    const addRowBtn = document.getElementById('addRow');
+
+    function reindex(){
+        Array.from(tbody.children).forEach((tr, idx) => {
+            tr.querySelector('td:first-child').innerText = idx+1;
+            tr.querySelectorAll('input').forEach(el => {
+                const name = el.getAttribute('name');
+                if(!name) return;
+                el.setAttribute('name', name.replace(/Items\[\d+\]/, `Items[${idx}]`));
+            });
+        });
+    }
+
+    function escapeHtml(s){ return String(s || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]); }
+
+    function addRow(value=''){
+        const idx = tbody.children.length;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `\
+<td>${idx+1}</td>\
+<td><input name="Items[${idx}].FieldValue" class="form-control issuance-input" value="${escapeHtml(value)}" /></td>\
+<td><input name="Items[${idx}].ProductId" class="form-control" /></td>\
+<td><input name="Items[${idx}].SectionId" class="form-control" /></td>\
+<td><button type="button" class="btn btn-sm btn-danger remove-row">حذف</button></td>`;
+        tbody.appendChild(tr);
+        attachRow(tr);
+    }
+
+    function attachRow(tr){
+        const inputs = Array.from(tr.querySelectorAll('.issuance-input'));
+        inputs.forEach(inp => {
+            inp.addEventListener('keydown', function(ev){
+                if(ev.key === 'Enter'){
+                    ev.preventDefault();
+                    const all = Array.from(document.querySelectorAll('.issuance-input'));
+                    const idx = all.indexOf(inp);
+                    if(idx >= 0 && idx < all.length - 1){
+                        all[idx+1].focus();
+                    } else {
+                        addRow();
+                        const updated = Array.from(document.querySelectorAll('.issuance-input'));
+                        updated[updated.length-1].focus();
+                    }
+                }
+            });
+        });
+
+        const btn = tr.querySelector('.remove-row');
+        btn.addEventListener('click', function(){ tr.remove(); reindex(); });
+    }
+
+    document.querySelectorAll('#issuanceTable tbody tr').forEach(tr => attachRow(tr));
+    addRowBtn.addEventListener('click', function(){ addRow(); });
+
+    // client-side validation: ensure no FieldValue empty before submit
+    document.querySelector('form').addEventListener('submit', function(ev){
+        const inputs = Array.from(document.querySelectorAll('input[name$=".FieldValue"]'));
+        const empty = inputs.find(i => !i.value || !i.value.trim());
+        if(empty){ ev.preventDefault(); alert('Please fill all fields before saving.\nالرجاء تعبئة جميع الخانات قبل الحفظ.'); empty.focus(); }
+    });
+})();
+</script>
+}

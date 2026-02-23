@@ -15,7 +15,6 @@ namespace MVC.Controllers
 
         public IActionResult Index()
         {
-            // simple list of outbounds
             var outbounds = _db.Outbounds.ToList();
             return View(outbounds);
         }
@@ -28,7 +27,8 @@ namespace MVC.Controllers
                 Clients = _db.Clients.OrderBy(c => c.Name).Select(c => new SelectListItem(c.Name, c.Id.ToString())).ToList(),
                 Products = _db.Products.OrderBy(p => p.Name).Select(p => new SelectListItem(p.Name, p.Id.ToString())).ToList(),
                 Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new SelectListItem(s.Name, s.Id.ToString())).ToList(),
-                Details = new List<OutboundDetailVM> { new OutboundDetailVM() }
+                Delegates = Enumerable.Empty<SelectListItem>(),
+                Details = Enumerable.Range(0, 6).Select(_ => new OutboundDetailVM()).ToList()
             };
 
             return View(vm);
@@ -38,14 +38,14 @@ namespace MVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(OutboundCreateVM vm)
         {
-            // populate lookups in case of redisplay
             vm.Clients = _db.Clients.OrderBy(c => c.Name).Select(c => new SelectListItem(c.Name, c.Id.ToString())).ToList();
             vm.Products = _db.Products.OrderBy(p => p.Name).Select(p => new SelectListItem(p.Name, p.Id.ToString())).ToList();
             vm.Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new SelectListItem(s.Name, s.Id.ToString())).ToList();
+            vm.Delegates = vm.ClientId > 0 ? _db.Delegates.Where(d => d.ClientId == vm.ClientId).OrderBy(d => d.Name).Select(d => new SelectListItem(d.Name, d.Id.ToString())).ToList() : Enumerable.Empty<SelectListItem>();
 
             if (vm.Details == null || vm.Details.Count == 0)
             {
-                ModelState.AddModelError(string.Empty, "??? ????? ??? ???? ??? ?????.");
+                ModelState.AddModelError(string.Empty, "?????? ????? ????.");
             }
 
             if (!ModelState.IsValid)
@@ -53,7 +53,6 @@ namespace MVC.Controllers
                 return View(vm);
             }
 
-            // Validate client
             var client = _db.Clients.FirstOrDefault(c => c.Id == vm.ClientId);
             if (client == null)
             {
@@ -61,49 +60,12 @@ namespace MVC.Controllers
                 return View(vm);
             }
 
-            // Validate lines and check stock availability
-            foreach (var line in vm.Details.Select((l, idx) => (l, idx)))
-            {
-                var l = line.l;
-                var idx = line.idx;
-
-                if (l.Cartons < 0 || l.Pallets < 0)
-                {
-                    ModelState.AddModelError(string.Empty, $"????? {idx + 1}: ????? ??? ?? ???? ?????.");
-                    break;
-                }
-
-                var prodExists = _db.Products.Any(p => p.Id == l.ProductId && p.IsActive);
-                if (!prodExists)
-                {
-                    ModelState.AddModelError(string.Empty, $"????? {idx + 1}: ?????? ??? ?????.");
-                    break;
-                }
-
-                var secExists = _db.Sections.Any(s => s.Id == l.SectionId);
-                if (!secExists)
-                {
-                    ModelState.AddModelError(string.Empty, $"????? {idx + 1}: ?????? ??? ?????.");
-                    break;
-                }
-
-                var stock = _db.Stocks.FirstOrDefault(s => s.ClientId == vm.ClientId && s.ProductId == l.ProductId && s.SectionId == l.SectionId);
-                var availableCartons = stock?.Cartons ?? 0;
-                var availablePallets = stock?.Pallets ?? 0;
-                if (availableCartons < l.Cartons || availablePallets < l.Pallets)
-                {
-                    ModelState.AddModelError(string.Empty, $"????? {idx + 1}: ?????? ??? ????? ?? ?????? (????? {availableCartons} ?????? {availablePallets} ????).");
-                    break;
-                }
-            }
-
-            if (!ModelState.IsValid) return View(vm);
-
-            // All validation passed - create outbound and update stocks in transaction
             using var tx = _db.Database.BeginTransaction();
             try
             {
                 var outbound = new Outbound { ClientId = vm.ClientId, CreatedAt = DateTime.UtcNow };
+                if (vm.DelegateId.HasValue) outbound.DelegateId = vm.DelegateId.Value;
+
                 foreach (var l in vm.Details)
                 {
                     var detail = new OutboundDetail
@@ -116,7 +78,6 @@ namespace MVC.Controllers
                     };
                     outbound.Details.Add(detail);
 
-                    // adjust stock
                     var stock = _db.Stocks.FirstOrDefault(s => s.ClientId == vm.ClientId && s.ProductId == l.ProductId && s.SectionId == l.SectionId);
                     if (stock != null)
                     {
@@ -125,7 +86,6 @@ namespace MVC.Controllers
                         _db.Stocks.Update(stock);
                     }
 
-                    // product stock
                     var prodStock = _db.ProductStocks.FirstOrDefault(ps => ps.ClientId == vm.ClientId && ps.ProductId == l.ProductId);
                     if (prodStock != null)
                     {
@@ -134,7 +94,6 @@ namespace MVC.Controllers
                         _db.ProductStocks.Update(prodStock);
                     }
 
-                    // section stock
                     var secStock = _db.SectionStocks.FirstOrDefault(ss => ss.ClientId == vm.ClientId && ss.SectionId == l.SectionId);
                     if (secStock != null)
                     {
@@ -148,13 +107,13 @@ namespace MVC.Controllers
                 _db.SaveChanges();
                 tx.Commit();
 
-                TempData["Success"] = "?? ????? ??? ?????? ?????.";
+                TempData["Success"] = "?? ??? ??? ????????.";
                 return RedirectToAction("Index");
             }
             catch (System.Exception ex)
             {
                 tx.Rollback();
-                ModelState.AddModelError(string.Empty, "??? ??? ????? ????? ?????.");
+                ModelState.AddModelError(string.Empty, "??? ??? ????? ?????.");
                 return View(vm);
             }
         }
@@ -211,7 +170,10 @@ namespace MVC.Controllers
                 if (secStock != null) { secStock.Cartons -= req.Cartons; secStock.Pallets -= req.Pallets; _db.SectionStocks.Update(secStock); }
 
                 _db.SaveChanges();
-                return Ok(new { success = true, id = outbound.Id });
+
+                // find inserted detail id (last added)
+                var insertedDetail = outbound.Details.LastOrDefault();
+                return Ok(new { success = true, id = outbound.Id, detailId = insertedDetail?.Id });
             }
 
             // create new outbound with single line
@@ -235,13 +197,73 @@ namespace MVC.Controllers
 
                 _db.SaveChanges();
                 tx.Commit();
-                return Ok(new { success = true, id = outbound.Id });
+
+                // get detail id
+                var savedOutbound = _db.Outbounds.Include(o => o.Details).FirstOrDefault(o => o.Id == outbound.Id);
+                var savedDetailId = savedOutbound?.Details?.FirstOrDefault()?.Id;
+
+                return Ok(new { success = true, id = outbound.Id, detailId = savedDetailId });
             }
             catch (System.Exception)
             {
                 tx.Rollback();
                 return StatusCode(500, new { success = false, error = "Server error" });
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("Outbound/DeleteLineAjax")]
+        public IActionResult DeleteLineAjax([FromBody] MVC.ViewModels.Ajax.DeleteLineRequest req)
+        {
+            if (req == null) return BadRequest(new { success = false, error = "Request body required" });
+            if (req.DetailId <= 0) return BadRequest(new { success = false, error = "DetailId required" });
+
+            var detail = _db.OutboundDetails.FirstOrDefault(d => d.Id == req.DetailId);
+            if (detail == null) return NotFound(new { success = false, error = "Detail not found" });
+
+            var outbound = _db.Outbounds.Include(o => o.Details).FirstOrDefault(o => o.Id == detail.OutboundId);
+            if (outbound == null) return NotFound(new { success = false, error = "Outbound not found" });
+
+            // remove detail
+            _db.OutboundDetails.Remove(detail);
+
+            // revert stocks (add back quantities)
+            var stock = _db.Stocks.FirstOrDefault(s => s.ClientId == outbound.ClientId && s.ProductId == detail.ProductId && s.SectionId == detail.SectionId);
+            if (stock != null)
+            {
+                stock.Cartons += detail.Cartons;
+                stock.Pallets += detail.Pallets;
+                _db.Stocks.Update(stock);
+            }
+
+            var prodStock = _db.ProductStocks.FirstOrDefault(ps => ps.ClientId == outbound.ClientId && ps.ProductId == detail.ProductId);
+            if (prodStock != null)
+            {
+                prodStock.Cartons += detail.Cartons;
+                prodStock.Pallets += detail.Pallets;
+                _db.ProductStocks.Update(prodStock);
+            }
+
+            var secStock = _db.SectionStocks.FirstOrDefault(ss => ss.ClientId == outbound.ClientId && ss.SectionId == detail.SectionId);
+            if (secStock != null)
+            {
+                secStock.Cartons += detail.Cartons;
+                secStock.Pallets += detail.Pallets;
+                _db.SectionStocks.Update(secStock);
+            }
+
+            _db.SaveChanges();
+            return Ok(new { success = true, id = detail.Id });
+        }
+
+        [HttpGet]
+        public IActionResult GetDelegatesForClient(int clientId)
+        {
+            var list = _db.Delegates.Where(d => d.ClientId == clientId).OrderBy(d => d.Name)
+                .Select(d => new { value = d.Id, text = d.Name })
+                .ToList();
+            return Json(list);
         }
     }
 }

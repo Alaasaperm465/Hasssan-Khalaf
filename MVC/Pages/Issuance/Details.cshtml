@@ -1,0 +1,23 @@
+@page "{id:int}"
+@model dynamic
+@using Hassann_Khala.Domain
+@{
+    var issuance = (Hassann_Khala.Domain.Issuance)Model; // simple cast if you adapt
+}
+<div class="container mt-3">
+    <h4>Issuance: @issuance.SerialNumber</h4>
+    <div>Created: @issuance.CreatedAt.ToString("g")</div>
+    <table class="table table-sm table-striped mt-3">
+        <thead><tr><th>#</th><th>Value</th><th>Product</th><th>Section</th></tr></thead>
+        <tbody>
+            @for(int i=0;i<issuance.Items.Count;i++){
+                <tr>
+                    <td>@(i+1)</td>
+                    <td>@issuance.Items[i].FieldValue</td>
+                    <td>@issuance.Items[i].ProductId</td>
+                    <td>@issuance.Items[i].SectionId</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -13,3 +13,4 @@ F:\.net\Hassan\Hassann_Khala\Application\obj\Debug\net9.0\Application.dll
 F:\.net\Hassan\Hassann_Khala\Application\obj\Debug\net9.0\refint\Application.dll
 F:\.net\Hassan\Hassann_Khala\Application\obj\Debug\net9.0\Application.pdb
 F:\.net\Hassan\Hassann_Khala\Application\obj\Debug\net9.0\ref\Application.dll
+F:\.net\Hassan\Hassann_Khala\Application\obj\Debug\net9.0\Application.sourcelink.json
