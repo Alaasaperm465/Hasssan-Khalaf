@@ -33,14 +33,46 @@
             </div>
 
             <div class="col-12 col-md-4">
-                <label asp-for="SectionId" class="form-label">العنبر (تطبيق على السطور)</label>
+                <label asp-for="SectionId" class="form-label">العنبر</label>
                 <select asp-for="SectionId" id="topSectionSelect" class="form-select" asp-items="Model.Sections">
                     <option value="">-- لا شيء --</option>
                 </select>
             </div>
         </div>
+        <div class="row g-3 mb-3">
+            <div class="col-12 col-md-4">
+                <label asp-for="SectionId" class="form-label">امين المخزن </label>
+                <select asp-for="SectionId" id="SectionSelect" class="form-select" asp-items="Model.Sections">
+                    <option value="">-- لا شيء --</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-4">
+                <label asp-for="SectionId" class="form-label">رقم المستند </label>
+                <select asp-for="SectionId" id="SectionSelect" class="form-select" asp-items="Model.Sections">
+                    <option value="">-- لا شيء --</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-4">
+                <label asp-for="SectionId" class="form-label">تاريخ المستند </label>
+                <select asp-for="SectionId" id="SectionSelect" class="form-select" asp-items="Model.Sections">
+                </select>
+            </div>
+            <div>
+                <div class="col-12 col-md-4">
+                    <label asp-for="SectionId" class="form-label"> الفتح الاضافي  </label>
+                    <select asp-for="SectionId" id="SectionSelect" class="form-select">
+                    </select>
+                </div>
+            </div>
+            <div>
+                <div class="col-12 col-md-4">
+                    <label asp-for="SectionId" class="form-label">  ملاحظات  </label>
+                    <select asp-for="SectionId" id="SectionSelect" class="form-select">
+                    </select>
+                </div>
+            </div>
 
-        <h5 class="mt-3 mb-2">Lines</h5>
+        @* <h5 class="mt-3 mb-2">Lines</h5> *@
         <div class="card mb-3">
             <div class="card-body p-2 p-sm-3">
                 <div class="table-responsive">
@@ -115,12 +147,14 @@
     <script>
         (function() {
             const products = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Products.Select(p => new { value = p.Value, text = p.Text, type = p.Value })));
-            const sections = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Sections.Select(s => new { value = s.Value, text = s.Text })));
+            // keep full list of sections as fallback, but we'll prefer server-returned sections
+            const allSections = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Sections.Select(s => new { value = s.Value, text = s.Text })));
             
             const clientSelect = document.querySelector('[name="ClientId"]');
             const delegateSelect = document.getElementById('delegateSelect');
             const topSectionSelect = document.getElementById('topSectionSelect');
             const tbody = document.querySelector('#linesTable tbody');
+            const outboundForm = document.getElementById('outboundForm');
             
             let allowedTypes = null;
             let pairs = [];
@@ -157,22 +191,88 @@
             function addLine() {
                 const index = tbody.children.length;
                 const tr = document.createElement('tr');
-                tr.innerHTML = `\
-                    <td>\
-                        <select name="Details[${index}].ProductId" class="form-select line-input">\
-//+                        ${productOptionsForClientAndSection()}\
-+                        ${productOptionsForClientAndSection()}\
-                        </select>\
-                    </td>\
-                    <td><input type="number" name="Details[${index}].Cartons" class="form-control line-input" value="0" min="0" /></td>\
-                    <td><input type="number" name="Details[${index}].Pallets" class="form-control line-input" value="0" min="0" /></td>\
-                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger remove-line">حذف</button></td>\
-                    <input type="hidden" name="Details[${index}].SectionId" value="${topSectionSelect ? topSectionSelect.value : 0}" class="line-section-hidden" />\
+                tr.innerHTML = `\\
+                    <td>\\
+                        <select name="Details[${index}].ProductId" class="form-select line-input">\\
+                            ${productOptionsForClientAndSection()}\\
+                        </select>\\
+                    </td>\\
+                    <td><input type="number" name="Details[${index}].Cartons" class="form-control line-input" value="0" min="0" /></td>\\
+                    <td><input type="number" name="Details[${index}].Pallets" class="form-control line-input" value="0" min="0" /></td>\\
+                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger remove-line">حذف</button></td>\\
+                    <input type="hidden" name="Details[${index}].SectionId" value="${topSectionSelect ? topSectionSelect.value : 0}" class="line-section-hidden" />\\
                 `;
                 tbody.appendChild(tr);
                 attachRowEvents(tr);
                 recalcTotals();
             }
+                    function saveRowAjax(tr) {
+
+            const clientId = clientSelect.value;
+            const productId = tr.querySelector('select[name$=".ProductId"]').value;
+            const cartons = parseInt(tr.querySelector('input[name$=".Cartons"]').value || 0);
+            const pallets = parseInt(tr.querySelector('input[name$=".Pallets"]').value || 0);
+            const sectionId = tr.querySelector('.line-section-hidden').value;
+
+            if (!clientId || !productId || !sectionId) {
+                alert("اكمل بيانات السطر");
+                return;
+            }
+
+        fetch('/Outbound/AddLineAjax', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+            },
+            body: JSON.stringify({
+                clientId: parseInt(clientId),
+                productId: parseInt(productId),
+                sectionId: parseInt(sectionId),
+                cartons: cartons,
+                pallets: pallets
+            })
+        })
+        .then(async (response) => {
+
+            let data = null;
+
+            try {
+                data = await response.json();
+            } catch {
+                alert("خطأ في قراءة رد السيرفر");
+                return;
+            }
+
+            // ❌ لو السيرفر رجع 400
+            if (!response.ok) {
+                alert(data?.error || "الكمية المطلوبة أكبر من المتاح");
+                return; // مهم جدا عشان ماينزلش للسطر اللي بعده
+            }
+
+            // ✅ نجاح
+            if (data.success) {
+
+                // اقفل السطر الحالي
+                tr.querySelectorAll('select, input[type="number"]').forEach(el => {
+                    el.disabled = true;
+                });
+
+                // روح للسطر اللي بعده فقط
+                const nextRow = tr.nextElementSibling;
+
+                if (nextRow) {
+                    const firstInput = nextRow.querySelector('select[name$=".ProductId"]');
+                    if (firstInput) firstInput.focus();
+                }
+            }
+
+        })
+        .catch(err => {
+            console.log(err);
+            alert("Server error");
+        });
+        }
             
             function attachRowEvents(tr) {
                 const inputs = Array.from(tr.querySelectorAll('.line-input'));
@@ -181,8 +281,13 @@
                     inp.addEventListener('keydown', function(ev) {
                         if (ev.key === 'Enter') {
                             ev.preventDefault();
-                            if (idx < inputs.length - 1) { inputs[idx+1].focus(); return; }
-                            addLine();
+                        if (idx < inputs.length - 1) {
+                            inputs[idx + 1].focus();
+                            return;
+                        }
+
+                        // لو آخر input → احفظ السطر Ajax
+                        saveRowAjax(tr);
                         }
                     });
                 });
@@ -204,7 +309,11 @@
 
             clientSelect.addEventListener('change', function() {
                 const clientId = this.value;
-                if (!clientId) { allowedTypes = null; pairs = []; setDelegateOptions([]); document.querySelectorAll('select[name$=".ProductId"]').forEach(s => s.innerHTML = '<option value="">-- اختر المنتج --</option>'); return; }
+                if (!clientId) { allowedTypes = null; pairs = []; setDelegateOptions([]); document.querySelectorAll('select[name$=".ProductId"]').forEach(s => s.innerHTML = '<option value="">-- اختر المنتج --</option>');
+                    // reset topSectionSelect to fallback full list
+                    topSectionSelect.innerHTML = '<option value="">-- لا توجد مخازن متاحة --</option>';
+                    topSectionSelect.disabled = true;
+                    return; }
 
                 fetch(`/Clients/GetAllowedProductTypes?clientId=${clientId}`)
                     .then(r => r.json()).then(d => { allowedTypes = (d && d.types) ? d.types.map(t => parseInt(t)) : null; })
@@ -220,8 +329,35 @@
                                     .then(r => r.json())
                                     .then(list => setDelegateOptions(list))
                                     .catch(()=> setDelegateOptions([]));
+
+                                if (data.sections && data.sections.length > 0) {
+                                    const opts = ['<option value="">-- اختر المخزن --</option>'].concat(data.sections.map(s => `<option value="${s.value}">${s.text}</option>`));
+                                    topSectionSelect.innerHTML = opts.join('');
+                                    topSectionSelect.disabled = false;
+                                } else {
+                                    // if pairs indicate allowed sections, use them; otherwise show no sections and disable
+                                    const allowedSectionIds = Array.from(new Set(pairs.map(p => String(p.sectionId))));
+                                    if (allowedSectionIds.length > 0) {
+                                        const opts = ['<option value="">-- اختر المخزن --</option>'].concat(allSections.filter(s => allowedSectionIds.includes(String(s.value))).map(s => `<option value="${s.value}">${s.text}</option>`));
+                                        topSectionSelect.innerHTML = opts.join('');
+                                        topSectionSelect.disabled = false;
+                                    } else {
+                                        // no sections for this client -> show placeholder and disable
+                                        topSectionSelect.innerHTML = '<option value="">-- لا توجد مخازن متاحة --</option>';
+                                        topSectionSelect.disabled = true;
+                                        // clear product selects because no section to pick
+                                        document.querySelectorAll('select[name$=".ProductId"]').forEach(s => s.innerHTML = '<option value="">-- لا توجد منتجات متاحة --</option>');
+                                    }
+                                }
+
+                                // update hidden inputs with current top section
+                                document.querySelectorAll('.line-section-hidden').forEach(h => h.value = topSectionSelect.value || 0);
                             })
-                            .catch(()=> {});
+                            .catch(()=> {
+                                // on error, fallback to empty list (disable)
+                                topSectionSelect.innerHTML = '<option value="">-- لا توجد مخازن متاحة --</option>';
+                                topSectionSelect.disabled = true;
+                            });
                     });
             });
 

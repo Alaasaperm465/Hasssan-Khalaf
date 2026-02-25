@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Hassann_Khala.Application.DTOs.Inbound;
 using Hassann_Khala.Application.Interfaces.IServices;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +31,7 @@ namespace MVC.Controllers
         {
             _inboundService = inboundService;
             _clientService = clientService;
-            _productService = productService;
+            _productService = productService; // keep service for single product lookups used on POST
             _sectionService = sectionService;
             _mapper = mapper;
             _db = db;
@@ -44,20 +44,54 @@ namespace MVC.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Create()
+        // Accept optional clientId to filter sections server-side
+        public async Task<IActionResult> Create(int? clientId)
         {
             var clients = await _clientService.GetAllAsync();
-            var products = await _productService.GetAllAsync();
+            // load domain products to get their Type
+            var products = await _db.Products.AsNoTracking().ToListAsync();
             var sections = await _sectionService.GetAllAsync();
+
+            // if clientId provided, filter products by client's allowed types
+            IEnumerable<Product> filteredProducts = products;
+            if (clientId.HasValue && clientId.Value > 0)
+            {
+                var client = await _db.Clients.FindAsync(clientId.Value);
+                if (client != null)
+                {
+                    var mask = client.AllowedProductTypes;
+                    var allowedTypeInts = new List<int>();
+                    foreach (var val in Enum.GetValues(typeof(ProductType)).Cast<ProductType>())
+                    {
+                        var bit = (int)val;
+                        if ((mask & bit) == bit) allowedTypeInts.Add(bit);
+                    }
+                    if (allowedTypeInts.Any()) filteredProducts = products.Where(p => allowedTypeInts.Contains((int)p.Type));
+                }
+            }
+
+            IEnumerable<SelectListItem> sectionsItems;
+            if (clientId.HasValue && clientId.Value > 0)
+            {
+                var sectionIds = await _db.Stocks.Where(s => s.ClientId == clientId.Value).Select(s => s.SectionId).Distinct().ToListAsync();
+                sectionsItems = sections.Where(s => sectionIds.Contains(s.Id)).Select(s => new SelectListItem(s.Name, s.Id.ToString()));
+            }
+            else
+            {
+                sectionsItems = sections.Select(s => new SelectListItem(s.Name, s.Id.ToString()));
+            }
 
             var vm = new InboundCreateVM
             {
                 Clients = clients.Select(c => new SelectListItem(c.Name, c.Id.ToString())),
                 Delegates = Enumerable.Empty<SelectListItem>(),
-                Products = products.Select(p => new SelectListItem(p.Name, p.Id.ToString())),
-                Sections = sections.Select(s => new SelectListItem(s.Name, s.Id.ToString())),
+                Products = filteredProducts.Select(p => new SelectListItem(p.Name, p.Id.ToString())),
+                Sections = sectionsItems,
                 Details = Enumerable.Range(0, 6).Select(_ => new InboundDetailVM()).ToList()
             };
+
+            // if clientId provided, set it in vm so view knows
+            if (clientId.HasValue) vm.ClientId = clientId.Value;
 
             return View(vm);
         }
@@ -70,13 +104,39 @@ namespace MVC.Controllers
             async Task PopulateLookups()
             {
                 var clients = await _clientService.GetAllAsync();
-                var products = await _productService.GetAllAsync();
+                var products = await _db.Products.AsNoTracking().ToListAsync();
                 var sections = await _sectionService.GetAllAsync();
 
                 vm.Clients = clients.Select(c => new SelectListItem(c.Name, c.Id.ToString()));
-                vm.Products = products.Select(p => new SelectListItem(p.Name, p.Id.ToString()));
                 vm.Sections = sections.Select(s => new SelectListItem(s.Name, s.Id.ToString()));
 
+                // if client selected, filter products by allowed types
+                if (vm.ClientId > 0)
+                {
+                    var client = await _db.Clients.FindAsync(vm.ClientId);
+                    if (client != null)
+                    {
+                        var mask = client.AllowedProductTypes;
+                        var allowedTypeInts = new List<int>();
+                        foreach (var val in Enum.GetValues(typeof(ProductType)).Cast<ProductType>())
+                        {
+                            var bit = (int)val;
+                            if ((mask & bit) == bit) allowedTypeInts.Add(bit);
+                        }
+                        if (allowedTypeInts.Any()) vm.Products = products.Where(p => allowedTypeInts.Contains((int)p.Type)).Select(p => new SelectListItem(p.Name, p.Id.ToString()));
+                        else vm.Products = products.Select(p => new SelectListItem(p.Name, p.Id.ToString()));
+                    }
+                    else
+                    {
+                        vm.Products = products.Select(p => new SelectListItem(p.Name, p.Id.ToString()));
+                    }
+                }
+                else
+                {
+                    vm.Products = products.Select(p => new SelectListItem(p.Name, p.Id.ToString()));
+                }
+                
+                
                 // also repopulate delegates for selected client
                 if (vm.ClientId > 0)
                 {
@@ -158,6 +218,7 @@ namespace MVC.Controllers
                 await PopulateLookups();
                 return View(vm);
             }
+
         }
 
         // New AJAX endpoint to handle JSON POST and return JSON result
@@ -442,6 +503,21 @@ namespace MVC.Controllers
                 .Select(d => new { value = d.Id, text = d.Name })
                 .ToList();
             return Json(list);
+        }
+
+        [HttpGet]
+        public IActionResult GetClientSections(int clientId)
+        {
+            if (clientId <= 0) return BadRequest(new { success = false, error = "clientId required" });
+
+            var sections = _db.Stocks
+                .Where(s => s.ClientId == clientId)
+                .Include(s => s.Section)
+                .Select(s => new { value = s.SectionId, text = s.Section != null ? s.Section.Name : string.Empty })
+                .Distinct()
+                .ToList();
+
+            return Json(sections);
         }
 
     }

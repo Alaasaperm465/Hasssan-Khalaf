@@ -45,7 +45,23 @@ namespace MVC.Controllers
 
             if (vm.Details == null || vm.Details.Count == 0)
             {
-                ModelState.AddModelError(string.Empty, "?????? ????? ????.");
+                ModelState.AddModelError(string.Empty, "??? ????? ??? ???? ??? ?????.");
+            }
+
+            // validate stock availability for each detail
+            if (vm.Details != null && vm.Details.Count > 0)
+            {
+                foreach (var l in vm.Details.Where(d => d != null))
+                {
+                    if (l.ProductId <= 0) continue; // skip empty lines
+                    var stock = _db.Stocks.FirstOrDefault(s => s.ClientId == vm.ClientId && s.ProductId == l.ProductId && s.SectionId == l.SectionId);
+                    var availableCartons = stock?.Cartons ?? 0;
+                    var availablePallets = stock?.Pallets ?? 0;
+                    if (l.Cartons > availableCartons || l.Pallets > availablePallets)
+                    {
+                        ModelState.AddModelError(string.Empty, $"?????? ???????? ?????? {l.ProductId} ?? ?????? {l.SectionId} ???? ?? ??????.");
+                    }
+                }
             }
 
             if (!ModelState.IsValid)
@@ -107,7 +123,7 @@ namespace MVC.Controllers
                 _db.SaveChanges();
                 tx.Commit();
 
-                TempData["Success"] = "?? ??? ??? ????????.";
+                TempData["Success"] = "?? ????? ??? ??????.";
                 return RedirectToAction("Index");
             }
             catch (System.Exception ex)
@@ -138,6 +154,15 @@ namespace MVC.Controllers
                 return BadRequest(new { success = false, error = "Invalid client/product/section" });
             }
 
+            // check availability
+            var stockRecord = _db.Stocks.FirstOrDefault(s => s.ClientId == req.ClientId && s.ProductId == req.ProductId && s.SectionId == req.SectionId);
+            var availableCartons = stockRecord?.Cartons ?? 0;
+            var availablePallets = stockRecord?.Pallets ?? 0;
+            if (req.Cartons > availableCartons || req.Pallets > availablePallets)
+            {
+                return BadRequest(new { success = false, error = "?????? ???????? ???? ?? ??????" });
+            }
+
             // If outboundId provided, append detail
             if (req.OutboundId.HasValue && req.OutboundId.Value > 0)
             {
@@ -157,10 +182,9 @@ namespace MVC.Controllers
                 outbound.Details.Add(detail);
 
                 // reduce stock
-                var stock = _db.Stocks.FirstOrDefault(s => s.ClientId == outbound.ClientId && s.ProductId == req.ProductId && s.SectionId == req.SectionId);
-                if (stock != null)
+                if (stockRecord != null)
                 {
-                    stock.Cartons -= req.Cartons; stock.Pallets -= req.Pallets; _db.Stocks.Update(stock);
+                    stockRecord.Cartons -= req.Cartons; stockRecord.Pallets -= req.Pallets; _db.Stocks.Update(stockRecord);
                 }
 
                 var prodStock = _db.ProductStocks.FirstOrDefault(ps => ps.ClientId == outbound.ClientId && ps.ProductId == req.ProductId);
@@ -186,14 +210,13 @@ namespace MVC.Controllers
 
                 _db.Outbounds.Add(outbound);
 
-                var stock = _db.Stocks.FirstOrDefault(s => s.ClientId == req.ClientId && s.ProductId == req.ProductId && s.SectionId == req.SectionId);
-                if (stock != null) { stock.Cartons -= req.Cartons; stock.Pallets -= req.Pallets; _db.Stocks.Update(stock); }
+                if (stockRecord != null) { stockRecord.Cartons -= req.Cartons; stockRecord.Pallets -= req.Pallets; _db.Stocks.Update(stockRecord); }
 
-                var prodStock = _db.ProductStocks.FirstOrDefault(ps => ps.ClientId == req.ClientId && ps.ProductId == req.ProductId);
-                if (prodStock != null) { prodStock.Cartons -= req.Cartons; prodStock.Pallets -= req.Pallets; _db.ProductStocks.Update(prodStock); }
+                var prodStock2 = _db.ProductStocks.FirstOrDefault(ps => ps.ClientId == req.ClientId && ps.ProductId == req.ProductId);
+                if (prodStock2 != null) { prodStock2.Cartons -= req.Cartons; prodStock2.Pallets -= req.Pallets; _db.ProductStocks.Update(prodStock2); }
 
-                var secStock = _db.SectionStocks.FirstOrDefault(ss => ss.ClientId == req.ClientId && ss.SectionId == req.SectionId);
-                if (secStock != null) { secStock.Cartons -= req.Cartons; secStock.Pallets -= req.Pallets; _db.SectionStocks.Update(secStock); }
+                var secStock2 = _db.SectionStocks.FirstOrDefault(ss => ss.ClientId == req.ClientId && ss.SectionId == req.SectionId);
+                if (secStock2 != null) { secStock2.Cartons -= req.Cartons; secStock2.Pallets -= req.Pallets; _db.SectionStocks.Update(secStock2); }
 
                 _db.SaveChanges();
                 tx.Commit();

@@ -8,7 +8,7 @@
     #linesTable .remove-line { display: inline-block; }
 </style>
 
-<div class="container-fluid mt-3">
+<div class="container-fluid mt-3" style="background-color:burlywood">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="h5 mb-0">المشتريات</h2>
         <div>
@@ -20,41 +20,80 @@
         @Html.AntiForgeryToken()
 
         <div class="row g-3 mb-3">
-            <div class="col-12 col-md-4">
-                <label asp-for="ClientId" class="form-label">العميل</label>
+            <div class="col-12 col-md-4 d-flex align-items-center gap-2">
+                <label asp-for="ClientId" class="form-label mb-0">العميل</label>
                 <select asp-for="ClientId" id="clientSelect" class="form-select" asp-items="Model.Clients">
                     <option value="">-- اختر العميل --</option>
                 </select>
                 <span asp-validation-for="ClientId" class="text-danger"></span>
             </div>
 
-            <div class="col-12 col-md-4">
-                <label asp-for="DelegateId" class="form-label">المفوض</label>
-                <select asp-for="DelegateId" id="delegateSelect" class="form-select" asp-items="Model.Delegates">
+            <div class="col-12 col-md-4 d-flex align-items-center gap-2">
+                <label asp-for="DelegateId" class="form-label mb-0">المفوض</label>
+                <select style="background-color:yellowgreen" asp-for="DelegateId" id="delegateSelect" class="form-select" asp-items="Model.Delegates">
                     <option value="">-- اختر المفوض --</option>
                 </select>
                 <span asp-validation-for="DelegateId" class="text-danger"></span>
             </div>
 
-            <div class="col-12 col-md-4">
-                <label asp-for="SectionId" class="form-label">العنبر (تطبيق على السطور)</label>
-                <select asp-for="SectionId" id="topSectionSelect" class="form-select" asp-items="Model.Sections">
+            <div class="col-12 col-md-4 d-flex align-items-center gap-2">
+                <label asp-for="SectionId" class="form-label mb-0">العنبر</label>
+                <select asp-for="SectionId" id="SectionSelect" class="form-select" asp-items="Model.Sections">
                     <option value="">-- لا شيء --</option>
                 </select>
             </div>
         </div>
+        <div class="row g-3 mb-3">
+            <div class="col-12 col-md-4 d-flex align-items-center gap-2">
+                <label asp-for="SectionId" class="form-label mb-0">امين المخزن</label>
+                <select asp-for="SectionId" id="SectionSelect1" class="form-select" asp-items="Model.Sections">
+                    <option value="">-- لا شيء --</option>
+                </select>
+            </div>
 
-        <h5 class="mt-3 mb-2">Lines</h5>
+            <div class="col-12 col-md-4 d-flex align-items-center gap-2">
+                <label asp-for="SectionId" class="form-label mb-0">رقم المستند</label>
+                <select asp-for="SectionId" id="SectionSelect2" class="form-select" asp-items="Model.Sections">
+                    <option value="">-- لا شيء --</option>
+                </select>
+            </div>
 
+            <div class="col-12 col-md-4 d-flex align-items-center gap-2">
+                <label asp-for="SectionId" class="form-label mb-0">تاريخ المستند</label>
+                <select asp-for="SectionId" id="SectionSelect3" class="form-select" asp-items="Model.Sections">
+                </select>
+            </div>
+        </div>
+            <div class="row align-items-center mb-3">
+                <div class="col-auto">
+                    <label asp-for="SectionId" class="form-label mb-0">ملاحظات</label>
+                </div>
+                <div class="col">
+                    <select asp-for="SectionId" id="SectionSelect" class="form-select">
+                    </select>
+                </div>
+            </div>
+            <div class="row align-items-center mb-3">
+                <div class="col-auto">
+                    <label asp-for="SectionId" class="form-label mb-0">ملاحظات</label>
+                </div>
+                <div class="col">
+                    <select asp-for="SectionId" id="SectionSelect" class="form-select">
+                    </select>
+                </div>
+            </div>
+        @* <h5 class="mt-3 mb-2">Lines</h5> *@
+        <hr>
         <div class="card mb-3">
             <div class="card-body p-2 p-sm-3">
                 <div class="table-responsive">
                     <table class="table table-sm table-bordered mb-0" id="linesTable">
+                        <thead style="text-align: center;">محتويات الاذن</thead>
                         <thead class="table-light">
                             <tr>
                                 <th class="w-50">المنتج</th>
-                                <th class="w-20">الكرتون</th>
-                                <th class="w-20">بالتات</th>
+                                <th class="w-20">عدد الكرتون</th>
+                                <th class="w-20">عدد البالتات</th>
                                 <th class="w-10">العمليات</th>
                             </tr>
                         </thead>
@@ -95,7 +134,7 @@
 
                 <div class="mt-2 d-flex gap-2">
                     <button type="button" id="addLine" class="btn btn-sm btn-outline-secondary">إضافة سطر (أو Enter)</button>
-                    <div class="text-muted small">اضغط Enter في آخر خانة لحفظ السطر في قاعدة البيانات والالحتفاظ به، وزر الحذف سيحذف السطر من قاعدة البيانات ويعود الرصيد.</div>
+                    <div class="text-muted small">اضغط Enter في آخر خانة لحفظ السطر في قاعدة البيانات والالحتفاظ به، وزر الحذف سيحذف السطر من قاعدة البيانات ويعيد الرصيد.</div>
                 </div>
             </div>
         </div>
@@ -126,7 +165,7 @@
                 const MAX_ROWS = 6;
                 const clientSelect = document.querySelector('[name="ClientId"]');
                 const delegateSelect = document.getElementById('delegateSelect');
-                const topSectionSelect = document.getElementById('topSectionSelect');
+                const topSectionSelect = document.getElementById('SectionSelect');
                 const tbody = document.querySelector('#linesTable tbody');
 
                 let currentInboundId = null;
@@ -144,6 +183,16 @@
                     }
                 }
 
+                function productOptionsForClient() {
+                    let list = (allowedTypes && allowedTypes.length > 0) ? products.filter(p => allowedTypes.includes(parseInt(p.type))) : products;
+                    const selectedSection = topSectionSelect && topSectionSelect.value ? String(topSectionSelect.value) : null;
+                    if (selectedSection) {
+                        const allowedProductIds = pairs.filter(p => String(p.sectionId) === String(selectedSection)).map(p => String(p.productId));
+                        if (allowedProductIds.length > 0) list = list.filter(p => allowedProductIds.includes(String(p.value)));
+                    }
+                    return '<option value="">-- اختر المنتج --</option>' + list.map(p => `<option value="${p.value}">${p.text}</option>`).join('');
+                }
+
                 function recalcTotals() {
                     let cartons = 0, pallets = 0;
                     document.querySelectorAll('#linesTable tbody tr').forEach(row => {
@@ -156,12 +205,6 @@
                     });
                     document.getElementById('totalCartons').innerText = cartons;
                     document.getElementById('totalPallets').innerText = pallets;
-                }
-
-                function productOptionsForClient() {
-                    // filter products based on allowedTypes; if allowedTypes is null -> show all
-                    const list = (allowedTypes && allowedTypes.length > 0) ? products.filter(p => allowedTypes.includes(parseInt(p.type))) : products;
-                    return '<option value="">-- اختر المنتج --</option>' + list.map(p => `<option value="${p.value}">${p.text}</option>`).join('');
                 }
 
                 function setDelegateOptions(list) {
@@ -374,6 +417,8 @@
                     if (!clientId) {
                         allowedTypes = null;
                         setDelegateOptions([]);
+                        // reset topSectionSelect to show all sections
+                        topSectionSelect.innerHTML = '<option value="">-- لا شيء --</option>' + sections.map(s => `<option value="${s.value}">${s.text}</option>`).join('');
                     } else {
                         // fetch allowed product types
                         try {
@@ -404,7 +449,16 @@
                             const r3 = await fetch(`/Stock/GetClientStocks?clientId=${clientId}`);
                             const data = await r3.json();
                             pairs = data.pairs || [];
-                        } catch (e) { pairs = []; }
+
+                            // populate topSectionSelect with only sections that have pairs
+                            const allowedSectionIds = Array.from(new Set(pairs.map(p => String(p.sectionId))));
+                            if (allowedSectionIds.length > 0) {
+                                const opts = ['<option value="">-- لا شيء --</option>'].concat(sections.filter(s => allowedSectionIds.includes(String(s.value))).map(s => `<option value="${s.value}">${s.text}</option>`));
+                                topSectionSelect.innerHTML = opts.join('');
+                            } else {
+                                topSectionSelect.innerHTML = '<option value="">-- لا شيء --</option>' + sections.map(s => `<option value="${s.value}">${s.text}</option>`).join('');
+                            }
+                        } catch (e) { pairs = []; topSectionSelect.innerHTML = '<option value="">-- لا شيء --</option>' + sections.map(s => `<option value="${s.value}">${s.text}</option>`).join(''); }
                     }
 
                     // refresh all product selects
