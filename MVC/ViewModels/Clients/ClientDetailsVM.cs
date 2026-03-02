@@ -25,6 +25,8 @@ namespace MVC.ViewModels.Clients
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
         public int DetailsCount { get; set; }
+        public int Cartons { get; set; }
+        public int Pallets { get; set; }
     }
 
     public class ProductAggregate

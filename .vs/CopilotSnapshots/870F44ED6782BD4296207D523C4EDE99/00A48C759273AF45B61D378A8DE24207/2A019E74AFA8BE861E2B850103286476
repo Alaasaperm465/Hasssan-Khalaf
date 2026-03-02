@@ -1,0 +1,70 @@
+﻿@{
+    ViewData["Title"] = "Client Reports";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>تقارير العميل</h3>
+        <div>
+            <button id="btnToday" class="btn btn-outline-primary btn-sm">اليوم</button>
+        </div>
+    </div>
+
+    <div class="row g-2 mb-3">
+        <div class="col-md-4">
+            <label class="form-label">العميل</label>
+            <select id="clientSelect" class="form-select">
+                <option value="">-- اختر العميل --</option>
+                @foreach (var c in (IEnumerable<dynamic>)ViewBag.Clients)
+                {
+                    <option value="@c.value">@c.text</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">من</label>
+            <input type="date" id="fromDate" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">الي</label>
+            <input type="date" id="toDate" class="form-control" />
+        </div>
+    </div>
+
+    <div class="mb-3 d-flex gap-2">
+        <button id="btnRange" class="btn btn-outline-primary">عرض الفترة</button>
+        <button id="btnDay" class="btn btn-outline-secondary">يوم محدد</button>
+        <a id="btnMonth" class="btn btn-outline-secondary">هذا الشهر</a>
+    </div>
+
+    <div id="results">
+        <div class="text-muted">لا توجد نتائج بعد</div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function goToClientResults(params) {
+            const clientId = document.getElementById('clientSelect').value;
+            if (!clientId) { alert('اختر العميل'); return; }
+            const qs = new URLSearchParams(Object.assign({ clientId: clientId }, params || {}));
+            window.location = '/Reports/ClientResults?' + qs.toString();
+        }
+
+        document.getElementById('btnToday').addEventListener('click', function() { goToClientResults({ mode: 'today' }); });
+        document.getElementById('btnRange').addEventListener('click', function() {
+            const from = document.getElementById('fromDate').value;
+            const to = document.getElementById('toDate').value;
+            if (!from || !to) { alert('اختر تاريخين'); return; }
+            goToClientResults({ mode: 'range', from: from, to: to });
+        });
+        document.getElementById('btnDay').addEventListener('click', function() {
+            const d = document.getElementById('fromDate').value;
+            if (!d) { alert('اختر يوم'); return; }
+            goToClientResults({ mode: 'day', day: d });
+        });
+        document.getElementById('btnMonth').addEventListener('click', function() { goToClientResults({ mode: 'month' }); });
+    </script>
+}

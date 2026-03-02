@@ -1,0 +1,44 @@
+﻿@{
+    ViewData["Title"] = "شامل - يوم محدد";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-3">
+    <h3>يوم محدد - تقرير شامل</h3>
+
+    <div class="row g-2 mb-3">
+        <div class="col-md-4">
+            <label class="form-label">العنبر (اختياري)</label>
+            <select id="sectionSelect" class="form-select">
+                <option value="">-- جميع الاقسام --</option>
+                @foreach(var s in (IEnumerable<dynamic>)ViewBag.Sections) { <option value="@s.value">@s.text</option> }
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">التاريخ</label>
+            <input type="date" id="dayDate" class="form-control" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <button id="btnShow" class="btn btn-primary">عرض</button>
+    </div>
+
+    <div id="results"></div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('btnShow').addEventListener('click', function(){
+            const sectionId = document.getElementById('sectionSelect').value;
+            const day = document.getElementById('dayDate').value;
+            if (!day) { alert('اختر تاريخ'); return; }
+
+            const qs = new URLSearchParams({ mode: 'day', day: day, sectionId: sectionId });
+            fetch('/Reports/ComprehensiveFetch?' + qs.toString())
+                .then(r => r.text())
+                .then(html => document.getElementById('results').innerHTML = html)
+                .catch(e => document.getElementById('results').innerHTML = '<div class="alert alert-danger">' + e.message + '</div>');
+        });
+    </script>
+}

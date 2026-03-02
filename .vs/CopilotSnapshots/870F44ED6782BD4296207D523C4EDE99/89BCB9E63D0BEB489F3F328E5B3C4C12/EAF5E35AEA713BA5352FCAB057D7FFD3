@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Reports";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-3">
+    <h3>التقارير</h3>
+    <div class="list-group mt-3">
+        <a class="list-group-item list-group-item-action" asp-controller="Reports" asp-action="Section">عنبر</a>
+        <a class="list-group-item list-group-item-action" href="#">عميل</a>
+        <a class="list-group-item list-group-item-action" href="#">شامل</a>
+    </div>
+</div>
