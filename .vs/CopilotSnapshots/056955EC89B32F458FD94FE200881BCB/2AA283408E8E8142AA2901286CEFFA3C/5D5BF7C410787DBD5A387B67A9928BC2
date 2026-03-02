@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -107,6 +107,7 @@ namespace MVC.Controllers
             ViewBag.Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new { value = s.Id, text = s.Name }).ToList();
             return View("Client");
         }
+
         // Client results
         public async Task<IActionResult> ClientResults(int clientId, string mode, DateTime? from, DateTime? to, DateTime? day, int? sectionId)
         {
@@ -115,6 +116,7 @@ namespace MVC.Controllers
             ViewData["Title"] = "Client Result";
             return View("Results", cards);
         }
+
         [HttpGet]
         public async Task<IActionResult> ClientFetch(int clientId, string mode, DateTime? from, DateTime? to, DateTime? day, int? sectionId)
         {
@@ -122,30 +124,35 @@ namespace MVC.Controllers
             var cards = await BuildCardsAsync(clientId, mode, from, to, day, sectionId);
             return PartialView("_IssuanceCards", cards);
         }
+
         // --- Comprehensive (????) pages ---
         public IActionResult Comprehensive()
         {
             ViewData["Title"] = "Comprehensive Reports";
             return View();
         }
+
         public IActionResult ComprehensiveRange()
         {
             ViewData["Title"] = "ComprehensiveRange";
             ViewBag.Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new { value = s.Id, text = s.Name }).ToList();
             return View();
         }
+
         public IActionResult ComprehensiveDay()
         {
             ViewData["Title"] = "ComprehensiveDay";
             ViewBag.Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new { value = s.Id, text = s.Name }).ToList();
             return View();
         }
+
         public IActionResult ComprehensiveMonth()
         {
             ViewData["Title"] = "ComprehensiveMonth";
             ViewBag.Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new { value = s.Id, text = s.Name }).ToList();
             return View();
         }
+
         public IActionResult ComprehensiveToday()
         {
             ViewData["Title"] = "ComprehensiveToday";

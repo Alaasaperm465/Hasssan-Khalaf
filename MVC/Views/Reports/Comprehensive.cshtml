@@ -6,24 +6,15 @@
 <div class="container mt-3">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3>تقرير شامل</h3>
-        <div>
-            <a id="btnToday" class="btn btn-outline-primary btn-sm" asp-action="ComprehensiveResults" asp-controller="Reports" asp-route-mode="today">اليوم</a>
-        </div>
     </div>
 
     <div class="row g-2 mb-3">
-        <div class="col-md-4">
-            <label class="form-label">من</label>
-            <input type="date" id="fromDate" class="form-control" />
-        </div>
-        <div class="col-md-4">
-            <label class="form-label">الي</label>
-            <input type="date" id="toDate" class="form-control" />
-        </div>
+        
         <div class="col-md-4 d-flex align-items-end gap-2">
-            <button id="btnRange" class="btn btn-outline-primary">عرض الفترة</button>
-            <button id="btnDay" class="btn btn-outline-secondary">يوم محدد</button>
-            <a id="btnMonth" class="btn btn-outline-secondary" asp-action="ComprehensiveResults" asp-controller="Reports" asp-route-mode="month">هذا الشهر</a>
+            <a id="btnToday" class="btn btn-outline-primary" asp-action="ComprehensiveToday" asp-controller="Reports">اليوم</a>
+            <a id="btnRange" class="btn btn-outline-primary" asp-action="ComprehensiveRange" asp-controller="Reports">عرض الفترة</a>
+            <a id="btnDay" class="btn btn-outline-secondary" asp-action="ComprehensiveDay" asp-controller="Reports">يوم محدد</a>
+            <a id="btnMonth" class="btn btn-outline-secondary" asp-action="ComprehensiveMonth" asp-controller="Reports">هذا الشهر</a>
         </div>
     </div>
 
