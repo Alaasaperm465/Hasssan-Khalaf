@@ -28,16 +28,14 @@
                     }
                 </div>
             </div>
-            <div class="card-footer text-end">
                 @if (c.Type == "Inbound")
                 {
-                    <a class="btn btn-sm btn-outline-primary" asp-controller="Inbound" asp-action="Details" asp-route-id="@c.Id">تفاصيل</a>
-                }
+                    <a class="btn btn-sm btn-outline-primary" asp-controller="Inboubd" asp-action="Details" asp-route-id="@c.Id">تفاصيل</a>
+                }f
                 else
                 {
-                        <a class="btn btn-sm btn-outline-primary" asp-controller="Outbound" asp-action="Details" asp-route-id="@c.Id">تفاصيل</a>
+                    <a class="btn btn-sm btn-outline-primary" asp-controller="Outbound" asp-action="Details" asp-route-id="@c.Id">تفاصيل</a>
                 }
-            </div>
         </div>
     </div>
 }

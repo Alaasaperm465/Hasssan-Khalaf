@@ -3,8 +3,24 @@
   "WorkspaceRootPath": "F:\\hassan\\Hasssan-Khalaf\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\hassan\\hasssan-khalaf\\mvc\\views\\reports\\_issuancecards.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\reports\\_issuancecards.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\hassan\\hasssan-khalaf\\mvc\\views\\clients\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\clients\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\hassan\\hasssan-khalaf\\mvc\\controllers\\reportscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\controllers\\reportscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\hassan\\hasssan-khalaf\\mvc\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\hassan\\hasssan-khalaf\\mvc\\views\\reports\\sectionrange.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\reports\\sectionrange.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\hassan\\hasssan-khalaf\\mvc\\views\\reports\\client.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -37,10 +53,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\hassan\\hasssan-khalaf\\mvc\\views\\reports\\clientrange.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\reports\\clientrange.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\hassan\\hasssan-khalaf\\mvc\\views\\reports\\sectionrange.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\reports\\sectionrange.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|f:\\hassan\\hasssan-khalaf\\mvc\\views\\reports\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -78,8 +90,34 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 15,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "F:\\hassan\\Hasssan-Khalaf\\MVC\\Views\\Clients\\Details.cshtml",
+              "RelativeDocumentMoniker": "MVC\\Views\\Clients\\Details.cshtml",
+              "ToolTip": "F:\\hassan\\Hasssan-Khalaf\\MVC\\Views\\Clients\\Details.cshtml",
+              "RelativeToolTip": "MVC\\Views\\Clients\\Details.cshtml",
+              "ViewState": "AgIAAG8AAAAAAAAAAAAAAHcAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-02T21:55:47.211Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "_IssuanceCards.cshtml",
+              "DocumentMoniker": "F:\\hassan\\Hasssan-Khalaf\\MVC\\Views\\Reports\\_IssuanceCards.cshtml",
+              "RelativeDocumentMoniker": "MVC\\Views\\Reports\\_IssuanceCards.cshtml",
+              "ToolTip": "F:\\hassan\\Hasssan-Khalaf\\MVC\\Views\\Reports\\_IssuanceCards.cshtml",
+              "RelativeToolTip": "MVC\\Views\\Reports\\_IssuanceCards.cshtml",
+              "ViewState": "AgIAABYAAAAAAAAAAAAkwCUAAABaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-02T21:46:52.932Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
@@ -91,6 +129,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 3,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "F:\\hassan\\Hasssan-Khalaf\\MVC\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "MVC\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "F:\\hassan\\Hasssan-Khalaf\\MVC\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "MVC\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-02T21:42:02.751Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "ComprehensiveMonth.cshtml",
               "DocumentMoniker": "F:\\hassan\\Hasssan-Khalaf\\MVC\\Views\\Reports\\ComprehensiveMonth.cshtml",
               "RelativeDocumentMoniker": "MVC\\Views\\Reports\\ComprehensiveMonth.cshtml",
@@ -98,12 +149,11 @@
               "RelativeToolTip": "MVC\\Views\\Reports\\ComprehensiveMonth.cshtml",
               "ViewState": "AgIAAAkAAAAAAAAAAAAAAAoAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-03-02T20:44:25.955Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-02T20:44:25.955Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 8,
               "Title": "ComprehensiveDay.cshtml",
               "DocumentMoniker": "F:\\hassan\\Hasssan-Khalaf\\MVC\\Views\\Reports\\ComprehensiveDay.cshtml",
               "RelativeDocumentMoniker": "MVC\\Views\\Reports\\ComprehensiveDay.cshtml",
@@ -111,12 +161,11 @@
               "RelativeToolTip": "MVC\\Views\\Reports\\ComprehensiveDay.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-03-02T20:43:13.188Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-02T20:43:13.188Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 9,
               "Title": "ComprehensiveRange.cshtml",
               "DocumentMoniker": "F:\\hassan\\Hasssan-Khalaf\\MVC\\Views\\Reports\\ComprehensiveRange.cshtml",
               "RelativeDocumentMoniker": "MVC\\Views\\Reports\\ComprehensiveRange.cshtml",
@@ -124,12 +173,11 @@
               "RelativeToolTip": "MVC\\Views\\Reports\\ComprehensiveRange.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-03-02T20:42:14.562Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-02T20:42:14.562Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 12,
               "Title": "ClientRange.cshtml",
               "DocumentMoniker": "F:\\hassan\\Hasssan-Khalaf\\MVC\\Views\\Reports\\ClientRange.cshtml",
               "RelativeDocumentMoniker": "MVC\\Views\\Reports\\ClientRange.cshtml",
@@ -137,12 +185,11 @@
               "RelativeToolTip": "MVC\\Views\\Reports\\ClientRange.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-03-02T20:22:04.651Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-02T20:22:04.651Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 5,
               "Title": "Client.cshtml",
               "DocumentMoniker": "F:\\hassan\\Hasssan-Khalaf\\MVC\\Views\\Reports\\Client.cshtml",
               "RelativeDocumentMoniker": "MVC\\Views\\Reports\\Client.cshtml",
@@ -150,12 +197,11 @@
               "RelativeToolTip": "MVC\\Views\\Reports\\Client.cshtml",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAAA0AAAAyAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-03-02T20:21:31.666Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-02T20:21:31.666Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 14,
               "Title": "Results.cshtml",
               "DocumentMoniker": "F:\\hassan\\Hasssan-Khalaf\\MVC\\Views\\Reports\\Results.cshtml",
               "RelativeDocumentMoniker": "MVC\\Views\\Reports\\Results.cshtml",
@@ -167,7 +213,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 15,
               "Title": "SectionToday.cshtml",
               "DocumentMoniker": "F:\\hassan\\Hasssan-Khalaf\\MVC\\Views\\Reports\\SectionToday.cshtml",
               "RelativeDocumentMoniker": "MVC\\Views\\Reports\\SectionToday.cshtml",
@@ -179,7 +225,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 10,
               "Title": "SectionMonth.cshtml",
               "DocumentMoniker": "F:\\hassan\\Hasssan-Khalaf\\MVC\\Views\\Reports\\SectionMonth.cshtml",
               "RelativeDocumentMoniker": "MVC\\Views\\Reports\\SectionMonth.cshtml",
@@ -187,12 +233,11 @@
               "RelativeToolTip": "MVC\\Views\\Reports\\SectionMonth.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-03-02T19:43:03.86Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-02T19:43:03.86Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 16,
               "Title": "SectionDay.cshtml",
               "DocumentMoniker": "F:\\hassan\\Hasssan-Khalaf\\MVC\\Views\\Reports\\SectionDay.cshtml",
               "RelativeDocumentMoniker": "MVC\\Views\\Reports\\SectionDay.cshtml",
@@ -204,20 +249,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 4,
               "Title": "SectionRange.cshtml",
               "DocumentMoniker": "F:\\hassan\\Hasssan-Khalaf\\MVC\\Views\\Reports\\SectionRange.cshtml",
               "RelativeDocumentMoniker": "MVC\\Views\\Reports\\SectionRange.cshtml",
               "ToolTip": "F:\\hassan\\Hasssan-Khalaf\\MVC\\Views\\Reports\\SectionRange.cshtml",
               "RelativeToolTip": "MVC\\Views\\Reports\\SectionRange.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACoAAAAUAAAAAAAAAA==",
+              "ViewState": "AgIAABMAAAAAAAAAAAAuwDIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2026-03-02T19:36:46.816Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 6,
               "Title": "Comprehensive.cshtml",
               "DocumentMoniker": "F:\\hassan\\Hasssan-Khalaf\\MVC\\Views\\Reports\\Comprehensive.cshtml",
               "RelativeDocumentMoniker": "MVC\\Views\\Reports\\Comprehensive.cshtml",
@@ -225,12 +270,11 @@
               "RelativeToolTip": "MVC\\Views\\Reports\\Comprehensive.cshtml",
               "ViewState": "AgIAAAcAAAAAAAAAAAAAABYAAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-03-02T19:35:05.359Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-02T19:35:05.359Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 11,
               "Title": "Section.cshtml",
               "DocumentMoniker": "F:\\hassan\\Hasssan-Khalaf\\MVC\\Views\\Reports\\Section.cshtml",
               "RelativeDocumentMoniker": "MVC\\Views\\Reports\\Section.cshtml",
@@ -238,12 +282,11 @@
               "RelativeToolTip": "MVC\\Views\\Reports\\Section.cshtml",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-03-02T18:48:21.694Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-02T18:48:21.694Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 13,
               "Title": "Index.cshtml",
               "DocumentMoniker": "F:\\hassan\\Hasssan-Khalaf\\MVC\\Views\\Reports\\Index.cshtml",
               "RelativeDocumentMoniker": "MVC\\Views\\Reports\\Index.cshtml",
@@ -255,20 +298,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "ReportsController.cs",
               "DocumentMoniker": "F:\\hassan\\Hasssan-Khalaf\\MVC\\Controllers\\ReportsController.cs",
               "RelativeDocumentMoniker": "MVC\\Controllers\\ReportsController.cs",
               "ToolTip": "F:\\hassan\\Hasssan-Khalaf\\MVC\\Controllers\\ReportsController.cs",
               "RelativeToolTip": "MVC\\Controllers\\ReportsController.cs",
-              "ViewState": "AgIAAHEAAAAAAAAAAAAuwH0AAAAqAAAAAAAAAA==",
+              "ViewState": "AgIAADsAAAAAAAAAAAAQwEEAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-02T18:47:59.576Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 19,
               "Title": "IssuanceCardVM.cs",
               "DocumentMoniker": "F:\\hassan\\Hasssan-Khalaf\\MVC\\ViewModels\\Reports\\IssuanceCardVM.cs",
               "RelativeDocumentMoniker": "MVC\\ViewModels\\Reports\\IssuanceCardVM.cs",
@@ -280,7 +323,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 17,
               "Title": "ClientsController.cs",
               "DocumentMoniker": "F:\\hassan\\Hasssan-Khalaf\\MVC\\Controllers\\ClientsController.cs",
               "RelativeDocumentMoniker": "MVC\\Controllers\\ClientsController.cs",
@@ -292,7 +335,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 18,
               "Title": "InboundController.cs",
               "DocumentMoniker": "F:\\hassan\\Hasssan-Khalaf\\MVC\\Controllers\\InboundController.cs",
               "RelativeDocumentMoniker": "MVC\\Controllers\\InboundController.cs",

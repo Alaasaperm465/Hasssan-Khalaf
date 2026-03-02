@@ -123,7 +123,7 @@ namespace MVC.Controllers
             return PartialView("_IssuanceCards", cards);
         }
         // --- Comprehensive (????) pages ---
-        public IActionResult Comprehensive()
+        public IActionResult Comprehensive  ()
         {
             ViewData["Title"] = "Comprehensive Reports";
             return View();
