@@ -33,11 +33,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\.net\\Hassan\\Hassann_Khala\\Application\\Application.csproj",
+      "projectUniqueName": "F:\\hassan\\Hasssan-Khalaf\\Application\\Application.csproj",
       "projectName": "Application",
-      "projectPath": "F:\\.net\\Hassan\\Hassann_Khala\\Application\\Application.csproj",
+      "projectPath": "F:\\hassan\\Hasssan-Khalaf\\Application\\Application.csproj",
       "packagesPath": "C:\\Users\\louts\\.nuget\\packages\\",
-      "outputPath": "F:\\.net\\Hassan\\Hassann_Khala\\Application\\obj\\",
+      "outputPath": "F:\\hassan\\Hasssan-Khalaf\\Application\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -58,8 +58,8 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Domain.csproj": {
-              "projectPath": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Domain.csproj"
+            "F:\\hassan\\Hasssan-Khalaf\\Domain\\Domain.csproj": {
+              "projectPath": "F:\\hassan\\Hasssan-Khalaf\\Domain\\Domain.csproj"
             }
           }
         }
