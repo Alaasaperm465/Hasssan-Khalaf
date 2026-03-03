@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "7Zmrq+pR9Og=",
+  "dgSpecHash": "t7ozBiiXDqY=",
   "success": true,
-  "projectFilePath": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\MVC.csproj",
+  "projectFilePath": "F:\\hassan\\Hasssan-Khalaf\\MVC\\MVC.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\louts\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\louts\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",

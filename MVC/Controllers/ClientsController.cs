@@ -146,6 +146,39 @@ namespace MVC.Controllers
                 .Select(o => new MovementSummary { Id = o.Id, CreatedAt = o.CreatedAt, DetailsCount = o.Details.Count })
                 .ToListAsync();
 
+            // compute cartons/pallets per recent movement
+            var inboundIds = recentInbounds.Select(r => r.Id).ToList();
+            if (inboundIds.Any())
+            {
+                var inboundTotals = await _db.InboundDetails
+                    .Where(d => inboundIds.Contains(d.InboundId))
+                    .GroupBy(d => d.InboundId)
+                    .Select(g => new { Id = g.Key, Cartons = g.Sum(x => (int?)x.Cartons) ?? 0, Pallets = g.Sum(x => (int?)x.Pallets) ?? 0 })
+                    .ToListAsync();
+
+                var map = inboundTotals.ToDictionary(x => x.Id, x => (x.Cartons, x.Pallets));
+                foreach (var r in recentInbounds)
+                {
+                    if (map.TryGetValue(r.Id, out var val)) { r.Cartons = val.Cartons; r.Pallets = val.Pallets; }
+                }
+            }
+
+            var outboundIds = recentOutbounds.Select(r => r.Id).ToList();
+            if (outboundIds.Any())
+            {
+                var outboundTotals = await _db.OutboundDetails
+                    .Where(d => outboundIds.Contains(d.OutboundId))
+                    .GroupBy(d => d.OutboundId)
+                    .Select(g => new { Id = g.Key, Cartons = g.Sum(x => (int?)x.Cartons) ?? 0, Pallets = g.Sum(x => (int?)x.Pallets) ?? 0 })
+                    .ToListAsync();
+
+                var map2 = outboundTotals.ToDictionary(x => x.Id, x => (x.Cartons, x.Pallets));
+                foreach (var r in recentOutbounds)
+                {
+                    if (map2.TryGetValue(r.Id, out var val)) { r.Cartons = val.Cartons; r.Pallets = val.Pallets; }
+                }
+            }
+
             // Aggregations - per product
             var inboundAgg = await (from d in _db.InboundDetails
                                     join i in _db.Inbounds on d.InboundId equals i.Id
@@ -227,10 +260,10 @@ namespace MVC.Controllers
                 PhoneNumber = client.PhoneNumber,
                 RecentInbounds = recentInbounds,
                 RecentOutbounds = recentOutbounds,
-                Products = new List<ProductAggregate>(),
-                Sections = new List<SectionAggregate>(),
-                TotalCartons = 0,
-                TotalPallets = 0
+                Products = productAgg,
+                Sections = sectionAgg,
+                TotalCartons = totalCartons,
+                TotalPallets = totalPallets
             };
 
             return View(vm);

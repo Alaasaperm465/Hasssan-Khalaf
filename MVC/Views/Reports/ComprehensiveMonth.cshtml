@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "شامل - هذا الشهر";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-3">
+    <h3>هذا الشهر - تقرير شامل</h3>
+
+
+    <div class="mb-3">
+        <button id="btnShow" class="btn btn-primary">عرض</button>
+    </div>
+
+    <div id="results"></div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('btnShow').addEventListener('click', function(){
+            const sectionId = document.getElementById('sectionSelect').value;
+            const qs = new URLSearchParams({ mode: 'month', sectionId: sectionId });
+            fetch('/Reports/ComprehensiveFetch?' + qs.toString())
+                .then(r => r.text())
+                .then(html => document.getElementById('results').innerHTML = html)
+                .catch(e => document.getElementById('results').innerHTML = '<div class="alert alert-danger">' + e.message + '</div>');
+        });
+    </script>
+}

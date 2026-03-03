@@ -2,6 +2,7 @@
     var title = ViewData["Title"] as string ?? "WMS";
 }
 <!doctype html>
+<meta charset="utf-8" />
 <html lang="ar" dir="rtl">
 
 <head>
@@ -40,6 +41,8 @@
                     <li class="nav-item mb-1"><a href="@Url.Action("Index", "Stock")" class="nav-link text-white"><i
                                 class="bi bi-bar-chart-line me-2"></i> المخزون</a></li>
                     <li class="nav-item mb-1"><a href="@Url.Action("Index", "Delegates")" class="nav-link text-white"><i class="bi bi-person-badge me-2"></i> المفوضين</a></li>
+                    <li class="nav-item mb-1"><a href="@Url.Action("Index", "Reports")" class="nav-link text-white"><i class="bi bi-person-badge me-2"></i> التقارير</a></li>
+
                 </ul>
             </div>
             <div class="mt-auto p-3 text-muted small">
@@ -56,6 +59,7 @@
             <div class="offcanvas-body p-0">
                 <nav class="bg-dark text-white h-100">
                     <ul class="nav nav-pills flex-column mb-auto p-3">
+<<<<<<< HEAD
                         <li class="nav-item mb-1"><a href="@Url.Action("Index", "Home")" class="nav-link text-white mobile-nav-link"><i class="bi bi-speedometer2 me-2"></i> لوحة التحكم</a></li>
                         <li class="nav-item mb-1"><a href="@Url.Action("Index", "Clients")" class="nav-link text-white mobile-nav-link"><i class="bi bi-people me-2"></i> العملاء</a></li>
                         <li class="nav-item mb-1"><a href="@Url.Action("Index", "Products")" class="nav-link text-white mobile-nav-link"><i class="bi bi-boxes me-2"></i> المنتجات</a></li>
@@ -63,6 +67,17 @@
                         <li class="nav-item mb-1"><a href="@Url.Action("Index", "Outbound")" class="nav-link text-white mobile-nav-link"><i class="bi bi-arrow-up-circle me-2"></i> اذن صرف</a></li>
                         <li class="nav-item mb-1"><a href="@Url.Action("Index", "Stock")" class="nav-link text-white mobile-nav-link"><i class="bi bi-bar-chart-line me-2"></i> المخزون</a></li>
                         <li class="nav-item mb-1"><a href="@Url.Action("Index", "Delegates")" class="nav-link text-white mobile-nav-link"><i class="bi bi-person-badge me-2"></i> المفوضين </a></li>
+=======
+                        <li class="nav-item mb-1"><a href="@Url.Action("Index", "Home")" class="nav-link text-white mobile-nav-link"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
+                        <li class="nav-item mb-1"><a href="@Url.Action("Index", "Clients")" class="nav-link text-white mobile-nav-link"><i class="bi bi-people me-2"></i> Clients</a></li>
+                        <li class="nav-item mb-1"><a href="@Url.Action("Index", "Products")" class="nav-link text-white mobile-nav-link"><i class="bi bi-boxes me-2"></i> Products</a></li>
+                        <li class="nav-item mb-1"><a href="@Url.Action("Index", "Inbound")" class="nav-link text-white mobile-nav-link"><i class="bi bi-arrow-down-circle me-2"></i> Inbound</a></li>
+                        <li class="nav-item mb-1"><a href="@Url.Action("Index", "Outbound")" class="nav-link text-white mobile-nav-link"><i class="bi bi-arrow-up-circle me-2"></i> Outbound</a></li>
+                        <li class="nav-item mb-1"><a href="@Url.Action("Index", "Stock")" class="nav-link text-white mobile-nav-link"><i class="bi bi-bar-chart-line me-2"></i> Stock</a></li>
+                        <li class="nav-item mb-1"><a href="@Url.Action("Index", "Delegates")" class="nav-link text-white mobile-nav-link"><i class="bi bi-person-badge me-2"></i> Delegates</a></li>
+                        <li class="nav-item mb-1"><a href="@Url.Action("Index", "Reports")" class="nav-link text-white mobile-nav-link"><i class="bi bi-person-badge me-2"></i> Reports</a></li>
+
+>>>>>>> c797eda9534de093f44d3c46b050f7dce5bf6582
                     </ul>
                 </nav>
             </div>

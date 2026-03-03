@@ -94,10 +94,14 @@
                         <h6 class="text-muted">الواردات</h6>
                         @foreach (var i in Model.RecentInbounds)
                         {
-                            <div class="border rounded p-2 mb-2 small">
-                                أذن #@i.Id —
-                                @i.CreatedAt.ToLocalTime().ToString("g")
-                                — خطوط: @i.DetailsCount
+                            <div class="border rounded p-2 mb-2 small d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div>أذن #@i.Id — @i.CreatedAt.ToLocalTime().ToString("g")</div>
+                                    <div class="text-muted small">العميل: @Model.ClientName — كرتون: @i.Cartons — بالت: @i.Pallets</div>
+                                </div>
+                                <div>
+                                    <a class="btn btn-sm btn-outline-primary" asp-controller="Inbound" asp-action="Details" asp-route-id="@i.Id">تفاصيل</a>
+                                </div>
                             </div>
                         }
                     </div>
@@ -106,10 +110,14 @@
                         <h6 class="text-muted">الصادرات</h6>
                         @foreach (var o in Model.RecentOutbounds)
                         {
-                            <div class="border rounded p-2 mb-2 small">
-                                أذن #@o.Id —
-                                @o.CreatedAt.ToLocalTime().ToString("g")
-                                — خطوط: @o.DetailsCount
+                            <div class="border rounded p-2 mb-2 small d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div>أذن #@o.Id — @o.CreatedAt.ToLocalTime().ToString("g")</div>
+                                    <div class="text-muted small">العميل: @Model.ClientName — خطوط: @o.DetailsCount — كرتون: @o.Cartons — بالت: @o.Pallets</div>
+                                </div>
+                                <div>
+                                    <a class="btn btn-sm btn-outline-primary" asp-controller="Outbound" asp-action="Details" asp-route-id="@o.Id">تفاصيل</a>
+                                </div>
                             </div>
                         }
                     </div>

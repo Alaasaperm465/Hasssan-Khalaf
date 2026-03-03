@@ -1,0 +1,294 @@
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using InfraStructure.Context;
+using Microsoft.EntityFrameworkCore;
+using MVC.ViewModels.Reports;
+using System.Collections.Generic;
+
+namespace MVC.Controllers
+{
+    public class ReportsController : Controller
+    {
+        private readonly DBContext _db;
+        public ReportsController(DBContext db) { _db = db; }
+
+        public IActionResult Index()
+        {
+            ViewData["Title"] = "Reports";
+            return View();
+        }
+
+        // Section (عنبر) report page
+        public IActionResult Section()
+        {
+            ViewData["Title"] = "Section Reports";
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SectionFetch(string mode, DateTime? from, DateTime? to, DateTime? day)
+        {
+            // mode: today / range / day / month
+            var start = DateTime.UtcNow.Date;
+            var end = start.AddDays(1);
+
+            if (mode == "today") { /* use start/end above */ }
+            else if (mode == "range")
+            {
+                if (!from.HasValue || !to.HasValue) return BadRequest("from/to required");
+                start = from.Value.Date.ToUniversalTime();
+                end = to.Value.Date.AddDays(1).ToUniversalTime();
+            }
+            else if (mode == "day")
+            {
+                if (!day.HasValue) return BadRequest("day required");
+                start = day.Value.Date.ToUniversalTime();
+                end = start.AddDays(1);
+            }
+            else if (mode == "month")
+            {
+                var now = DateTime.UtcNow;
+                start = new DateTime(now.Year, now.Month, 1).ToUniversalTime();
+                end = start.AddMonths(1);
+            }
+
+            // fetch both inbounds and outbounds within range and map to card vm
+            var inbounds = await _db.Inbounds
+                .Where(i => i.CreatedAt >= start && i.CreatedAt < end)
+                .Include(i => i.Client)
+                .Include(i => i.Details)
+                    .ThenInclude(d => d.Product)
+                .Include(i => i.Details)
+                    .ThenInclude(d => d.Section)
+                .ToListAsync();
+
+            var outbounds = await _db.Outbounds
+                .Where(o => o.CreatedAt >= start && o.CreatedAt < end)
+                .Include(o => o.Client)
+                .Include(o => o.Details)
+                    .ThenInclude(d => d.Product)
+                .Include(o => o.Details)
+                    .ThenInclude(d => d.Section)
+                .ToListAsync();
+
+            var cards = new List<IssuanceCardVM>();
+
+            foreach (var i in inbounds)
+            {
+                var c = new IssuanceCardVM
+                {
+                    Id = i.Id,
+                    Type = "Inbound",
+                    CreatedAt = i.CreatedAt,
+                    ClientName = i.Client?.Name ?? string.Empty,
+                    TotalCartons = i.Details.Sum(d => d.Cartons),
+                    TotalPallets = i.Details.Sum(d => d.Pallets),
+                    Lines = i.Details.Select(d => new IssuanceLineVM { ProductName = d.Product?.Name ?? string.Empty, Cartons = d.Cartons, Pallets = d.Pallets }).ToList()
+                };
+                cards.Add(c);
+            }
+
+            foreach (var o in outbounds)
+            {
+                var c = new IssuanceCardVM
+                {
+                    Id = o.Id,
+                    Type = "Outbound",
+                    CreatedAt = o.CreatedAt,
+                    ClientName = o.Client?.Name ?? string.Empty,
+                    TotalCartons = o.Details.Sum(d => d.Cartons),
+                    TotalPallets = o.Details.Sum(d => d.Pallets),
+                    Lines = o.Details.Select(d => new IssuanceLineVM { ProductName = d.Product?.Name ?? string.Empty, Cartons = d.Cartons, Pallets = d.Pallets }).ToList()
+                };
+                cards.Add(c);
+            }
+
+            // order by created desc
+            cards = cards.OrderByDescending(c => c.CreatedAt).ToList();
+
+            return PartialView("_IssuanceCards", cards);
+        }
+
+        // --- Client reports ---
+        public IActionResult Client()
+        {
+            ViewData["Title"] = "Client Reports";
+            // pass simple list of clients
+            var clients = _db.Clients.OrderBy(c => c.Name).Select(c => new { value = c.Id, text = c.Name }).ToList();
+            ViewBag.Clients = clients;
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ClientFetch(int clientId, string mode, DateTime? from, DateTime? to, DateTime? day)
+        {
+            if (clientId <= 0) return BadRequest("clientId required");
+
+            var start = DateTime.UtcNow.Date;
+            var end = start.AddDays(1);
+
+            if (mode == "today") { }
+            else if (mode == "range")
+            {
+                if (!from.HasValue || !to.HasValue) return BadRequest("from/to required");
+                start = from.Value.Date.ToUniversalTime();
+                end = to.Value.Date.AddDays(1).ToUniversalTime();
+            }
+            else if (mode == "day")
+            {
+                if (!day.HasValue) return BadRequest("day required");
+                start = day.Value.Date.ToUniversalTime();
+                end = start.AddDays(1);
+            }
+            else if (mode == "month")
+            {
+                var now = DateTime.UtcNow;
+                start = new DateTime(now.Year, now.Month, 1).ToUniversalTime();
+                end = start.AddMonths(1);
+            }
+
+            var inbounds = await _db.Inbounds
+                .Where(i => i.ClientId == clientId && i.CreatedAt >= start && i.CreatedAt < end)
+                .Include(i => i.Client)
+                .Include(i => i.Details)
+                    .ThenInclude(d => d.Product)
+                .Include(i => i.Details)
+                    .ThenInclude(d => d.Section)
+                .ToListAsync();
+
+            var outbounds = await _db.Outbounds
+                .Where(o => o.ClientId == clientId && o.CreatedAt >= start && o.CreatedAt < end)
+                .Include(o => o.Client)
+                .Include(o => o.Details)
+                    .ThenInclude(d => d.Product)
+                .Include(o => o.Details)
+                    .ThenInclude(d => d.Section)
+                .ToListAsync();
+
+            var cards = new List<IssuanceCardVM>();
+
+            foreach (var i in inbounds)
+            {
+                var c = new IssuanceCardVM
+                {
+                    Id = i.Id,
+                    Type = "Inbound",
+                    CreatedAt = i.CreatedAt,
+                    ClientName = i.Client?.Name ?? string.Empty,
+                    TotalCartons = i.Details.Sum(d => d.Cartons),
+                    TotalPallets = i.Details.Sum(d => d.Pallets),
+                    Lines = i.Details.Select(d => new IssuanceLineVM { ProductName = d.Product?.Name ?? string.Empty, Cartons = d.Cartons, Pallets = d.Pallets }).ToList()
+                };
+                cards.Add(c);
+            }
+
+            foreach (var o in outbounds)
+            {
+                var c = new IssuanceCardVM
+                {
+                    Id = o.Id,
+                    Type = "Outbound",
+                    CreatedAt = o.CreatedAt,
+                    ClientName = o.Client?.Name ?? string.Empty,
+                    TotalCartons = o.Details.Sum(d => d.Cartons),
+                    TotalPallets = o.Details.Sum(d => d.Pallets),
+                    Lines = o.Details.Select(d => new IssuanceLineVM { ProductName = d.Product?.Name ?? string.Empty, Cartons = d.Cartons, Pallets = d.Pallets }).ToList()
+                };
+                cards.Add(c);
+            }
+
+            cards = cards.OrderByDescending(c => c.CreatedAt).ToList();
+            return PartialView("_IssuanceCards", cards);
+        }
+
+        // --- Comprehensive (شامل) ---
+        public IActionResult Comprehensive()
+        {
+            ViewData["Title"] = "Comprehensive Reports";
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ComprehensiveFetch(string mode, DateTime? from, DateTime? to, DateTime? day)
+        {
+            // same logic as SectionFetch (all clients)
+            var start = DateTime.UtcNow.Date;
+            var end = start.AddDays(1);
+
+            if (mode == "today") { }
+            else if (mode == "range")
+            {
+                if (!from.HasValue || !to.HasValue) return BadRequest("from/to required");
+                start = from.Value.Date.ToUniversalTime();
+                end = to.Value.Date.AddDays(1).ToUniversalTime();
+            }
+            else if (mode == "day")
+            {
+                if (!day.HasValue) return BadRequest("day required");
+                start = day.Value.Date.ToUniversalTime();
+                end = start.AddDays(1);
+            }
+            else if (mode == "month")
+            {
+                var now = DateTime.UtcNow;
+                start = new DateTime(now.Year, now.Month, 1).ToUniversalTime();
+                end = start.AddMonths(1);
+            }
+
+            var inbounds = await _db.Inbounds
+                .Where(i => i.CreatedAt >= start && i.CreatedAt < end)
+                .Include(i => i.Client)
+                .Include(i => i.Details)
+                    .ThenInclude(d => d.Product)
+                .Include(i => i.Details)
+                    .ThenInclude(d => d.Section)
+                .ToListAsync();
+
+            var outbounds = await _db.Outbounds
+                .Where(o => o.CreatedAt >= start && o.CreatedAt < end)
+                .Include(o => o.Client)
+                .Include(o => o.Details)
+                    .ThenInclude(d => d.Product)
+                .Include(o => o.Details)
+                    .ThenInclude(d => d.Section)
+                .ToListAsync();
+
+            var cards = new List<IssuanceCardVM>();
+
+            foreach (var i in inbounds)
+            {
+                var c = new IssuanceCardVM
+                {
+                    Id = i.Id,
+                    Type = "Inbound",
+                    CreatedAt = i.CreatedAt,
+                    ClientName = i.Client?.Name ?? string.Empty,
+                    TotalCartons = i.Details.Sum(d => d.Cartons),
+                    TotalPallets = i.Details.Sum(d => d.Pallets),
+                    Lines = i.Details.Select(d => new IssuanceLineVM { ProductName = d.Product?.Name ?? string.Empty, Cartons = d.Cartons, Pallets = d.Pallets }).ToList()
+                };
+                cards.Add(c);
+            }
+
+            foreach (var o in outbounds)
+            {
+                var c = new IssuanceCardVM
+                {
+                    Id = o.Id,
+                    Type = "Outbound",
+                    CreatedAt = o.CreatedAt,
+                    ClientName = o.Client?.Name ?? string.Empty,
+                    TotalCartons = o.Details.Sum(d => d.Cartons),
+                    TotalPallets = o.Details.Sum(d => d.Pallets),
+                    Lines = o.Details.Select(d => new IssuanceLineVM { ProductName = d.Product?.Name ?? string.Empty, Cartons = d.Cartons, Pallets = d.Pallets }).ToList()
+                };
+                cards.Add(c);
+            }
+
+            cards = cards.OrderByDescending(c => c.CreatedAt).ToList();
+            return PartialView("_IssuanceCards", cards);
+        }
+    }
+}

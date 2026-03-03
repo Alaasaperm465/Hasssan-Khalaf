@@ -1,0 +1,261 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using InfraStructure.Context;
+using Microsoft.EntityFrameworkCore;
+using MVC.ViewModels.Reports;
+using System.Collections.Generic;
+
+namespace MVC.Controllers
+{
+    public class ReportsController : Controller
+    {
+        private readonly DBContext _db;
+        public ReportsController(DBContext db) { _db = db; }
+
+        public IActionResult Index()
+        {
+            ViewData["Title"] = "Reports";
+            return View();
+        }
+
+        // Section (????) pages
+        public IActionResult Section()
+        {
+            ViewData["Title"] = "Section Reports";
+            return View();
+        }
+
+        public IActionResult SectionRange()
+        {
+            ViewData["Title"] = "Section - Range";
+            ViewBag.Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new { value = s.Id, text = s.Name }).ToList();
+            return View();
+        }
+
+        public IActionResult SectionDay()
+        {
+            ViewData["Title"] = "Section - Day";
+            ViewBag.Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new { value = s.Id, text = s.Name }).ToList();
+            return View();
+        }
+
+        public IActionResult SectionMonth()
+        {
+            ViewData["Title"] = "Section - Month";
+            ViewBag.Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new { value = s.Id, text = s.Name }).ToList();
+            return View();
+        }
+
+        public IActionResult SectionToday()
+        {
+            ViewData["Title"] = "Section -Today";
+            ViewBag.Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new { value = s.Id, text = s.Name }).ToList();
+            return View();
+        }
+
+        // Section results (full page) kept for compatibility
+        public async Task<IActionResult> SectionResults(string mode, DateTime? from, DateTime? to, DateTime? day, int? sectionId)
+        {
+            var cards = await BuildCardsAsync(null, mode, from, to, day, sectionId);
+            ViewData["Title"] = "SectionResult";
+            return View("Results", cards);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SectionFetch(string mode, DateTime? from, DateTime? to, DateTime? day, int? sectionId)
+        {
+            var cards = await BuildCardsAsync(null, mode, from, to, day, sectionId);
+            return PartialView("_IssuanceCards", cards);
+        }
+
+        // --- Client reports pages ---
+        public IActionResult Client()
+        {
+            ViewData["Title"] = "Client Reports";
+            var clients = _db.Clients.OrderBy(c => c.Name).Select(c => new { value = c.Id, text = c.Name }).ToList();
+            ViewBag.Clients = clients;
+            return View();
+        }
+        public IActionResult ClientRange()
+        {
+            ViewData["Title"] = "Client - Range";
+            ViewBag.Clients = _db.Clients.OrderBy(c => c.Name).Select(c => new { value = c.Id, text = c.Name }).ToList();
+            ViewBag.Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new { value = s.Id, text = s.Name }).ToList();
+            return View();
+        }
+        public IActionResult ClientDay()
+        {
+            ViewData["Title"] = "Client - Day";
+            ViewBag.Clients = _db.Clients.OrderBy(c => c.Name).Select(c => new { value = c.Id, text = c.Name }).ToList();
+            ViewBag.Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new { value = s.Id, text = s.Name }).ToList();
+            return View();
+        }
+        public IActionResult ClientMonth()
+        {
+            ViewData["Title"] = "Client - month";
+            ViewBag.Clients = _db.Clients.OrderBy(c => c.Name).Select(c => new { value = c.Id, text = c.Name }).ToList();
+            ViewBag.Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new { value = s.Id, text = s.Name }).ToList();
+            return View();
+        }
+        public IActionResult ClientToday()
+        {
+            // There is no separate ClientToday view file; reuse the Client view to avoid missing view error
+            ViewData["Title"] = "Client Today";
+            ViewBag.Clients = _db.Clients.OrderBy(c => c.Name).Select(c => new { value = c.Id, text = c.Name }).ToList();
+            ViewBag.Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new { value = s.Id, text = s.Name }).ToList();
+            return View("Client");
+        }
+        // Client results
+        public async Task<IActionResult> ClientResults(int clientId, string mode, DateTime? from, DateTime? to, DateTime? day, int? sectionId)
+        {
+            if (clientId <= 0) return BadRequest("clientId required");
+            var cards = await BuildCardsAsync(clientId, mode, from, to, day, sectionId);
+            ViewData["Title"] = "Client Result";
+            return View("Results", cards);
+        }
+        [HttpGet]
+        public async Task<IActionResult> ClientFetch(int clientId, string mode, DateTime? from, DateTime? to, DateTime? day, int? sectionId)
+        {
+            if (clientId <= 0) return BadRequest("clientId required");
+            var cards = await BuildCardsAsync(clientId, mode, from, to, day, sectionId);
+            return PartialView("_IssuanceCards", cards);
+        }
+        // --- Comprehensive (????) pages ---
+        public IActionResult Comprehensive  ()
+        {
+            ViewData["Title"] = "Comprehensive Reports";
+            return View();
+        }
+        public IActionResult ComprehensiveRange()
+        {
+            ViewData["Title"] = "ComprehensiveRange";
+            ViewBag.Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new { value = s.Id, text = s.Name }).ToList();
+            return View();
+        }
+        public IActionResult ComprehensiveDay()
+        {
+            ViewData["Title"] = "ComprehensiveDay";
+            ViewBag.Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new { value = s.Id, text = s.Name }).ToList();
+            return View();
+        }
+        public IActionResult ComprehensiveMonth()
+        {
+            ViewData["Title"] = "ComprehensiveMonth";
+            ViewBag.Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new { value = s.Id, text = s.Name }).ToList();
+            return View();
+        }
+        public IActionResult ComprehensiveToday()
+        {
+            ViewData["Title"] = "ComprehensiveToday";
+            ViewBag.Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new { value = s.Id, text = s.Name }).ToList();
+            return View();
+        }
+
+        public async Task<IActionResult> ComprehensiveResults(string mode, DateTime? from, DateTime? to, DateTime? day, int? sectionId)
+        {
+            var cards = await BuildCardsAsync(null, mode, from, to, day, sectionId);
+            ViewData["Title"] = "ComprehensiveResults";
+            return View("Results", cards);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ComprehensiveFetch(string mode, DateTime? from, DateTime? to, DateTime? day, int? sectionId)
+        {
+            var cards = await BuildCardsAsync(null, mode, from, to, day, sectionId);
+            return PartialView("_IssuanceCards", cards);
+        }
+
+        // helper to build cards; if clientId provided, filter by client; if sectionId provided, filter by section
+        private async Task<List<IssuanceCardVM>> BuildCardsAsync(int? clientId, string mode, DateTime? from, DateTime? to, DateTime? day, int? sectionId)
+        {
+            DateTime start = DateTime.UtcNow.Date;
+            DateTime end = start.AddDays(1);
+
+            if (string.Equals(mode, "today", StringComparison.OrdinalIgnoreCase))
+            {
+                // use start/end UTC
+            }
+            else if (string.Equals(mode, "range", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!from.HasValue || !to.HasValue) return new List<IssuanceCardVM>();
+                start = from.Value.Date.ToUniversalTime();
+                end = to.Value.Date.AddDays(1).ToUniversalTime();
+            }
+            else if (string.Equals(mode, "day", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!day.HasValue) return new List<IssuanceCardVM>();
+                start = day.Value.Date.ToUniversalTime();
+                end = start.AddDays(1);
+            }
+            else if (string.Equals(mode, "month", StringComparison.OrdinalIgnoreCase))
+            {
+                var now = DateTime.UtcNow;
+                start = new DateTime(now.Year, now.Month, 1).ToUniversalTime();
+                end = start.AddMonths(1);
+            }
+
+            var inboundsQuery = _db.Inbounds
+                .Where(i => i.CreatedAt >= start && i.CreatedAt < end)
+                .Include(i => i.Client)
+                .Include(i => i.Details).ThenInclude(d => d.Product)
+                .Include(i => i.Details).ThenInclude(d => d.Section)
+                .AsQueryable();
+
+            var outboundsQuery = _db.Outbounds
+                .Where(o => o.CreatedAt >= start && o.CreatedAt < end)
+                .Include(o => o.Client)
+                .Include(o => o.Details).ThenInclude(d => d.Product)
+                .Include(o => o.Details).ThenInclude(d => d.Section)
+                .AsQueryable();
+
+            if (clientId.HasValue)
+            {
+                inboundsQuery = inboundsQuery.Where(i => i.ClientId == clientId.Value);
+                outboundsQuery = outboundsQuery.Where(o => o.ClientId == clientId.Value);
+            }
+
+            if (sectionId.HasValue)
+            {
+                inboundsQuery = inboundsQuery.Where(i => i.Details.Any(d => d.SectionId == sectionId.Value));
+                outboundsQuery = outboundsQuery.Where(o => o.Details.Any(d => d.SectionId == sectionId.Value));
+            }
+
+            var inbounds = await inboundsQuery.ToListAsync();
+            var outbounds = await outboundsQuery.ToListAsync();
+
+            var cards = new List<IssuanceCardVM>();
+
+            foreach (var i in inbounds)
+            {
+                cards.Add(new IssuanceCardVM
+                {
+                    Id = i.Id,
+                    Type = "Inbound",
+                    CreatedAt = i.CreatedAt,
+                    ClientName = i.Client?.Name ?? string.Empty,
+                    TotalCartons = i.Details.Sum(d => d.Cartons),
+                    TotalPallets = i.Details.Sum(d => d.Pallets),
+                    Lines = i.Details.Select(d => new IssuanceLineVM { ProductName = d.Product?.Name ?? string.Empty, Cartons = d.Cartons, Pallets = d.Pallets }).ToList()
+                });
+            }
+
+            foreach (var o in outbounds)
+            {
+                cards.Add(new IssuanceCardVM
+                {
+                    Id = o.Id,
+                    Type = "Outbound",
+                    CreatedAt = o.CreatedAt,
+                    ClientName = o.Client?.Name ?? string.Empty,
+                    TotalCartons = o.Details.Sum(d => d.Cartons),
+                    TotalPallets = o.Details.Sum(d => d.Pallets),
+                    Lines = o.Details.Select(d => new IssuanceLineVM { ProductName = d.Product?.Name ?? string.Empty, Cartons = d.Cartons, Pallets = d.Pallets }).ToList()
+                });
+            }
+
+            return cards.OrderByDescending(c => c.CreatedAt).ToList();
+        }
+    }
+}

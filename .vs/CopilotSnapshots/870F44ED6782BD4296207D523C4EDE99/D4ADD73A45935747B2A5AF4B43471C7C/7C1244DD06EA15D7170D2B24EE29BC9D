@@ -1,0 +1,34 @@
+﻿@{
+    ViewData["Title"] = "تقارير العنابر";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>تقارير العنابر</h3>
+        <div>
+            <a id="btnToday" class="btn btn-outline-primary btn-sm" asp-action="SectionToday" asp-controller="Reports">اليوم</a>
+        </div>
+    </div>
+
+    <div class="row g-2 mb-3">
+        <div class="col-md-4">
+            <label class="form-label">من</label>
+            <input type="date" id="fromDate" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">الي</label>
+            <input type="date" id="toDate" class="form-control" />
+        </div>
+        <div class="col-md-4 d-flex align-items-end gap-2">
+            <a id="btnRange" class="btn btn-outline-primary" asp-action="SectionRange" asp-controller="Reports">عرض الفترة</a>
+
+            <a id="btnDay" class="btn btn-outline-secondary" asp-action="SectionDay" asp-controller="Reports">يوم محدد</a>
+            <a id="btnMonth" class="btn btn-outline-secondary" asp-action="SectionMonth" asp-controller="Reports">هذا الشهر</a>
+        </div>
+    </div>
+
+    <div id="results">
+        <div class="text-muted">لا توجد نتائج بعد</div>
+    </div>
+</div>
