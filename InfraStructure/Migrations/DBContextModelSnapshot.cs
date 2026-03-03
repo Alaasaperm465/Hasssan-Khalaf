@@ -105,18 +105,34 @@ namespace InfraStructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AdditionalEntry")
+                        .HasColumnType("int");
+
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("DelegateId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("DelegateId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Inbounds");
                 });
@@ -229,6 +245,9 @@ namespace InfraStructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AdditionalEntry")
+                        .HasColumnType("int");
+
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
 
@@ -238,14 +257,22 @@ namespace InfraStructure.Migrations
                     b.Property<int?>("DelegateId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
 
                     b.HasIndex("DelegateId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Outbounds");
                 });
@@ -592,7 +619,19 @@ namespace InfraStructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Hassann_Khala.Domain.Delegate", "Delegate")
+                        .WithMany()
+                        .HasForeignKey("DelegateId");
+
+                    b.HasOne("Hassann_Khala.Domain.User", "User")
+                        .WithMany("Inbounds")
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Client");
+
+                    b.Navigation("Delegate");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Hassann_Khala.Domain.InboundDetail", b =>
@@ -643,9 +682,15 @@ namespace InfraStructure.Migrations
                         .WithMany()
                         .HasForeignKey("DelegateId");
 
+                    b.HasOne("Hassann_Khala.Domain.User", "User")
+                        .WithMany("Outbounds")
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Client");
 
                     b.Navigation("Delegate");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Hassann_Khala.Domain.OutboundDetail", b =>
@@ -763,6 +808,13 @@ namespace InfraStructure.Migrations
             modelBuilder.Entity("Hassann_Khala.Domain.Product", b =>
                 {
                     b.Navigation("Stocks");
+                });
+
+            modelBuilder.Entity("Hassann_Khala.Domain.User", b =>
+                {
+                    b.Navigation("Inbounds");
+
+                    b.Navigation("Outbounds");
                 });
 #pragma warning restore 612, 618
         }

@@ -26,6 +26,12 @@ builder.Services.AddControllersWithViews(options =>
 // Add Razor Pages support
 builder.Services.AddRazorPages();
 
+// Configure Antiforgery to read token from RequestVerificationToken header (used by JS fetch)
+builder.Services.AddAntiforgery(options =>
+{
+    options.HeaderName = "RequestVerificationToken";
+});
+
 // Configure Cookie Authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

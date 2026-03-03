@@ -9,9 +9,14 @@ namespace Hassann_Khala.Domain
         public int ClientId { get; set; }
         public Client Client { get; set; } = null!;
 
+        public int? UserId { get; set; }
+        public User? User { get; set; }
+
+        public int? AdditionalEntry { get; set; } 
         // optional delegate who authorized the outbound
         public int? DelegateId { get; set; }
         public Delegate? Delegate { get; set; }
+        public string? Notes { get; set; }
 
         // Navigation
         public IList<OutboundDetail> Details { get; set; } = new List<OutboundDetail>();

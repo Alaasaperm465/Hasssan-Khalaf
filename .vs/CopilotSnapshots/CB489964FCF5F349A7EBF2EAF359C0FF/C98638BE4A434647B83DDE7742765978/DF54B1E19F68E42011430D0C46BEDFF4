@@ -1,0 +1,26 @@
+﻿namespace Hassann_Khala.Domain
+{
+    using global::Domain;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+
+    public class Inbound: BaseEntity
+    {
+        public int ClientId { get; set; }
+        public Client Client { get; set; } = null!;
+        //امين المخزن 
+        public int? UserId { get; set; }
+        public User User { get; set; } = new User();
+        //الفتح الاضاقي
+        public int? AdditionalEntry { get; set; } 
+
+        // optional delegate who authorized the outbound
+        public int? DelegateId { get; set; } = new int?();
+        public Delegate? Delegate { get; set; }
+        public string? Notes { get; set; }
+
+
+        // Navigation
+        public IList<InboundDetail> Details { get; set; } = new List<InboundDetail>();
+    }
+}

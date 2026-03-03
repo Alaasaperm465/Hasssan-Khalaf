@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Hassann_Khala.Domain.Outbound>
+@{
+    ViewData["Title"] = "Outbound";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@* <h1>اذن الصادر</h1>
+<p><a class="btn btn-primary" href="/Outbound/Create">اذن جديد</a></p> *@
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h5 mb-0">المبيعات</h2>
+    <div class="d-flex gap-2">
+        <a class="btn btn-outline-secondary d-md-none" href="#" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar"><i class="bi bi-list"></i></a>
+        <a class="btn btn-primary" href="/Outbound/Create">اذن مبيعات جديد</a>
+        <button class="btn btn-outline-dark toggle-dark d-none d-md-inline">
+            <i class="bi bi-moon"></i>
+        </button>
+    </div>
+</div>
+<table class="table table-striped table-hover table-bordered align-middle mb-0">
+    <thead>
+        <tr>
+            @* <th>Id</th> *@
+            <th>العميل</th>
+            <th>تاريخ الإنشاء</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach(var o in Model) {
+        <tr>
+            @* <td>@o.Id</td> *@
+            <td>@o.ClientId</td>
+            <td>@o.CreatedAt</td>
+        </tr>
+    }
+    </tbody>
+</table>

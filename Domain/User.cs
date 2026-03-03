@@ -9,5 +9,7 @@ namespace Hassann_Khala.Domain
         public string Username { get; set; } = null!;
         public string Password { get; set; } = null!; // plain text for testing only
         public string Role { get; set; } = null!; // Admin or StoreKeeper
+        public List<Inbound> Inbounds { get; set; } = new List<Inbound>();
+        public List<Outbound> Outbounds { get; set; } = new List<Outbound>();
     }
 }

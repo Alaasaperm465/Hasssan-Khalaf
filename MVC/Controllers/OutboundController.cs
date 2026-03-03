@@ -15,12 +15,12 @@ namespace MVC.Controllers
 
         public IActionResult Index()
         {
-            var outbounds = _db.Outbounds.ToList();
+            var outbounds = _db.Outbounds.Include(o => o.Client).ToList();
             return View(outbounds);
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Create(int? clientId)
         {
             var vm = new OutboundCreateVM
             {
@@ -30,6 +30,18 @@ namespace MVC.Controllers
                 Delegates = Enumerable.Empty<SelectListItem>(),
                 Details = Enumerable.Range(0, 6).Select(_ => new OutboundDetailVM()).ToList()
             };
+
+            // If clientId provided, pre-load delegates for that client so the select shows names server-side
+            if (clientId.HasValue && clientId.Value > 0)
+            {
+                vm.Delegates = _db.Delegates.Where(d => d.ClientId == clientId.Value).OrderBy(d => d.Name)
+                    .Select(d => new SelectListItem(d.Name, d.Id.ToString())).ToList();
+                vm.ClientId = clientId.Value;
+
+                // For outbound we still want sections limited to those with stock for this client
+                var sectionIds = _db.Stocks.Where(s => s.ClientId == clientId.Value).Select(s => s.SectionId).Distinct().ToList();
+                vm.Sections = _db.Sections.Where(s => sectionIds.Contains(s.Id)).OrderBy(s => s.Name).Select(s => new SelectListItem(s.Name, s.Id.ToString())).ToList();
+            }
 
             return View(vm);
         }
@@ -139,98 +151,107 @@ namespace MVC.Controllers
         [Route("Outbound/AddLineAjax")]
         public IActionResult AddLineAjax([FromBody] AddLineRequest req)
         {
-            if (req == null) return BadRequest(new { success = false, error = "Request body required" });
-            if (req.ClientId <= 0) return BadRequest(new { success = false, error = "ClientId required" });
-            if (req.ProductId <= 0) return BadRequest(new { success = false, error = "ProductId required" });
-            if (req.SectionId <= 0) return BadRequest(new { success = false, error = "SectionId required" });
-            if (req.Cartons < 0 || req.Pallets < 0) return BadRequest(new { success = false, error = "Quantities must be non-negative" });
-
-            var client = _db.Clients.FirstOrDefault(c => c.Id == req.ClientId);
-            var product = _db.Products.FirstOrDefault(p => p.Id == req.ProductId && p.IsActive);
-            var section = _db.Sections.FirstOrDefault(s => s.Id == req.SectionId);
-
-            if (client == null || product == null || section == null)
-            {
-                return BadRequest(new { success = false, error = "Invalid client/product/section" });
-            }
-
-            // check availability
-            var stockRecord = _db.Stocks.FirstOrDefault(s => s.ClientId == req.ClientId && s.ProductId == req.ProductId && s.SectionId == req.SectionId);
-            var availableCartons = stockRecord?.Cartons ?? 0;
-            var availablePallets = stockRecord?.Pallets ?? 0;
-            if (req.Cartons > availableCartons || req.Pallets > availablePallets)
-            {
-                return BadRequest(new { success = false, error = "?????? ???????? ???? ?? ??????" });
-            }
-
-            // If outboundId provided, append detail
-            if (req.OutboundId.HasValue && req.OutboundId.Value > 0)
-            {
-                var outbound = _db.Outbounds.Include(o => o.Details).FirstOrDefault(o => o.Id == req.OutboundId.Value);
-                if (outbound == null) return NotFound(new { success = false, error = "Outbound not found" });
-                if (outbound.ClientId != req.ClientId) return BadRequest(new { success = false, error = "Client mismatch" });
-
-                var detail = new OutboundDetail
-                {
-                    OutboundId = outbound.Id,
-                    ProductId = req.ProductId,
-                    SectionId = req.SectionId,
-                    Cartons = req.Cartons,
-                    Pallets = req.Pallets,
-                    Quantity = req.Cartons + (req.Pallets * 100m)
-                };
-                outbound.Details.Add(detail);
-
-                // reduce stock
-                if (stockRecord != null)
-                {
-                    stockRecord.Cartons -= req.Cartons; stockRecord.Pallets -= req.Pallets; _db.Stocks.Update(stockRecord);
-                }
-
-                var prodStock = _db.ProductStocks.FirstOrDefault(ps => ps.ClientId == outbound.ClientId && ps.ProductId == req.ProductId);
-                if (prodStock != null) { prodStock.Cartons -= req.Cartons; prodStock.Pallets -= req.Pallets; _db.ProductStocks.Update(prodStock); }
-
-                var secStock = _db.SectionStocks.FirstOrDefault(ss => ss.ClientId == outbound.ClientId && ss.SectionId == req.SectionId);
-                if (secStock != null) { secStock.Cartons -= req.Cartons; secStock.Pallets -= req.Pallets; _db.SectionStocks.Update(secStock); }
-
-                _db.SaveChanges();
-
-                // find inserted detail id (last added)
-                var insertedDetail = outbound.Details.LastOrDefault();
-                return Ok(new { success = true, id = outbound.Id, detailId = insertedDetail?.Id });
-            }
-
-            // create new outbound with single line
-            using var tx = _db.Database.BeginTransaction();
             try
             {
-                var outbound = new Outbound { ClientId = req.ClientId, CreatedAt = DateTime.UtcNow };
-                var detail = new OutboundDetail { ProductId = req.ProductId, SectionId = req.SectionId, Cartons = req.Cartons, Pallets = req.Pallets, Quantity = req.Cartons + (req.Pallets * 100m) };
-                outbound.Details.Add(detail);
+                if (req == null) return BadRequest(new { success = false, error = "Request body required" });
+                if (req.ClientId <= 0) return BadRequest(new { success = false, error = "ClientId required" });
+                if (req.ProductId <= 0) return BadRequest(new { success = false, error = "ProductId required" });
+                if (req.SectionId <= 0) return BadRequest(new { success = false, error = "SectionId required" });
+                if (req.Cartons < 0 || req.Pallets < 0) return BadRequest(new { success = false, error = "Quantities must be non-negative" });
 
-                _db.Outbounds.Add(outbound);
+                var client = _db.Clients.FirstOrDefault(c => c.Id == req.ClientId);
+                var product = _db.Products.FirstOrDefault(p => p.Id == req.ProductId && p.IsActive);
+                var section = _db.Sections.FirstOrDefault(s => s.Id == req.SectionId);
 
-                if (stockRecord != null) { stockRecord.Cartons -= req.Cartons; stockRecord.Pallets -= req.Pallets; _db.Stocks.Update(stockRecord); }
+                if (client == null || product == null || section == null)
+                {
+                    return BadRequest(new { success = false, error = "Invalid client/product/section" });
+                }
 
-                var prodStock2 = _db.ProductStocks.FirstOrDefault(ps => ps.ClientId == req.ClientId && ps.ProductId == req.ProductId);
-                if (prodStock2 != null) { prodStock2.Cartons -= req.Cartons; prodStock2.Pallets -= req.Pallets; _db.ProductStocks.Update(prodStock2); }
+                // check availability
+                var stockRecord = _db.Stocks.FirstOrDefault(s => s.ClientId == req.ClientId && s.ProductId == req.ProductId && s.SectionId == req.SectionId);
+                var availableCartons = stockRecord?.Cartons ?? 0;
+                var availablePallets = stockRecord?.Pallets ?? 0;
+                if (req.Cartons > availableCartons || req.Pallets > availablePallets)
+                {
+                    return BadRequest(new { success = false, error = "Insufficient stock" });
+                }
 
-                var secStock2 = _db.SectionStocks.FirstOrDefault(ss => ss.ClientId == req.ClientId && ss.SectionId == req.SectionId);
-                if (secStock2 != null) { secStock2.Cartons -= req.Cartons; secStock2.Pallets -= req.Pallets; _db.SectionStocks.Update(secStock2); }
+                // If outboundId provided, append detail
+                if (req.OutboundId.HasValue && req.OutboundId.Value > 0)
+                {
+                    var outbound = _db.Outbounds.Include(o => o.Details).FirstOrDefault(o => o.Id == req.OutboundId.Value);
+                    if (outbound == null) return NotFound(new { success = false, error = "Outbound not found" });
+                    if (outbound.ClientId != req.ClientId) return BadRequest(new { success = false, error = "Client mismatch" });
 
-                _db.SaveChanges();
-                tx.Commit();
+                    var detail = new OutboundDetail
+                    {
+                        OutboundId = outbound.Id,
+                        ProductId = req.ProductId,
+                        SectionId = req.SectionId,
+                        Cartons = req.Cartons,
+                        Pallets = req.Pallets,
+                        Quantity = req.Cartons + (req.Pallets * 100m)
+                    };
+                    outbound.Details.Add(detail);
 
-                // get detail id
-                var savedOutbound = _db.Outbounds.Include(o => o.Details).FirstOrDefault(o => o.Id == outbound.Id);
-                var savedDetailId = savedOutbound?.Details?.FirstOrDefault()?.Id;
+                    // reduce stock
+                    if (stockRecord != null)
+                    {
+                        stockRecord.Cartons -= req.Cartons; stockRecord.Pallets -= req.Pallets; _db.Stocks.Update(stockRecord);
+                    }
 
-                return Ok(new { success = true, id = outbound.Id, detailId = savedDetailId });
+                    var prodStock = _db.ProductStocks.FirstOrDefault(ps => ps.ClientId == outbound.ClientId && ps.ProductId == req.ProductId);
+                    if (prodStock != null) { prodStock.Cartons -= req.Cartons; prodStock.Pallets -= req.Pallets; _db.ProductStocks.Update(prodStock); }
+
+                    var secStock = _db.SectionStocks.FirstOrDefault(ss => ss.ClientId == outbound.ClientId && ss.SectionId == req.SectionId);
+                    if (secStock != null) { secStock.Cartons -= req.Cartons; secStock.Pallets -= req.Pallets; _db.SectionStocks.Update(secStock); }
+
+                    _db.SaveChanges();
+
+                    // find inserted detail id (last added)
+                    var insertedDetail = outbound.Details.LastOrDefault();
+                    return Ok(new { success = true, id = outbound.Id, detailId = insertedDetail?.Id });
+                }
+
+                // create new outbound with single line
+                using var tx = _db.Database.BeginTransaction();
+                try
+                {
+                    var outbound = new Outbound { ClientId = req.ClientId, CreatedAt = DateTime.UtcNow };
+                    var detail = new OutboundDetail { ProductId = req.ProductId, SectionId = req.SectionId, Cartons = req.Cartons, Pallets = req.Pallets, Quantity = req.Cartons + (req.Pallets * 100m) };
+                    outbound.Details.Add(detail);
+
+                    _db.Outbounds.Add(outbound);
+
+                    if (stockRecord != null) { stockRecord.Cartons -= req.Cartons; stockRecord.Pallets -= req.Pallets; _db.Stocks.Update(stockRecord); }
+
+                    var prodStock2 = _db.ProductStocks.FirstOrDefault(ps => ps.ClientId == req.ClientId && ps.ProductId == req.ProductId);
+                    if (prodStock2 != null) { prodStock2.Cartons -= req.Cartons; prodStock2.Pallets -= req.Pallets; _db.ProductStocks.Update(prodStock2); }
+
+                    var secStock2 = _db.SectionStocks.FirstOrDefault(ss => ss.ClientId == req.ClientId && ss.SectionId == req.SectionId);
+                    if (secStock2 != null) { secStock2.Cartons -= req.Cartons; secStock2.Pallets -= req.Pallets; _db.SectionStocks.Update(secStock2); }
+
+                    _db.SaveChanges();
+                    tx.Commit();
+
+                    // get detail id
+                    var savedOutbound = _db.Outbounds.Include(o => o.Details).FirstOrDefault(o => o.Id == outbound.Id);
+                    var savedDetailId = savedOutbound?.Details?.FirstOrDefault()?.Id;
+
+                    return Ok(new { success = true, id = outbound.Id, detailId = savedDetailId });
+                }
+                catch (Exception ex)
+                {
+                    tx.Rollback();
+                    var inner = ex.GetBaseException()?.Message;
+                    return StatusCode(500, new { success = false, error = ex.Message, detail = inner, stack = ex.StackTrace });
+                }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-                tx.Rollback();
-                return StatusCode(500, new { success = false, error = "Server error" });
+                var inner = ex.GetBaseException()?.Message;
+                return StatusCode(500, new { success = false, error = ex.Message, detail = inner, stack = ex.StackTrace });
             }
         }
 
@@ -287,6 +308,52 @@ namespace MVC.Controllers
                 .Select(d => new { value = d.Id, text = d.Name })
                 .ToList();
             return Json(list);
+        }
+
+        [HttpGet]
+        public IActionResult Details(int id)
+        {
+            var outbound = _db.Outbounds.Include(o => o.Details).Include(o => o.Client).FirstOrDefault(o => o.Id == id);
+            if (outbound == null) return NotFound();
+
+            var vm = new OutboundDetailsVM
+            {
+                Id = outbound.Id,
+                ClientName = outbound.Client?.Name ?? outbound.ClientId.ToString(),
+                CreatedAt = outbound.CreatedAt,
+                Details = outbound.Details.Select(d => new MVC.ViewModels.Inbound.InboundDetailVM
+                {
+                    Id = d.Id,
+                    InboundId = d.OutboundId,
+                    ProductId = d.ProductId,
+                    ProductName = d.Product?.Name,
+                    SectionId = d.SectionId,
+                    SectionName = d.Section?.Name,
+                    Cartons = d.Cartons,
+                    Pallets = d.Pallets,
+                    Quantity = d.Quantity
+                }).ToList()
+            };
+
+            return View(vm);
+        }
+        [HttpGet]
+        public IActionResult GetAvailableStock(int clientId, int productId, int sectionId)
+        {
+            if (clientId <= 0 || productId <= 0 || sectionId <= 0)
+                return Json(new { cartons = 0, pallets = 0 });
+
+            var stock = _db.Stocks
+                .FirstOrDefault(s =>
+                    s.ClientId == clientId &&
+                    s.ProductId == productId &&
+                    s.SectionId == sectionId);
+
+            return Json(new
+            {
+                cartons = stock?.Cartons ?? 0,
+                pallets = stock?.Pallets ?? 0
+            });
         }
     }
 }

@@ -52,6 +52,7 @@ namespace MVC.Controllers
             var products = await _db.Products.AsNoTracking().ToListAsync();
             var sections = await _sectionService.GetAllAsync();
 
+
             // if clientId provided, filter products by client's allowed types
             IEnumerable<Product> filteredProducts = products;
             if (clientId.HasValue && clientId.Value > 0)
@@ -71,15 +72,15 @@ namespace MVC.Controllers
             }
 
             IEnumerable<SelectListItem> sectionsItems;
-            if (clientId.HasValue && clientId.Value > 0)
-            {
-                var sectionIds = await _db.Stocks.Where(s => s.ClientId == clientId.Value).Select(s => s.SectionId).Distinct().ToListAsync();
-                sectionsItems = sections.Where(s => sectionIds.Contains(s.Id)).Select(s => new SelectListItem(s.Name, s.Id.ToString()));
-            }
-            else
-            {
-                sectionsItems = sections.Select(s => new SelectListItem(s.Name, s.Id.ToString()));
-            }
+            //if (clientId.HasValue && clientId.Value > 0)
+            //{
+            //    var sectionIds = await _db.Stocks.Where(s => s.ClientId == clientId.Value).Select(s => s.SectionId).Distinct().ToListAsync();
+            //    sectionsItems = sections.Where(s => sectionIds.Contains(s.Id)).Select(s => new SelectListItem(s.Name, s.Id.ToString()));
+            //}
+            //else
+            //{
+            sectionsItems = sections.Select(s => new SelectListItem(s.Name, s.Id.ToString()));
+            //}
 
             var vm = new InboundCreateVM
             {
@@ -87,8 +88,18 @@ namespace MVC.Controllers
                 Delegates = Enumerable.Empty<SelectListItem>(),
                 Products = filteredProducts.Select(p => new SelectListItem(p.Name, p.Id.ToString())),
                 Sections = sectionsItems,
-                Details = Enumerable.Range(0, 6).Select(_ => new InboundDetailVM()).ToList()
+                Details = Enumerable.Range(0, 6).Select(_ => new InboundDetailVM()).ToList(),
+                CreatedAt = DateTime.Now
             };
+            var lastId = await _db.Inbounds
+                .OrderByDescending(i => i.Id)
+                .Select(i => i.Id)
+                .FirstOrDefaultAsync();
+
+            vm.Id = lastId + 1;
+
+            vm.CreatedByName = User.Identity?.Name;
+            vm.CreatedById = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
             // if clientId provided, set it in vm so view knows
             if (clientId.HasValue) vm.ClientId = clientId.Value;
@@ -100,7 +111,7 @@ namespace MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(InboundCreateVM vm)
         {
-            // existing server-side non-AJAX handling
+            // 🔹 Method لإعادة تحميل الـ dropdowns في حالة وجود خطأ
             async Task PopulateLookups()
             {
                 var clients = await _clientService.GetAllAsync();
@@ -110,7 +121,7 @@ namespace MVC.Controllers
                 vm.Clients = clients.Select(c => new SelectListItem(c.Name, c.Id.ToString()));
                 vm.Sections = sections.Select(s => new SelectListItem(s.Name, s.Id.ToString()));
 
-                // if client selected, filter products by allowed types
+                // 🔹 فلترة المنتجات حسب صلاحيات العميل
                 if (vm.ClientId > 0)
                 {
                     var client = await _db.Clients.FindAsync(vm.ClientId);
@@ -118,13 +129,19 @@ namespace MVC.Controllers
                     {
                         var mask = client.AllowedProductTypes;
                         var allowedTypeInts = new List<int>();
+
                         foreach (var val in Enum.GetValues(typeof(ProductType)).Cast<ProductType>())
                         {
                             var bit = (int)val;
-                            if ((mask & bit) == bit) allowedTypeInts.Add(bit);
+                            if ((mask & bit) == bit)
+                                allowedTypeInts.Add(bit);
                         }
-                        if (allowedTypeInts.Any()) vm.Products = products.Where(p => allowedTypeInts.Contains((int)p.Type)).Select(p => new SelectListItem(p.Name, p.Id.ToString()));
-                        else vm.Products = products.Select(p => new SelectListItem(p.Name, p.Id.ToString()));
+
+                        vm.Products = allowedTypeInts.Any()
+                            ? products
+                                .Where(p => allowedTypeInts.Contains((int)p.Type))
+                                .Select(p => new SelectListItem(p.Name, p.Id.ToString()))
+                            : products.Select(p => new SelectListItem(p.Name, p.Id.ToString()));
                     }
                     else
                     {
@@ -135,25 +152,24 @@ namespace MVC.Controllers
                 {
                     vm.Products = products.Select(p => new SelectListItem(p.Name, p.Id.ToString()));
                 }
-                
-                
-                // also repopulate delegates for selected client
-                if (vm.ClientId > 0)
-                {
-                    vm.Delegates = _db.Delegates.Where(d => d.ClientId == vm.ClientId).OrderBy(d => d.Name).Select(d => new SelectListItem(d.Name, d.Id.ToString()));
-                }
-                else
-                {
-                    vm.Delegates = Enumerable.Empty<SelectListItem>();
-                }
+
+                // 🔹 إعادة تحميل المفوضين حسب العميل
+                vm.Delegates = vm.ClientId > 0
+                    ? _db.Delegates
+                        .Where(d => d.ClientId == vm.ClientId)
+                        .OrderBy(d => d.Name)
+                        .Select(d => new SelectListItem(d.Name, d.Id.ToString()))
+                    : Enumerable.Empty<SelectListItem>();
             }
 
+            // ❌ لو فيه أخطاء Validation
             if (!ModelState.IsValid)
             {
                 await PopulateLookups();
                 return View(vm);
             }
 
+            // 🔹 التأكد من وجود العميل
             var clientDto = await _clientService.GetByIdAsync(vm.ClientId);
             if (clientDto == null)
             {
@@ -175,11 +191,13 @@ namespace MVC.Controllers
                     ModelState.AddModelError(string.Empty, $"Product not found for id {line.ProductId}");
                     break;
                 }
+
                 if (sectionDto == null)
                 {
                     ModelState.AddModelError(string.Empty, $"Section not found for id {line.SectionId}");
                     break;
                 }
+
                 if (line.Cartons < 0 || line.Pallets < 0)
                 {
                     ModelState.AddModelError(string.Empty, "Cartons and Pallets must be non-negative");
@@ -201,9 +219,11 @@ namespace MVC.Controllers
                 return View(vm);
             }
 
+            // ✅ ✨ التعديل هنا — إضافة AdditionalEntry
             var request = new CreateInboundRequest
             {
                 ClientName = clientDto.Name,
+                AdditionalEntry = vm.AdditionalEntry,   // 🔥 تم إضافته
                 Lines = lines
             };
 
@@ -218,12 +238,10 @@ namespace MVC.Controllers
                 await PopulateLookups();
                 return View(vm);
             }
-
         }
 
         // New AJAX endpoint to handle JSON POST and return JSON result
         [HttpPost]
-        [ValidateAntiForgeryToken]
         [Route("Inbound/CreateAjax")]
         public async Task<IActionResult> CreateAjax([FromBody] CreateInboundRequest request)
         {
@@ -238,9 +256,15 @@ namespace MVC.Controllers
             {
                 return BadRequest(new { success = false, error = ex.Message });
             }
-            catch (Exception)
+            catch (DbUpdateException ex)
             {
-                return StatusCode(500, new { success = false, error = "Server error" });
+                var inner = ex.GetBaseException()?.Message;
+                return StatusCode(500, new { success = false, error = ex.Message, detail = inner });
+            }
+            catch (Exception ex)
+            {
+                var inner = ex.GetBaseException()?.Message;
+                return StatusCode(500, new { success = false, error = "Server error", detail = inner });
             }
         }
 
@@ -347,10 +371,17 @@ namespace MVC.Controllers
                     var savedDetailId = detail.Id;
                     return Ok(new { success = true, id = inbound.Id, detailId = savedDetailId });
                 }
+                catch (DbUpdateException ex)
+                {
+                    await tx.RollbackAsync();
+                    var inner = ex.GetBaseException()?.Message;
+                    return StatusCode(500, new { success = false, error = ex.Message, detail = inner });
+                }
                 catch (System.Exception ex)
                 {
                     await tx.RollbackAsync();
-                    return StatusCode(500, new { success = false, error = ex.Message });
+                    var inner = ex.GetBaseException()?.Message;
+                    return StatusCode(500, new { success = false, error = ex.Message, detail = inner });
                 }
             }
 
@@ -418,10 +449,17 @@ namespace MVC.Controllers
                 var savedDetailId = detail.Id;
                 return Ok(new { success = true, id = savedInboundId, detailId = savedDetailId });
             }
+            catch (DbUpdateException ex)
+            {
+                await tx2.RollbackAsync();
+                var inner = ex.GetBaseException()?.Message;
+                return StatusCode(500, new { success = false, error = ex.Message, detail = inner });
+            }
             catch (System.Exception ex)
             {
                 await tx2.RollbackAsync();
-                return StatusCode(500, new { success = false, error = ex.Message });
+                var inner = ex.GetBaseException()?.Message;
+                return StatusCode(500, new { success = false, error = ex.Message, detail = inner });
             }
         }
 
@@ -482,7 +520,8 @@ namespace MVC.Controllers
             catch (System.Exception ex)
             {
                 await tx.RollbackAsync();
-                return StatusCode(500, new { success = false, error = ex.Message });
+                var inner = ex.GetBaseException()?.Message;
+                return StatusCode(500, new { success = false, error = ex.Message, detail = inner });
             }
         }
 
@@ -519,6 +558,5 @@ namespace MVC.Controllers
 
             return Json(sections);
         }
-
     }
 }

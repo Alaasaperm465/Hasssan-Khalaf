@@ -74,44 +74,52 @@ namespace MVC.Controllers
             return View("Index");
         }
         [HttpGet]
-        public async Task<IActionResult> GetClientStocks(int clientId)
+        public IActionResult GetClientStocks(int clientId)
         {
-            var stocks = await _stockService.GetStocksByClientAsync(clientId);
-
-            var products = stocks
-                .Select(s => new {
-                    value = s.ProductId,
-                    text = s.Product?.Name
-                })
-                .Distinct()
+            var stocks = _db.Stocks
+                .Where(s => s.ClientId == clientId && (s.Cartons > 0 || s.Pallets > 0))
+                .Include(s => s.Section)
+                .Include(s => s.Product)
                 .ToList();
 
             var sections = stocks
-                .Select(s => new {
-                    value = s.SectionId,
-                    text = s.Section?.Name
+                .GroupBy(s => new { s.SectionId, s.Section.Name })
+                .Select(g => new
+                {
+                    value = g.Key.SectionId,
+                    text = g.Key.Name
                 })
-                .Distinct()
                 .ToList();
 
-            var pairs = stocks
-                .Select(s => new { productId = s.ProductId, sectionId = s.SectionId })
-                .Distinct()
+            var pairs = stocks.Select(s => new
+            {
+                productId = s.ProductId,
+                sectionId = s.SectionId
+            }).ToList();
+
+            // compute totals for client and per section
+            var clientCartons = stocks.Sum(s => s.Cartons);
+            var clientPallets = stocks.Sum(s => s.Pallets);
+
+            var sectionTotals = stocks
+                .GroupBy(s => new { s.SectionId })
+                .Select(g => new { sectionId = g.Key.SectionId, cartons = g.Sum(x => x.Cartons), pallets = g.Sum(x => x.Pallets) })
                 .ToList();
 
-            // include per-stock quantities so client can update available counts
-            var stocksData = stocks
-                .Select(s => new {
-                    productId = s.ProductId,
-                    sectionId = s.SectionId,
-                    cartons = s.Cartons,
-                    pallets = s.Pallets
-                })
-                .Distinct()
+            var productSectionTotals = stocks
+                .GroupBy(s => new { s.SectionId, s.ProductId })
+                .Select(g => new { sectionId = g.Key.SectionId, productId = g.Key.ProductId, cartons = g.Sum(x => x.Cartons), pallets = g.Sum(x => x.Pallets) })
                 .ToList();
 
-            // return products, sections, pairs and quantities
-            return Json(new { products, sections, pairs, stocks = stocksData });
+            return Json(new
+            {
+                sections,
+                pairs,
+                clientCartons,
+                clientPallets,
+                sectionTotals,
+                productSectionTotals
+            });
         }
 
 

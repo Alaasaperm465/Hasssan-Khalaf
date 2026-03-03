@@ -10,6 +10,7 @@ namespace Hassann_Khala.Application.DTOs.Inbound
         [Required]
         [MinLength(1)]
         public List<InboundLineRequest> Lines { get; set; } = new();
+        public int? AdditionalEntry { get; set; }
     }
 
     public class InboundLineRequest

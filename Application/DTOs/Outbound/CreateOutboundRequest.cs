@@ -1,8 +1,14 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Hassann_Khala.Application.DTOs.Outbound
+
 {
     public class CreateOutboundRequest
     {
+        [Required]
+        //public string ClientName { get; set; } = null!;
         public int ClientId { get; set; }
+        public int? AdditionalEntry { get; set; }
         public List<OutboundLine> Lines { get; set; } = new();
     }
 

@@ -22,8 +22,8 @@
         <aside class="sidebar bg-dark text-white d-none d-md-flex flex-column" id="site-sidebar" aria-label="Sidebar">
             <div class="p-3">
                 <a class="d-flex align-items-center mb-3 text-white text-decoration-none" href="@Url.Action("Index", "Home")">
-                    <i class="bi bi-box-seam fs-4 me-2"></i>
-                    <span class="fs-5 fw-semibold">Warehouse WMS</span>
+                    
+                    <span class="fs-5 fw-semibold">حسن خلف</span>
                 </a>
                 <hr class="text-secondary" />
                 <ul class="nav nav-pills flex-column mb-auto">
@@ -32,11 +32,11 @@
                     <li class="nav-item mb-1"><a href="@Url.Action("Index", "Clients")" class="nav-link text-white"><i
                                 class="bi bi-people me-2"></i> العملاء</a></li>
                     <li class="nav-item mb-1"><a href="@Url.Action("Index", "Products")" class="nav-link text-white"><i
-                                class="bi bi-boxes me-2"></i> المنتجات</a></li>
+                                class="bi bi-boxes me-2"></i> الاصناف</a></li>
                     <li class="nav-item mb-1"><a href="@Url.Action("Index", "Inbound")" class="nav-link text-white"><i
-                                class="bi bi-arrow-down-circle me-2"></i> المشتريات</a></li>
+                                class="bi bi-arrow-down-circle me-2"></i> حركة الايداع</a></li>
                     <li class="nav-item mb-1"><a href="@Url.Action("Index", "Outbound")" class="nav-link text-white"><i
-                                class="bi bi-arrow-up-circle me-2"></i> المبيعات</a></li>
+                                class="bi bi-arrow-up-circle me-2"></i> حركة المنصرف</a></li>
                     <li class="nav-item mb-1"><a href="@Url.Action("Index", "Stock")" class="nav-link text-white"><i
                                 class="bi bi-bar-chart-line me-2"></i> المخزون</a></li>
                     <li class="nav-item mb-1"><a href="@Url.Action("Index", "Delegates")" class="nav-link text-white"><i class="bi bi-person-badge me-2"></i> المفوضين</a></li>
@@ -56,13 +56,13 @@
             <div class="offcanvas-body p-0">
                 <nav class="bg-dark text-white h-100">
                     <ul class="nav nav-pills flex-column mb-auto p-3">
-                        <li class="nav-item mb-1"><a href="@Url.Action("Index", "Home")" class="nav-link text-white mobile-nav-link"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
-                        <li class="nav-item mb-1"><a href="@Url.Action("Index", "Clients")" class="nav-link text-white mobile-nav-link"><i class="bi bi-people me-2"></i> Clients</a></li>
-                        <li class="nav-item mb-1"><a href="@Url.Action("Index", "Products")" class="nav-link text-white mobile-nav-link"><i class="bi bi-boxes me-2"></i> Products</a></li>
-                        <li class="nav-item mb-1"><a href="@Url.Action("Index", "Inbound")" class="nav-link text-white mobile-nav-link"><i class="bi bi-arrow-down-circle me-2"></i> Inbound</a></li>
-                        <li class="nav-item mb-1"><a href="@Url.Action("Index", "Outbound")" class="nav-link text-white mobile-nav-link"><i class="bi bi-arrow-up-circle me-2"></i> Outbound</a></li>
-                        <li class="nav-item mb-1"><a href="@Url.Action("Index", "Stock")" class="nav-link text-white mobile-nav-link"><i class="bi bi-bar-chart-line me-2"></i> Stock</a></li>
-                        <li class="nav-item mb-1"><a href="@Url.Action("Index", "Delegates")" class="nav-link text-white mobile-nav-link"><i class="bi bi-person-badge me-2"></i> Delegates</a></li>
+                        <li class="nav-item mb-1"><a href="@Url.Action("Index", "Home")" class="nav-link text-white mobile-nav-link"><i class="bi bi-speedometer2 me-2"></i> لوحة التحكم</a></li>
+                        <li class="nav-item mb-1"><a href="@Url.Action("Index", "Clients")" class="nav-link text-white mobile-nav-link"><i class="bi bi-people me-2"></i> العملاء</a></li>
+                        <li class="nav-item mb-1"><a href="@Url.Action("Index", "Products")" class="nav-link text-white mobile-nav-link"><i class="bi bi-boxes me-2"></i> المنتجات</a></li>
+                        <li class="nav-item mb-1"><a href="@Url.Action("Index", "Inbound")" class="nav-link text-white mobile-nav-link"><i class="bi bi-arrow-down-circle me-2"></i> اذن ايداع</a></li>
+                        <li class="nav-item mb-1"><a href="@Url.Action("Index", "Outbound")" class="nav-link text-white mobile-nav-link"><i class="bi bi-arrow-up-circle me-2"></i> اذن صرف</a></li>
+                        <li class="nav-item mb-1"><a href="@Url.Action("Index", "Stock")" class="nav-link text-white mobile-nav-link"><i class="bi bi-bar-chart-line me-2"></i> المخزون</a></li>
+                        <li class="nav-item mb-1"><a href="@Url.Action("Index", "Delegates")" class="nav-link text-white mobile-nav-link"><i class="bi bi-person-badge me-2"></i> المفوضين </a></li>
                     </ul>
                 </nav>
             </div>

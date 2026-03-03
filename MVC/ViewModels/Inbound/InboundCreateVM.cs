@@ -5,6 +5,7 @@ namespace MVC.ViewModels.Inbound
 {
     public class InboundCreateVM
     {
+        public int Id { get; set; }
         [Required]
         [Display(Name = "Client")]
         public int ClientId { get; set; }
@@ -13,6 +14,13 @@ namespace MVC.ViewModels.Inbound
 
         // Top-level section selection applied to lines
         public int? SectionId { get; set; }
+        public string? CreatedByName { get; set; }
+        public string? CreatedById { get; set; }
+        public int? AdditionalEntry { get; set; }
+        public string? Notes { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime CreatedAt { get; set; }
 
         public IEnumerable<SelectListItem> Clients { get; set; } = new List<SelectListItem>();
         public IEnumerable<SelectListItem> Delegates { get; set; } = new List<SelectListItem>();
