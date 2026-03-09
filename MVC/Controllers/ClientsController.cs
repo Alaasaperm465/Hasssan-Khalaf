@@ -48,7 +48,7 @@ namespace MVC.Controllers
             }
             catch (System.Exception ex)
             {
-                ModelState.AddModelError(string.Empty, "??? ????? ??????.");
+                ModelState.AddModelError(string.Empty, "??? ????? ??????."); 
                 return View(client);
             }
         }
@@ -75,6 +75,10 @@ namespace MVC.Controllers
             existing.Address = client.Address?.Trim() ?? existing.Address;
             existing.PhoneNumber = client.PhoneNumber;
 
+            // Update pricing fields
+            existing.PalletPrice = client.PalletPrice;
+            existing.ExtraOpeningPrice = client.ExtraOpeningPrice;
+
             // bind AllowedProductTypes checkboxes
             var vals = Request.Form["AllowedProductTypes"].ToArray();
             int mask = 0;
@@ -93,7 +97,7 @@ namespace MVC.Controllers
             }
             catch (System.Exception)
             {
-                ModelState.AddModelError(string.Empty, "??? ????? ??????.");
+                ModelState.AddModelError(string.Empty, "??? ????? ??????."); 
                 return View(client);
             }
         }

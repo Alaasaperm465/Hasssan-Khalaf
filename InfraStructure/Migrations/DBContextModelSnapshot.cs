@@ -41,10 +41,16 @@ namespace InfraStructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal>("ExtraOpeningPrice")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<decimal>("PalletPrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("PhoneNumber")
                         .HasColumnType("int");

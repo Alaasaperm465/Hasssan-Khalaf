@@ -1,0 +1,110 @@
+﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using InfraStructure.Context;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using MVC.ViewModels.Accounts;
+
+namespace MVC.Controllers
+{
+    public class AccountsController : Controller
+    {
+        private readonly DBContext _db;
+        private readonly ILogger<AccountsController> _logger;
+
+        public AccountsController(DBContext db, ILogger<AccountsController> logger)
+        {
+            _db = db;
+            _logger = logger;
+        }
+
+        // GET: /Accounts
+        public IActionResult Index()
+        {
+            // list clients with current totals from Stocks
+            var clients = _db.Clients
+                .Select(c => new ClientAccountVM
+                {
+                    ClientId = c.Id,
+                    ClientName = c.Name,
+                    TotalCartons = _db.Stocks.Where(s => s.ClientId == c.Id).Sum(s => (int?)s.Cartons) ?? 0,
+                    TotalPallets = _db.Stocks.Where(s => s.ClientId == c.Id).Sum(s => (int?)s.Pallets) ?? 0
+                })
+                .OrderBy(c => c.ClientName)
+                .ToList();
+
+            return View(clients);
+        }
+
+        // GET: /Accounts/Details/5
+        public IActionResult Details(int id)
+        {
+            var client = _db.Clients.AsNoTracking().FirstOrDefault(c => c.Id == id);
+            if (client == null) return NotFound();
+
+            try
+            {
+                // build unified transaction list from inbounds and outbounds
+                var inboundTx = _db.Inbounds
+                    .Where(i => i.ClientId == id)
+                    .Include(i => i.Details)
+                    .Select(i => new AccountTransactionVM
+                    {
+                        TransactionId = i.Id,
+                        Type = "Inbound",
+                        Date = i.CreatedAt,
+                        Cartons = i.Details.Sum(d => (int?)d.Cartons) ?? 0,
+                        Pallets = i.Details.Sum(d => (int?)d.Pallets) ?? 0,
+                        AdditionalEntry = i.AdditionalEntry ?? 0,
+                        Notes = i.Notes
+                    });
+
+                var outboundTx = _db.Outbounds
+                    .Where(o => o.ClientId == id)
+                    .Include(o => o.Details)
+                    .Select(o => new AccountTransactionVM
+                    {
+                        TransactionId = o.Id,
+                        Type = "Outbound",
+                        Date = o.CreatedAt,
+                        Cartons = o.Details.Sum(d => (int?)d.Cartons) ?? 0,
+                        Pallets = o.Details.Sum(d => (int?)d.Pallets) ?? 0,
+                        AdditionalEntry = o.AdditionalEntry ?? 0,
+                        Notes = o.Notes
+                    });
+
+                var transactions = inboundTx.Union(outboundTx)
+                    .OrderByDescending(t => t.Date)
+                    .ToList();
+
+                var totals = new AccountTotalsVM
+                {
+                    TotalInboundCartons = transactions.Where(t => t.Type == "Inbound").Sum(t => t.Cartons),
+                    TotalInboundPallets = transactions.Where(t => t.Type == "Inbound").Sum(t => t.Pallets),
+                    TotalOutboundCartons = transactions.Where(t => t.Type == "Outbound").Sum(t => t.Cartons),
+                    TotalOutboundPallets = transactions.Where(t => t.Type == "Outbound").Sum(t => t.Pallets),
+                    NetCartons = (transactions.Where(t => t.Type == "Inbound").Sum(t => t.Cartons) - transactions.Where(t => t.Type == "Outbound").Sum(t => t.Cartons)),
+                    NetPallets = (transactions.Where(t => t.Type == "Inbound").Sum(t => t.Pallets) - transactions.Where(t => t.Type == "Outbound").Sum(t => t.Pallets))
+                };
+
+                var vm = new AccountDetailsVM
+                {
+                    ClientId = client.Id,
+                    ClientName = client.Name,
+                    Address = client.Address,
+                    PhoneNumber = client.PhoneNumber,
+                    Transactions = transactions,
+                    Totals = totals
+                };
+
+                return View(vm);
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogError(ex, "Failed to load account details for client {ClientId}", id);
+                TempData["Error"] = "فشل في تحميل بيانات الحساب";
+                return RedirectToAction("Index");
+            }
+        }
+    }
+}

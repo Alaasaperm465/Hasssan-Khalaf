@@ -1,0 +1,100 @@
+﻿@model MVC.ViewModels.Accounts.AccountStatementVM
+@{
+    ViewData["Title"] = "Client Statement";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4>@Model.ClientName - كشف حساب</h4>
+                    <div class="d-flex gap-3 mt-2">
+                        <div class="badge bg-primary">افتتاحي - بليت: @Model.OpeningPallets</div>
+                        <div class="badge bg-secondary">الرصيد الافتتاحي: @Model.OpeningBalance.ToString("C")</div>
+                        <div class="badge bg-success">اغلاق - بليت: @Model.ClosingPallets</div>
+                        <div class="badge bg-info">الرصيد النهائي: @Model.ClosingBalance.ToString("C")</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h6>التفاصيل</h6>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>تاريخ</th>
+                                <th>النوع</th>
+                                <th class="text-end">بليت</th>
+                                <th class="text-end">فتح اضافي</th>
+                                <th class="text-end">المبلغ</th>
+                                <th>ملاحظات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(var r in Model.Rows)
+                            {
+                                <tr>
+                                    <td>@r.Date.ToLocalTime().ToString("g")</td>
+                                    <td>@r.Type</td>
+                                    <td class="text-end">@r.Pallets</td>
+                                    <td class="text-end">@r.ExtraOpenings</td>
+                                    <td class="text-end">@r.Amount.ToString("C")</td>
+                                    <td>@r.Notes</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>خيارات التقرير</h6>
+                    <form method="get" class="row g-2">
+                        <input type="hidden" name="id" value="@Model.ClientId" />
+                        <div class="col-12">
+                            <label class="form-label">شهر</label>
+                            <input type="month" name="monthPicker" class="form-control" onchange="onMonthChange(this)" />
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-primary w-100">تحديث</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h6>اسعار العميل</h6>
+                    <div>سعر البليت: <strong>@Model.PalletPrice.ToString("C")</strong></div>
+                    <div>سعر الفتح الإضافي: <strong>@Model.ExtraOpeningPrice.ToString("C")</strong></div>
+                    <hr />
+                    <div>تكلفة هذا الشهر: <strong>@Model.MonthlyCost.ToString("C")</strong></div>
+                    <div>المدفوعات: <strong>@Model.PaymentsMade.ToString("C")</strong></div>
+                    <div class="fw-bold">المتبقي للدفع: <strong>@Model.RemainingBalance.ToString("C")</strong></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function onMonthChange(el) {
+            var v = el.value; // format YYYY-MM
+            if (!v) return;
+            var parts = v.split('-');
+            var year = parts[0];
+            var month = parts[1];
+            var url = new URL(window.location.href);
+            url.searchParams.set('month', month);
+            url.searchParams.set('year', year);
+            window.location.href = url.toString();
+        }
+    </script>
+}

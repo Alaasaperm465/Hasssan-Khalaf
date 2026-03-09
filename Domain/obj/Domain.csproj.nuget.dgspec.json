@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "F:\\hassan\\Hasssan-Khalaf\\Domain\\Domain.csproj": {}
+    "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Domain.csproj": {}
   },
   "projects": {
-    "F:\\hassan\\Hasssan-Khalaf\\Domain\\Domain.csproj": {
+    "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\hassan\\Hasssan-Khalaf\\Domain\\Domain.csproj",
+        "projectUniqueName": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Domain.csproj",
         "projectName": "Domain",
-        "projectPath": "F:\\hassan\\Hasssan-Khalaf\\Domain\\Domain.csproj",
+        "projectPath": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Domain.csproj",
         "packagesPath": "C:\\Users\\louts\\.nuget\\packages\\",
-        "outputPath": "F:\\hassan\\Hasssan-Khalaf\\Domain\\obj\\",
+        "outputPath": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

@@ -1,0 +1,64 @@
+/* Shared UI styles extracted from Accounts and Dashboard views to unify look */
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --success-gradient: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+    --info-gradient: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    --warning-gradient: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+    --danger-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+body { background: linear-gradient(135deg,#eef2f7,#e3e9f3); }
+
+/* Cards */
+.main-card, .glass-card, .stat-card, .price-card, .filter-card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    background: #fff;
+}
+
+.card-header-custom, .filter-header {
+    background: #fff;
+    border-bottom: 2px solid #f8f9fa;
+    padding: 1rem 1.5rem;
+}
+
+/* Stat styles */
+.stat-icon { width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+.stat-label { color: #7f8c8d; font-size: 0.9rem; text-transform: uppercase; }
+.stat-value { font-size: 2rem; font-weight: 700; color: #2c3e50; }
+
+/* Tables */
+.table-custom thead th { background: #f8faff; color: #2c3e50; font-weight: 600; border-bottom: 2px solid #eef2f6; }
+.table-custom tbody tr { transition: all 0.25s ease; }
+.table-custom tbody tr:hover { background: #f8faff; transform: translateY(-1px); }
+
+/* Search input */
+.search-wrapper { position: relative; }
+.search-wrapper i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #95a5a6; }
+.search-input { padding-left: 40px; border-radius: 50px; border: 2px solid #eef2f6; height: 45px; }
+.search-input:focus { border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.08); }
+
+/* Buttons */
+.btn-view { border-radius: 50px; padding: 0.4rem 1.2rem; background: var(--primary-gradient); color: #fff; border: none; }
+.btn-update, .btn-refresh { border-radius: 50px; padding: 0.6rem 1rem; }
+
+/* Profile/header */
+.profile-header { background: #fff; border-radius: 12px; padding: 1rem; box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+.profile-avatar { width: 70px; height: 70px; border-radius: 12px; display:flex; align-items:center; justify-content:center; color:#fff; }
+
+/* Empty state */
+.empty-state { text-align:center; padding: 2.5rem; color: #95a5a6; }
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+    .table-custom thead { display:none; }
+    .table-custom tbody td { display:block; width:100%; }
+}
+
+/* small helpers */
+.text-muted.small { font-size: 0.85rem; }
+
+/* animations */
+.animated-item { animation: slideIn 0.45s ease forwards; opacity: 0; }
+@keyframes slideIn { from { opacity: 0; transform: translateY(12px);} to { opacity:1; transform: translateY(0);} }

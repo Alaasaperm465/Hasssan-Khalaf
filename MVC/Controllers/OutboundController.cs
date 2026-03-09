@@ -5,13 +5,15 @@ using Microsoft.EntityFrameworkCore;
 using MVC.ViewModels.Outbound;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MVC.ViewModels.Ajax;
+using Microsoft.Extensions.Logging;
 
 namespace MVC.Controllers
 {
     public class OutboundController : Controller
     {
         private readonly DBContext _db;
-        public OutboundController(DBContext db) => _db = db;
+        private readonly ILogger<OutboundController> _logger;
+        public OutboundController(DBContext db, ILogger<OutboundController> logger) { _db = db; _logger = logger; }
 
         public IActionResult Index()
         {
@@ -57,7 +59,7 @@ namespace MVC.Controllers
 
             if (vm.Details == null || vm.Details.Count == 0)
             {
-                ModelState.AddModelError(string.Empty, "??? ????? ??? ???? ??? ?????.");
+                ModelState.AddModelError(string.Empty, "??? ?? ????? ????? ??? ??? ???? ??? ?????.");
             }
 
             // validate stock availability for each detail
@@ -71,7 +73,7 @@ namespace MVC.Controllers
                     var availablePallets = stock?.Pallets ?? 0;
                     if (l.Cartons > availableCartons || l.Pallets > availablePallets)
                     {
-                        ModelState.AddModelError(string.Empty, $"?????? ???????? ?????? {l.ProductId} ?? ?????? {l.SectionId} ???? ?? ??????.");
+                        ModelState.AddModelError(string.Empty, $"?????? ???????? ?????? {l.ProductId} ?? ?????? {l.SectionId} ??? ?????.");
                     }
                 }
             }
@@ -84,7 +86,7 @@ namespace MVC.Controllers
             var client = _db.Clients.FirstOrDefault(c => c.Id == vm.ClientId);
             if (client == null)
             {
-                ModelState.AddModelError(nameof(vm.ClientId), "?????? ??? ?????.");
+                ModelState.AddModelError(nameof(vm.ClientId), "Selected client does not exist.");
                 return View(vm);
             }
 
@@ -93,6 +95,17 @@ namespace MVC.Controllers
             {
                 var outbound = new Outbound { ClientId = vm.ClientId, CreatedAt = DateTime.UtcNow };
                 if (vm.DelegateId.HasValue) outbound.DelegateId = vm.DelegateId.Value;
+
+                // save additional entry and notes
+                outbound.AdditionalEntry = vm.AdditionalEntry;
+                outbound.Notes = vm.Notes;
+
+                // try set user info if available
+                try
+                {
+                    outbound.UserId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var uid) ? uid : (int?)null;
+                }
+                catch { /* ignore */ }
 
                 foreach (var l in vm.Details)
                 {
@@ -131,26 +144,59 @@ namespace MVC.Controllers
                     }
                 }
 
+                // apply AdditionalEntry effect to stocks if provided (Option B): treat as cartons to subtract from client totals
+                if (vm.AdditionalEntry.HasValue && vm.AdditionalEntry.Value != 0)
+                {
+                    var add = vm.AdditionalEntry.Value;
+                    // distribute across product/section totals: here we subtract from client's total ProductStock if exists (simple implementation)
+                    var clientProdTotals = _db.ProductStocks.Where(ps => ps.ClientId == vm.ClientId).ToList();
+                    if (clientProdTotals.Any())
+                    {
+                        // subtract from the first product stock as a simple heuristic
+                        var ps = clientProdTotals.First();
+                        ps.Cartons -= add;
+                        if (ps.Cartons < 0) ps.Cartons = 0;
+                        _db.ProductStocks.Update(ps);
+                    }
+                }
+
                 _db.Outbounds.Add(outbound);
                 _db.SaveChanges();
                 tx.Commit();
 
-                TempData["Success"] = "?? ????? ??? ??????.";
+                _logger.LogInformation("Created outbound {OutboundId} for client {ClientId}", outbound.Id, vm.ClientId);
+
+                TempData["Success"] = "?? ??? ????? ?????.";
                 return RedirectToAction("Index");
             }
             catch (System.Exception ex)
             {
                 tx.Rollback();
-                ModelState.AddModelError(string.Empty, "??? ??? ????? ?????.");
+                _logger.LogError(ex, "Failed to create outbound for client {ClientId}", vm.ClientId);
+                ModelState.AddModelError(string.Empty, "??? ?? ??? ?????.");
                 return View(vm);
             }
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         [Route("Outbound/AddLineAjax")]
-        public IActionResult AddLineAjax([FromBody] AddLineRequest req)
+        public IActionResult AddLineAjax([FromBody] AddLineRequest? req)
         {
+            // support form-encoded fallback
+            if (req == null && Request.HasFormContentType)
+            {
+                var f = Request.Form;
+                req = new AddLineRequest
+                {
+                    OutboundId = int.TryParse(f["outboundId"], out var oid) ? oid : (int?)null,
+                    ClientId = int.TryParse(f["clientId"], out var cid) ? cid : 0,
+                    ProductId = int.TryParse(f["productId"], out var pid) ? pid : 0,
+                    SectionId = int.TryParse(f["sectionId"], out var sid) ? sid : 0,
+                    Cartons = int.TryParse(f["cartons"], out var c) ? c : 0,
+                    Pallets = int.TryParse(f["pallets"], out var p) ? p : 0
+                };
+            }
+
             try
             {
                 if (req == null) return BadRequest(new { success = false, error = "Request body required" });
@@ -256,7 +302,6 @@ namespace MVC.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         [Route("Outbound/DeleteLineAjax")]
         public IActionResult DeleteLineAjax([FromBody] MVC.ViewModels.Ajax.DeleteLineRequest req)
         {

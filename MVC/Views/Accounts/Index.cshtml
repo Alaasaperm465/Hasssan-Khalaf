@@ -1,0 +1,458 @@
+@model IEnumerable<MVC.ViewModels.Accounts.ClientAccountVM>
+@{
+    ViewData["Title"] = "Accounts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --success-gradient: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        --info-gradient: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+        --warning-gradient: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+        --danger-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .stat-card {
+        border: none;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        background: white;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+        .stat-card.primary::before {
+            background: var(--primary-gradient);
+        }
+
+        .stat-card.success::before {
+            background: var(--success-gradient);
+        }
+
+        .stat-card.info::before {
+            background: var(--info-gradient);
+        }
+
+        .stat-card.danger::before {
+            background: var(--danger-gradient);
+        }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+        font-size: 2rem;
+    }
+
+    .stat-card.primary .stat-icon {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+    }
+
+    .stat-card.success .stat-icon {
+        background: rgba(132, 250, 176, 0.1);
+        color: #84fab0;
+    }
+
+    .stat-card.info .stat-icon {
+        background: rgba(161, 196, 253, 0.1);
+        color: #a1c4fd;
+    }
+
+    .stat-card.danger .stat-icon {
+        background: rgba(240, 147, 251, 0.1);
+        color: #f093fb;
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        line-height: 1.2;
+        color: #2c3e50;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: #7f8c8d;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .main-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+        background: white;
+    }
+
+    .card-header-custom {
+        background: white;
+        border-bottom: 2px solid #f8f9fa;
+        padding: 1.5rem;
+    }
+
+    .search-wrapper {
+        position: relative;
+    }
+
+        .search-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #95a5a6;
+        }
+
+    .search-input {
+        padding-left: 40px;
+        border-radius: 50px;
+        border: 2px solid #eef2f6;
+        height: 45px;
+        width: 300px;
+        transition: all 0.3s ease;
+    }
+
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+
+    .btn-refresh {
+        border-radius: 50px;
+        padding: 0.5rem 1.5rem;
+        font-weight: 500;
+        border: 2px solid #eef2f6;
+        color: #7f8c8d;
+        transition: all 0.3s ease;
+    }
+
+        .btn-refresh:hover {
+            background: #f8f9fa;
+            border-color: #95a5a6;
+            color: #2c3e50;
+        }
+
+    .table-custom {
+        margin-bottom: 0;
+    }
+
+        .table-custom thead th {
+            background: #f8faff;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #eef2f6;
+            padding: 1rem;
+        }
+
+        .table-custom tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #eef2f6;
+        }
+
+            .table-custom tbody tr:hover {
+                background: #f8faff;
+                transform: scale(1.01);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            }
+
+        .table-custom td {
+            padding: 1rem;
+            vertical-align: middle;
+            color: #34495e;
+        }
+
+    .client-name {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .badge-stat {
+        background: #f8faff;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-weight: 500;
+        color: #2c3e50;
+    }
+
+    .btn-view {
+        border-radius: 50px;
+        padding: 0.4rem 1.2rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-view:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #95a5a6;
+    }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #dcdde1;
+        }
+
+    .pulse-animation {
+        animation: pulse 2s infinite;
+    }
+
+    @@keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
+        }
+
+        70% {
+            box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(102, 126, 234, 0);
+        }
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card primary p-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-label mb-2">Total Clients</div>
+                        <div class="stat-value">@((ViewBag.Dashboard?.TotalClients) ?? 0)</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card success p-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-label mb-2">Total Pallets</div>
+                        <div class="stat-value">@((ViewBag.Dashboard?.TotalPallets) ?? 0)</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="bi bi-box-seam-fill"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card info p-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-label mb-2">Today's Deposits</div>
+                        <div class="stat-value">@((ViewBag.Dashboard?.TodaysDeposits) ?? 0)</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="bi bi-arrow-down-circle-fill"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card danger p-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-label mb-2">Today's Withdrawals</div>
+                        <div class="stat-value">@((ViewBag.Dashboard?.TodaysWithdrawals) ?? 0)</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="bi bi-arrow-up-circle-fill"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Card -->
+    <div class="main-card">
+        <div class="card-header-custom">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div>
+                    <h4 class="mb-1 fw-bold" style="color: #2c3e50;">Client Accounts</h4>
+                    <p class="mb-0 text-muted">Manage and view all client account details</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <div class="search-wrapper">
+                        <i class="bi bi-search"></i>
+                        <input id="searchInput" class="search-input form-control"
+                               placeholder="Search by client name..." />
+                    </div>
+                    <a asp-action="Index" class="btn-refresh btn">
+                        <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4">
+            @if (!Model.Any())
+            {
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <h5>No clients found</h5>
+                    <p class="text-muted">There are no clients to display at the moment.</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-custom" id="clientsTable">
+                        <thead>
+                            <tr>
+                                <th>Client Information</th>
+                                <th class="text-end">Cartons</th>
+                                <th class="text-end">Pallets</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var c in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="stat-icon me-3" style="width: 45px; height: 45px;">
+                                                <i class="bi bi-person-circle"></i>
+                                            </div>
+                                            <div>
+                                                <div class="client-name">@c.ClientName</div>
+                                                <small class="text-muted">ID: @c.ClientId</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-end">
+                                        <span class="badge-stat">
+                                            <i class="bi bi-box me-1"></i>
+                                            @c.TotalCartons.ToString("N0")
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <span class="badge-stat">
+                                            <i class="bi bi-box-seam me-1"></i>
+                                            @c.TotalPallets.ToString("N0")
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <a class="btn-view" asp-action="Details" asp-route-id="@c.ClientId">
+                                            <i class="bi bi-eye-fill me-1"></i> View Details
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Enhanced search functionality with debouncing
+        let searchTimeout;
+        const searchInput = document.getElementById('searchInput');
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function (e) {
+                clearTimeout(searchTimeout);
+
+                searchTimeout = setTimeout(() => {
+                    const q = e.target.value.toLowerCase().trim();
+                    const rows = document.querySelectorAll('#clientsTable tbody tr');
+                    let visibleCount = 0;
+
+                    rows.forEach(r => {
+                        const name = r.querySelector('.client-name').innerText.toLowerCase();
+                        const isVisible = name.indexOf(q) !== -1;
+                        r.style.display = isVisible ? '' : 'none';
+                        if (isVisible) visibleCount++;
+                    });
+
+                    // Optional: Show a message when no results found
+                    const tbody = document.querySelector('#clientsTable tbody');
+                    const existingMessage = document.getElementById('noResultsMessage');
+
+                    if (visibleCount === 0 && rows.length > 0) {
+                        if (!existingMessage) {
+                            const messageRow = document.createElement('tr');
+                            messageRow.id = 'noResultsMessage';
+                            messageRow.innerHTML = `
+                                <td colspan="4" class="empty-state">
+                                    <i class="bi bi-search"></i>
+                                    <h5>No matching clients found</h5>
+                                    <p class="text-muted">Try adjusting your search criteria</p>
+                                </td>
+                            `;
+                            tbody.appendChild(messageRow);
+                        }
+                    } else if (existingMessage) {
+                        existingMessage.remove();
+                    }
+                }, 300); // Debounce delay
+            });
+        }
+
+        // Add animation to cards on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.stat-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100 * index);
+            });
+        });
+    </script>
+}

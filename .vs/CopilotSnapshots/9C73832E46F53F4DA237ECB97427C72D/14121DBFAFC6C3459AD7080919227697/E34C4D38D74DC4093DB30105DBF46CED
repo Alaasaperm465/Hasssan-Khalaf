@@ -1,0 +1,779 @@
+﻿@model MVC.ViewModels.Accounts.AccountStatementVM
+@{
+    ViewData["Title"] = "Client Statement";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --success-gradient: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        --info-gradient: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+        --warning-gradient: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+        --danger-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .main-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+        background: white;
+    }
+
+    .card-header-custom {
+        background: white;
+        border-bottom: 2px solid #f8f9fa;
+        padding: 1.5rem;
+    }
+
+    .profile-header {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border: none;
+        margin-bottom: 2rem;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+    .profile-avatar {
+        width: 70px;
+        height: 70px;
+        background: var(--primary-gradient);
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .profile-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 0.25rem;
+    }
+
+    .profile-subtitle {
+        color: #7f8c8d;
+        font-size: 1rem;
+    }
+
+    .btn-back {
+        border-radius: 50px;
+        padding: 0.6rem 1.8rem;
+        font-weight: 500;
+        border: 2px solid #eef2f6;
+        color: #7f8c8d;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .btn-back:hover {
+            background: #f8f9fa;
+            border-color: #667eea;
+            color: #667eea;
+            transform: translateX(-5px);
+        }
+
+    /* Balance Badges */
+    .balance-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+        .balance-badge:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .balance-badge.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .balance-badge.success {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            color: #2c3e50;
+        }
+
+        .balance-badge.info {
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+            color: #2c3e50;
+        }
+
+        .balance-badge.warning {
+            background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+            color: #2c3e50;
+        }
+
+    .balance-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        font-size: 1.2rem;
+    }
+
+    /* Stats Cards */
+    .stat-card {
+        border: none;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        background: white;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        height: 100%;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .stat-card.primary::before {
+            background: var(--primary-gradient);
+        }
+
+        .stat-card.success::before {
+            background: var(--success-gradient);
+        }
+
+        .stat-card.info::before {
+            background: var(--info-gradient);
+        }
+
+        .stat-card.warning::before {
+            background: var(--warning-gradient);
+        }
+
+    .stat-card-body {
+        padding: 1.5rem;
+    }
+
+    .stat-label {
+        color: #7f8c8d;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        line-height: 1.2;
+    }
+
+    .stat-unit {
+        font-size: 0.9rem;
+        color: #95a5a6;
+        font-weight: normal;
+    }
+
+    /* Table Styles */
+    .table-custom {
+        margin-bottom: 0;
+    }
+
+        .table-custom thead th {
+            background: #f8faff;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #eef2f6;
+            padding: 1rem;
+        }
+
+        .table-custom tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #eef2f6;
+        }
+
+            .table-custom tbody tr:hover {
+                background: #f8faff;
+                transform: scale(1.01);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            }
+
+        .table-custom td {
+            padding: 1rem;
+            vertical-align: middle;
+            color: #34495e;
+        }
+
+    .type-badge {
+        display: inline-block;
+        padding: 0.35rem 1rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .type-inbound {
+        background: rgba(76, 201, 240, 0.15);
+        color: #0096c7;
+    }
+
+    .type-outbound {
+        background: rgba(247, 37, 133, 0.15);
+        color: #f72585;
+    }
+
+    .type-payment {
+        background: rgba(72, 187, 120, 0.15);
+        color: #2f855a;
+    }
+
+    .type-balance {
+        background: rgba(237, 137, 54, 0.15);
+        color: #c05621;
+    }
+
+    .amount-positive {
+        color: #2f855a;
+        font-weight: 600;
+    }
+
+    .amount-negative {
+        color: #c53030;
+        font-weight: 600;
+    }
+
+    /* Filter Card */
+    .filter-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        overflow: hidden;
+        background: white;
+        margin-bottom: 1.5rem;
+    }
+
+    .filter-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 1rem 1.5rem;
+        color: white;
+    }
+
+        .filter-header h6 {
+            margin: 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+    .filter-body {
+        padding: 1.5rem;
+    }
+
+    .form-custom {
+        border-radius: 12px;
+        border: 2px solid #eef2f6;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+
+        .form-custom:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+
+    .btn-update {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 50px;
+        padding: 0.75rem;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+        .btn-update:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+    /* Price Card */
+    .price-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        overflow: hidden;
+        background: white;
+    }
+
+    .price-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #eef2f6;
+    }
+
+        .price-item:last-child {
+            border-bottom: none;
+        }
+
+    .price-label {
+        color: #7f8c8d;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .price-value {
+        font-weight: 700;
+        color: #2c3e50;
+        font-size: 1.1rem;
+    }
+
+    .price-total {
+        font-size: 1.3rem;
+        color: #667eea;
+    }
+
+    .remaining-balance {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        padding: 1rem;
+        border-radius: 12px;
+        margin-top: 1rem;
+    }
+
+        .remaining-balance .label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .remaining-balance .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #95a5a6;
+    }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #dcdde1;
+        }
+
+    .date-display {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .date-main {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .date-sub {
+        font-size: 0.8rem;
+        color: #95a5a6;
+    }
+
+    /* Animations */
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animated-item {
+        animation: slideIn 0.5s ease forwards;
+        opacity: 0;
+    }
+
+    .delay-1 {
+        animation-delay: 0.1s;
+    }
+
+    .delay-2 {
+        animation-delay: 0.2s;
+    }
+
+    .delay-3 {
+        animation-delay: 0.3s;
+    }
+
+    .delay-4 {
+        animation-delay: 0.4s;
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <!-- Profile Header -->
+    <div class="profile-header p-4 animated-item">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div class="d-flex align-items-center gap-4">
+                <div class="profile-avatar">
+                    <i class="bi bi-file-text"></i>
+                </div>
+                <div>
+                    <h1 class="profile-title">Account Statement</h1>
+                    <div class="profile-subtitle">
+                        <i class="bi bi-person-circle me-1"></i>
+                        @Model.ClientName
+                    </div>
+                </div>
+            </div>
+            <div>
+                <a asp-action="Details" asp-route-id="@Model.ClientId" class="btn-back">
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Back to Details
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Balance Badges -->
+    <div class="row g-3 mb-4 animated-item delay-1">
+        <div class="col-md-3">
+            <div class="balance-badge primary w-100">
+                <div class="balance-icon">
+                    <i class="bi bi-box-seam"></i>
+                </div>
+                <div>
+                    <div style="font-size: 0.8rem; opacity: 0.9;">Opening Pallets</div>
+                    <div style="font-size: 1.5rem; font-weight: 700;">@Model.OpeningPallets</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="balance-badge warning w-100">
+                <div class="balance-icon">
+                    <i class="bi bi-coin"></i>
+                </div>
+                <div>
+                    <div style="font-size: 0.8rem; opacity: 0.9;">Opening Balance</div>
+                    <div style="font-size: 1.5rem; font-weight: 700;">@Model.OpeningBalance.ToString("C")</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="balance-badge success w-100">
+                <div class="balance-icon">
+                    <i class="bi bi-box-seam"></i>
+                </div>
+                <div>
+                    <div style="font-size: 0.8rem; opacity: 0.9;">Closing Pallets</div>
+                    <div style="font-size: 1.5rem; font-weight: 700;">@Model.ClosingPallets</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="balance-badge info w-100">
+                <div class="balance-icon">
+                    <i class="bi bi-coin"></i>
+                </div>
+                <div>
+                    <div style="font-size: 0.8rem; opacity: 0.9;">Closing Balance</div>
+                    <div style="font-size: 1.5rem; font-weight: 700;">@Model.ClosingBalance.ToString("C")</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Main Content - Transactions Table -->
+        <div class="col-lg-8">
+            <div class="main-card animated-item delay-2">
+                <div class="card-header-custom">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-1 fw-bold" style="color: #2c3e50;">
+                                <i class="bi bi-list-ul me-2"></i>
+                                Transaction Details
+                            </h5>
+                            <p class="mb-0 text-muted">All transactions for the selected period</p>
+                        </div>
+                        <span class="badge bg-light text-dark p-3 rounded-pill">
+                            <i class="bi bi-calendar3 me-1"></i>
+                            @if (ViewContext.HttpContext.Request.Query.ContainsKey("month") && ViewContext.HttpContext.Request.Query.ContainsKey("year"))
+                            {
+                                @($"Month: {ViewContext.HttpContext.Request.Query["month"]}/{ViewContext.HttpContext.Request.Query["year"]}")
+                            }
+                            else
+                            {
+                                @("Current Month")
+                            }
+                        </span>
+                    </div>
+                </div>
+
+                <div class="p-4">
+                    @if (!Model.Rows.Any())
+                    {
+                        <div class="empty-state">
+                            <i class="bi bi-inbox"></i>
+                            <h5>No Transactions Found</h5>
+                            <p class="text-muted">There are no transactions for this period.</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-custom">
+                                <thead>
+                                    <tr>
+                                        <th>Date & Time</th>
+                                        <th>Type</th>
+                                        <th class="text-end">Pallets</th>
+                                        <th class="text-end">Extra Openings</th>
+                                        <th class="text-end">Amount</th>
+                                        <th>Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var r in Model.Rows)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="date-display">
+                                                    <span class="date-main">@r.Date.ToLocalTime().ToString("MMM dd, yyyy")</span>
+                                                    <span class="date-sub">@r.Date.ToLocalTime().ToString("hh:mm tt")</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @{
+                                                    string typeClass = "type-balance";
+                                                    string typeIcon = "bi-piggy-bank";
+
+                                                    if (r.Type.Contains("Inbound", StringComparison.OrdinalIgnoreCase))
+                                                    {
+                                                        typeClass = "type-inbound";
+                                                        typeIcon = "bi-arrow-down-circle";
+                                                    }
+                                                    else if (r.Type.Contains("Outbound", StringComparison.OrdinalIgnoreCase))
+                                                    {
+                                                        typeClass = "type-outbound";
+                                                        typeIcon = "bi-arrow-up-circle";
+                                                    }
+                                                    else if (r.Type.Contains("Payment", StringComparison.OrdinalIgnoreCase))
+                                                    {
+                                                        typeClass = "type-payment";
+                                                        typeIcon = "bi-cash";
+                                                    }
+                                                }
+                                                <span class="type-badge @typeClass">
+                                                    <i class="bi @typeIcon me-1"></i>
+                                                    @r.Type
+                                                </span>
+                                            </td>
+                                            <td class="text-end fw-bold">@r.Pallets.ToString("N0")</td>
+                                            <td class="text-end">
+                                                @if (r.ExtraOpenings > 0)
+                                                {
+                                                    <span class="badge-reference">@r.ExtraOpenings</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">—</span>
+                                                }
+                                            </td>
+                                            <td class="text-end">
+                                                <span class="@(r.Amount >= 0 ? "amount-positive" : "amount-negative")">
+                                                    @r.Amount.ToString("C")
+                                                </span>
+                                            </td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(r.Notes))
+                                                {
+                                                    <span title="@r.Notes" style="cursor: help;">
+                                                        @(r.Notes.Length > 30 ? r.Notes.Substring(0, 30) + "..." : r.Notes)
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">—</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar - Filters and Prices -->
+        <div class="col-lg-4">
+            <!-- Filter Card -->
+            <div class="filter-card animated-item delay-3">
+                <div class="filter-header">
+                    <h6>
+                        <i class="bi bi-funnel"></i>
+                        Report Options
+                    </h6>
+                </div>
+                <div class="filter-body">
+                    <form method="get" class="row g-3">
+                        <input type="hidden" name="id" value="@Model.ClientId" />
+                        <div class="col-12">
+                            <label class="form-label fw-bold text-muted mb-2">
+                                <i class="bi bi-calendar me-1"></i>
+                                Select Month
+                            </label>
+                            <input type="month"
+                                   name="monthPicker"
+                                   class="form-control form-custom"
+                                   onchange="onMonthChange(this)"
+                                   value="@(ViewContext.HttpContext.Request.Query.ContainsKey("year") ?
+                                                                              $"{ViewContext.HttpContext.Request.Query["year"]}-{ViewContext.HttpContext.Request.Query["month"]?.ToString().PadLeft(2, '0')}" :
+                                                                              DateTime.Now.ToString("yyyy-MM"))" />
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-update w-100">
+                                <i class="bi bi-arrow-repeat me-2"></i>
+                                Update Statement
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Client Prices Card -->
+            <div class="price-card animated-item delay-4">
+                <div class="filter-header" style="background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); color: #2c3e50;">
+                    <h6>
+                        <i class="bi bi-tags"></i>
+                        Client Rates
+                    </h6>
+                </div>
+                <div class="filter-body">
+                    <div class="price-item">
+                        <span class="price-label">
+                            <i class="bi bi-box-seam text-primary"></i>
+                            Pallet Price
+                        </span>
+                        <span class="price-value">@Model.PalletPrice.ToString("C")</span>
+                    </div>
+                    <div class="price-item">
+                        <span class="price-label">
+                            <i class="bi bi-plus-circle text-success"></i>
+                            Extra Opening Price
+                        </span>
+                        <span class="price-value">@Model.ExtraOpeningPrice.ToString("C")</span>
+                    </div>
+
+                    <hr class="my-3" style="border-color: #eef2f6;">
+
+                    <div class="price-item">
+                        <span class="price-label">
+                            <i class="bi bi-calculator text-info"></i>
+                            Monthly Cost
+                        </span>
+                        <span class="price-value price-total">@Model.MonthlyCost.ToString("C")</span>
+                    </div>
+                    <div class="price-item">
+                        <span class="price-label">
+                            <i class="bi bi-cash text-success"></i>
+                            Payments Made
+                        </span>
+                        <span class="price-value text-success fw-bold">@Model.PaymentsMade.ToString("C")</span>
+                    </div>
+
+                    <div class="remaining-balance mt-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="label">
+                                <i class="bi bi-exclamation-triangle me-1"></i>
+                                Remaining Balance
+                            </span>
+                            <span class="value">@Model.RemainingBalance.ToString("C")</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function onMonthChange(el) {
+            var v = el.value; // format YYYY-MM
+            if (!v) return;
+            var parts = v.split('-');
+            var year = parts[0];
+            var month = parts[1];
+            var url = new URL(window.location.href);
+            url.searchParams.set('month', month);
+            url.searchParams.set('year', year);
+            window.location.href = url.toString();
+        }
+
+        // Animation on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const elements = document.querySelectorAll('.animated-item');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            elements.forEach(element => {
+                observer.observe(element);
+            });
+        });
+    </script>
+}

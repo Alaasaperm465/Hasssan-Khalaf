@@ -1,0 +1,731 @@
+﻿@model MVC.ViewModels.Accounts.AccountDetailsVM
+@{
+    ViewData["Title"] = "Account Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    :root {
+        --primary-color: #4361ee;
+        --secondary-color: #3f37c9;
+        --success-color: #4cc9f0;
+        --danger-color: #f72585;
+        --warning-color: #f8961e;
+        --dark-color: #2b2d42;
+        --light-bg: #f8f9fa;
+        --card-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        --hover-shadow: 0 15px 50px rgba(67, 97, 238, 0.12);
+    }
+
+    body {
+        background: #f5f7fb;
+    }
+
+    /* Header Card */
+    .profile-header {
+        background: white;
+        border-radius: 30px;
+        box-shadow: var(--card-shadow);
+        border: none;
+        margin-bottom: 2rem;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color), var(--danger-color));
+        }
+
+    .profile-avatar {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .profile-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        margin-bottom: 0.25rem;
+    }
+
+    .profile-subtitle {
+        color: #6c757d;
+        font-size: 1rem;
+    }
+
+    .btn-back {
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        background: white;
+        border: 2px solid #e9ecef;
+        color: var(--dark-color);
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .btn-back:hover {
+            background: #f8f9fa;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: translateX(-5px);
+        }
+
+    /* Info Cards */
+    .info-card {
+        background: white;
+        border-radius: 25px;
+        padding: 1.5rem;
+        box-shadow: var(--card-shadow);
+        border: none;
+        height: 100%;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .info-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.03) 0%, rgba(76, 201, 240, 0.03) 100%);
+            border-radius: 50%;
+            transform: translate(30px, 30px);
+        }
+
+    .info-icon {
+        width: 50px;
+        height: 50px;
+        background: rgba(67, 97, 238, 0.1);
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color);
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .info-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+    }
+
+    .info-value {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--dark-color);
+        margin-bottom: 0.25rem;
+    }
+
+    .info-subvalue {
+        font-size: 0.9rem;
+        color: #adb5bd;
+    }
+
+    /* Stats Card */
+    .stats-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 25px;
+        padding: 1.5rem;
+        color: white;
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .stats-card::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -30%;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+    .stats-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .stats-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        position: relative;
+        z-index: 1;
+    }
+
+        .stats-item:last-child {
+            border-bottom: none;
+        }
+
+    .stats-label {
+        font-size: 0.95rem;
+        opacity: 0.9;
+    }
+
+    .stats-value {
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .stats-divider {
+        height: 2px;
+        background: rgba(255, 255, 255, 0.2);
+        margin: 1rem 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .stats-total {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .stats-total-label {
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .stats-total-value {
+        font-size: 1.4rem;
+        font-weight: 800;
+    }
+
+    /* Transactions Card */
+    .transactions-card {
+        background: white;
+        border-radius: 25px;
+        box-shadow: var(--card-shadow);
+        border: none;
+        overflow: hidden;
+    }
+
+    .transactions-header {
+        padding: 1.5rem;
+        background: white;
+        border-bottom: 2px solid #f1f3f5;
+    }
+
+    .transactions-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        margin-bottom: 0.25rem;
+    }
+
+    .transactions-subtitle {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    /* Table Styles */
+    .table-transactions {
+        margin-bottom: 0;
+    }
+
+        .table-transactions thead th {
+            background: #f8faff;
+            color: var(--dark-color);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 1rem 1.5rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .table-transactions tbody tr {
+            transition: all 0.3s ease;
+        }
+
+            .table-transactions tbody tr:hover {
+                background: #f8faff;
+            }
+
+        .table-transactions td {
+            padding: 1.2rem 1.5rem;
+            vertical-align: middle;
+            color: #495057;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+    .transaction-type {
+        display: inline-block;
+        padding: 0.35rem 1rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .type-inbound {
+        background: rgba(76, 201, 240, 0.15);
+        color: #0096c7;
+    }
+
+    .type-outbound {
+        background: rgba(247, 37, 133, 0.15);
+        color: #f72585;
+    }
+
+    .transaction-date {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .transaction-date-main {
+        font-weight: 600;
+        color: var(--dark-color);
+    }
+
+    .transaction-date-sub {
+        font-size: 0.8rem;
+        color: #adb5bd;
+    }
+
+    .transaction-numbers {
+        font-weight: 600;
+        color: var(--dark-color);
+    }
+
+    .transaction-notes {
+        max-width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: #6c757d;
+    }
+
+    .btn-transaction {
+        padding: 0.4rem 1.2rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        background: transparent;
+        border: 2px solid #e9ecef;
+        color: var(--dark-color);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .btn-transaction:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            transform: translateX(3px);
+        }
+
+    .badge-additional {
+        background: #e9ecef;
+        color: #495057;
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    /* Empty State */
+    .empty-transactions {
+        text-align: center;
+        padding: 3rem;
+        color: #adb5bd;
+    }
+
+        .empty-transactions i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #dee2e6;
+        }
+
+    /* Animations */
+    @@keyframes slideIn {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .animated-item {
+        animation: slideIn 0.5s ease forwards;
+        opacity: 0;
+    }
+
+    .delay-1 {
+        animation-delay: 0.1s;
+    }
+
+    .delay-2 {
+        animation-delay: 0.2s;
+    }
+
+    .delay-3 {
+        animation-delay: 0.3s;
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <!-- Profile Header -->
+    <div class="profile-header p-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div class="d-flex align-items-center gap-4">
+                <div class="profile-avatar">
+                    <i class="bi bi-building"></i>
+                </div>
+                <div>
+                    <h1 class="profile-title">@Model.ClientName</h1>
+                    <div class="profile-subtitle">
+                        <i class="bi bi-person-badge me-1"></i>
+                        Client ID: @Model.ClientId
+                    </div>
+                </div>
+            </div>
+            <div>
+                <a asp-action="Index" class="btn-back">
+                    <i class="bi bi-arrow-right"></i>
+                    Back to Accounts
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Right Column - Contact Info & Stats -->
+        <div class="col-lg-4">
+            <!-- Contact Information -->
+            <div class="info-card animated-item delay-1">
+                <div class="info-icon">
+                    <i class="bi bi-info-circle"></i>
+                </div>
+                <h5 class="mb-3 fw-bold" style="color: var(--dark-color);">Contact Information</h5>
+
+                <div class="mb-3">
+                    <div class="info-label">
+                        <i class="bi bi-geo-alt me-1"></i> Address
+                    </div>
+                    <div class="info-value">@Model.Address</div>
+                    @if (string.IsNullOrEmpty(Model.Address))
+                    {
+                        <div class="info-subvalue">No address provided</div>
+                    }
+                </div>
+
+                <div>
+                    <div class="info-label">
+                        <i class="bi bi-telephone me-1"></i> Phone Number
+                    </div>
+                    <div class="info-value">@Model.PhoneNumber</div>
+                    @if (Model.PhoneNumber == 0)
+                    {
+                        <div class="info-subvalue">No phone number provided</div>
+                    }
+                </div>
+            </div>
+
+            <!-- Statistics Card -->
+            <div class="stats-card animated-item delay-2">
+                <div class="stats-title">
+                    <i class="bi bi-graph-up me-2"></i>
+                    Inventory Statistics
+                </div>
+
+                <div class="stats-item">
+                    <span class="stats-label">
+                        <i class="bi bi-box me-2"></i>Inbound Cartons
+                    </span>
+                    <span class="stats-value">@Model.Totals.TotalInboundCartons.ToString("N0")</span>
+                </div>
+                <div class="stats-item">
+                    <span class="stats-label">
+                        <i class="bi bi-box-seam me-2"></i>Inbound Pallets
+                    </span>
+                    <span class="stats-value">@Model.Totals.TotalInboundPallets.ToString("N0")</span>
+                </div>
+                <div class="stats-item">
+                    <span class="stats-label">
+                        <i class="bi bi-arrow-up-circle me-2"></i>Outbound Cartons
+                    </span>
+                    <span class="stats-value">@Model.Totals.TotalOutboundCartons.ToString("N0")</span>
+                </div>
+                <div class="stats-item">
+                    <span class="stats-label">
+                        <i class="bi bi-arrow-up-circle-fill me-2"></i>Outbound Pallets
+                    </span>
+                    <span class="stats-value">@Model.Totals.TotalOutboundPallets.ToString("N0")</span>
+                </div>
+
+                <div class="stats-divider"></div>
+
+                <div class="stats-total">
+                    <span class="stats-total-label">Net Cartons</span>
+                    <span class="stats-total-value @(Model.Totals.NetCartons >= 0 ? "text-white" : "text-warning")">
+                        @Model.Totals.NetCartons.ToString("N0")
+                    </span>
+                </div>
+                <div class="stats-total">
+                    <span class="stats-total-label">Net Pallets</span>
+                    <span class="stats-total-value @(Model.Totals.NetPallets >= 0 ? "text-white" : "text-warning")">
+                        @Model.Totals.NetPallets.ToString("N0")
+                    </span>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="info-card">
+                <div class="info-icon" style="background: rgba(76, 201, 240, 0.1); color: #4cc9f0;">
+                    <i class="bi bi-lightning"></i>
+                </div>
+                <h5 class="mb-3 fw-bold" style="color: var(--dark-color);">Quick Actions</h5>
+
+                <div class="d-grid gap-2">
+                    <a href="#" class="btn btn-outline-primary text-start p-3 rounded-4">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        New Inbound Transaction
+                    </a>
+                    <a href="#" class="btn btn-outline-danger text-start p-3 rounded-4">
+                        <i class="bi bi-dash-circle me-2"></i>
+                        New Outbound Transaction
+                    </a>
+                    <a href="#" class="btn btn-outline-secondary text-start p-3 rounded-4">
+                        <i class="bi bi-file-text me-2"></i>
+                        Generate Report
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Left Column - Transactions -->
+        <div class="col-lg-8">
+            <div class="transactions-card animated-item delay-3">
+                <div class="transactions-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="transactions-title">
+                            <i class="bi bi-clock-history me-2"></i>
+                            Transaction History
+                        </h5>
+                        <div class="transactions-subtitle">
+                            @Model.Transactions.Count() transactions found
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <select class="form-select form-select-sm rounded-pill" style="width: auto;">
+                            <option>All Transactions</option>
+                            <option>Inbound Only</option>
+                            <option>Outbound Only</option>
+                        </select>
+                    </div>
+                </div>
+
+                @if (!Model.Transactions.Any())
+                {
+                    <div class="empty-transactions">
+                        <i class="bi bi-inbox"></i>
+                        <h5>No Transactions Found</h5>
+                        <p class="text-muted">There are no transactions for this client yet.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-transactions">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Date</th>
+                                    <th class="text-end">Cartons</th>
+                                    <th class="text-end">Pallets</th>
+                                    <th>Reference</th>
+                                    <th>Notes</th>
+                                    <th class="text-end"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var t in Model.Transactions)
+                                {
+                                    <tr>
+                                        <td>
+                                            <span class="transaction-type @(t.Type == "Inbound" ? "type-inbound" : "type-outbound")">
+                                                <i class="bi bi-@(t.Type == "Inbound" ? "arrow-down" : "arrow-up")-circle-fill me-1"></i>
+                                                @t.Type
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="transaction-date">
+                                                <span class="transaction-date-main">
+                                                    @t.Date.ToLocalTime().ToString("MMM dd, yyyy")
+                                                </span>
+                                                <span class="transaction-date-sub">
+                                                    @t.Date.ToLocalTime().ToString("hh:mm tt")
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td class="text-end">
+                                            <span class="transaction-numbers">
+                                                @t.Cartons.ToString("N0")
+                                            </span>
+                                        </td>
+                                        <td class="text-end">
+                                            <span class="transaction-numbers">
+                                                @t.Pallets.ToString("N0")
+                                            </span>
+                                        </td>
+                                        <td>
+                                            @if (t.AdditionalEntry != 0)
+                                            {
+                                                <span class="badge-additional">
+                                                    <i class="bi bi-tag me-1"></i>
+                                                    @t.AdditionalEntry
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">—</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="transaction-notes" title="@t.Notes">
+                                                @if (!string.IsNullOrEmpty(t.Notes))
+                                                {
+                                                    @t.Notes
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">No notes</span>
+                                                }
+                                            </div>
+                                        </td>
+                                        <td class="text-end">
+                                            @if (t.Type == "Inbound")
+                                            {
+                                                <a class="btn-transaction"
+                                                   asp-controller="Inbound"
+                                                   asp-action="Details"
+                                                   asp-route-id="@t.TransactionId">
+                                                    <i class="bi bi-eye-fill"></i>
+                                                    View
+                                                    <i class="bi bi-arrow-left"></i>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a class="btn-transaction"
+                                                   asp-controller="Outbound"
+                                                   asp-action="Details"
+                                                   asp-route-id="@t.TransactionId">
+                                                    <i class="bi bi-eye-fill"></i>
+                                                    View
+                                                    <i class="bi bi-arrow-left"></i>
+                                                </a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Add animation on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const elements = document.querySelectorAll('.animated-item');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            elements.forEach(element => {
+                observer.observe(element);
+            });
+        });
+
+        // Transaction type filter (optional enhancement)
+        document.querySelector('select')?.addEventListener('change', function(e) {
+            const filter = e.target.value;
+            const rows = document.querySelectorAll('.table-transactions tbody tr');
+
+            rows.forEach(row => {
+                const type = row.querySelector('.transaction-type').innerText.trim();
+                if (filter === 'All Transactions' || filter === 'All Transactions') {
+                    row.style.display = '';
+                } else if (filter === 'Inbound Only' && type.includes('Inbound')) {
+                    row.style.display = '';
+                } else if (filter === 'Outbound Only' && type.includes('Outbound')) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
+}

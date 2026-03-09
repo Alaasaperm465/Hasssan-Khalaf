@@ -1,0 +1,194 @@
+﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using InfraStructure.Context;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using MVC.ViewModels.Accounts;
+using System;
+
+namespace MVC.Controllers
+{
+    public class AccountsController : Controller
+    {
+        private readonly DBContext _db;
+        private readonly ILogger<AccountsController> _logger;
+
+        public AccountsController(DBContext db, ILogger<AccountsController> logger)
+        {
+            _db = db;
+            _logger = logger;
+        }
+
+        // GET: /Accounts
+        public IActionResult Index()
+        {
+            // Dashboard summary cards
+            var totalClients = _db.Clients.Count();
+            var totalPallets = _db.Stocks.Sum(s => (int?)s.Pallets) ?? 0;
+            var today = DateTime.UtcNow.Date;
+            var todaysDeposits = _db.InboundDetails.Where(d => d.Inbound.CreatedAt >= today).Sum(d => (int?)d.Pallets) ?? 0;
+            var todaysWithdrawals = _db.OutboundDetails.Where(d => d.Outbound.CreatedAt >= today).Sum(d => (int?)d.Pallets) ?? 0;
+
+            var vm = new
+            {
+                TotalClients = totalClients,
+                TotalPallets = totalPallets,
+                TodaysDeposits = todaysDeposits,
+                TodaysWithdrawals = todaysWithdrawals
+            };
+
+            // For simplicity, pass via ViewBag to a modern dashboard view
+            ViewBag.Dashboard = vm;
+
+            // list clients with current totals from Stocks
+            var clients = _db.Clients
+                .Select(c => new ClientAccountVM
+                {
+                    ClientId = c.Id,
+                    ClientName = c.Name,
+                    TotalCartons = _db.Stocks.Where(s => s.ClientId == c.Id).Sum(s => (int?)s.Cartons) ?? 0,
+                    TotalPallets = _db.Stocks.Where(s => s.ClientId == c.Id).Sum(s => (int?)s.Pallets) ?? 0
+                })
+                .OrderBy(c => c.ClientName)
+                .ToList();
+
+            return View(clients);
+        }
+
+        // GET: /Accounts/Details/5
+        public IActionResult Details(int id, int? month, int? year)
+        {
+            var client = _db.Clients.AsNoTracking().FirstOrDefault(c => c.Id == id);
+            if (client == null) return NotFound();
+
+            try
+            {
+                // Prepare date range (if month/year provided, else full history)
+                DateTime from = DateTime.MinValue;
+                DateTime to = DateTime.MaxValue;
+                if (month.HasValue && year.HasValue)
+                {
+                    from = new DateTime(year.Value, month.Value, 1);
+                    to = from.AddMonths(1).AddTicks(-1);
+                }
+
+                // Opening balance: compute cumulative pallets and charges before 'from'
+                var openingDeposits = _db.InboundDetails
+                    .Where(d => d.Inbound.ClientId == id && d.Inbound.CreatedAt < from)
+                    .Sum(d => (int?)d.Pallets) ?? 0;
+                var openingWithdrawals = _db.OutboundDetails
+                    .Where(d => d.Outbound.ClientId == id && d.Outbound.CreatedAt < from)
+                    .Sum(d => (int?)d.Pallets) ?? 0;
+
+                var openingPallets = openingDeposits - openingWithdrawals;
+
+                // Sum within range
+                var depositsInRange = _db.InboundDetails
+                    .Where(d => d.Inbound.ClientId == id && d.Inbound.CreatedAt >= from && d.Inbound.CreatedAt <= to)
+                    .GroupBy(d => 1)
+                    .Select(g => new { Pallets = g.Sum(x => (int?)x.Pallets) ?? 0 })
+                    .FirstOrDefault() ?? new { Pallets = 0 };
+
+                var withdrawalsInRange = _db.OutboundDetails
+                    .Where(d => d.Outbound.ClientId == id && d.Outbound.CreatedAt >= from && d.Outbound.CreatedAt <= to)
+                    .GroupBy(d => 1)
+                    .Select(g => new { Pallets = g.Sum(x => (int?)x.Pallets) ?? 0 })
+                    .FirstOrDefault() ?? new { Pallets = 0 };
+
+                // Extra openings counted from Inbound.AdditionalEntry and Outbound.AdditionalEntry in range
+                var extraOpeningsFromInbounds = _db.Inbounds.Where(i => i.ClientId == id && i.CreatedAt >= from && i.CreatedAt <= to).Sum(i => (int?)i.AdditionalEntry) ?? 0;
+                var extraOpeningsFromOutbounds = _db.Outbounds.Where(o => o.ClientId == id && o.CreatedAt >= from && o.CreatedAt <= to).Sum(o => (int?)o.AdditionalEntry) ?? 0;
+                var extraOpenings = extraOpeningsFromInbounds + extraOpeningsFromOutbounds;
+
+                // Financial amounts
+                var palletPrice = client.PalletPrice;
+                var extraPrice = client.ExtraOpeningPrice;
+
+                var depositAmount = depositsInRange.Pallets * palletPrice;
+                var withdrawalAmount = withdrawalsInRange.Pallets * palletPrice;
+                var extraAmount = extraOpenings * extraPrice;
+
+                // Payments made not yet modeled; assume 0 for now
+                var payments = 0m;
+
+                var openingBalance = openingPallets * palletPrice; // simplistic
+                // Monthly cost: deposits and carried pallets are considered part of client's stock; cost = pallets * price + extra openings cost
+                var monthlyCost = (depositsInRange.Pallets + extraOpenings) * palletPrice + extraAmount; // user requested extra openings added, not subtracted
+
+                var rows = new List<AccountStatementRow>();
+
+                // Build rows from inbounds
+                var inbounds = _db.Inbounds.Include(i => i.Details).Where(i => i.ClientId == id && i.CreatedAt >= from && i.CreatedAt <= to).ToList();
+                foreach (var ib in inbounds)
+                {
+                    var pallets = ib.Details.Sum(d => d.Pallets);
+                    rows.Add(new AccountStatementRow { Date = ib.CreatedAt, Type = "Deposit", Pallets = pallets, ExtraOpenings = ib.AdditionalEntry ?? 0, Amount = pallets * palletPrice, Notes = ib.Notes });
+                    if (ib.AdditionalEntry.HasValue && ib.AdditionalEntry.Value != 0)
+                    {
+                        rows.Add(new AccountStatementRow { Date = ib.CreatedAt, Type = "ExtraOpening", Pallets = 0, ExtraOpenings = ib.AdditionalEntry.Value, Amount = ib.AdditionalEntry.Value * extraPrice, Notes = "Extra Opening on deposit" });
+                    }
+                }
+
+                var outbounds = _db.Outbounds.Include(o => o.Details).Where(o => o.ClientId == id && o.CreatedAt >= from && o.CreatedAt <= to).ToList();
+                foreach (var ob in outbounds)
+                {
+                    var pallets = ob.Details.Sum(d => d.Pallets);
+                    rows.Add(new AccountStatementRow { Date = ob.CreatedAt, Type = "Withdrawal", Pallets = pallets, ExtraOpenings = ob.AdditionalEntry ?? 0, Amount = pallets * palletPrice, Notes = ob.Notes });
+                    if (ob.AdditionalEntry.HasValue && ob.AdditionalEntry.Value != 0)
+                    {
+                        rows.Add(new AccountStatementRow { Date = ob.CreatedAt, Type = "ExtraOpening", Pallets = 0, ExtraOpenings = ob.AdditionalEntry.Value, Amount = ob.AdditionalEntry.Value * extraPrice, Notes = "Extra Opening on withdrawal" });
+                    }
+                }
+
+                // sort rows by date
+                rows = rows.OrderBy(r => r.Date).ToList();
+
+                // compute running balances
+                var runningPallets = openingPallets;
+                var runningBalance = openingBalance;
+                foreach (var r in rows)
+                {
+                    if (r.Type == "Deposit")
+                    {
+                        runningPallets += r.Pallets;
+                        runningBalance += r.Amount;
+                    }
+                    else if (r.Type == "Withdrawal")
+                    {
+                        runningPallets -= r.Pallets;
+                        runningBalance -= r.Amount;
+                    }
+                    else if (r.Type == "ExtraOpening")
+                    {
+                        // Extra openings are charges, so add amount to balance (user expects extra to add)
+                        runningBalance += r.Amount;
+                    }
+                }
+
+                var vm = new AccountStatementVM
+                {
+                    ClientId = client.Id,
+                    ClientName = client.Name,
+                    OpeningPallets = openingPallets,
+                    OpeningBalance = openingBalance,
+                    Rows = rows,
+                    ClosingPallets = runningPallets,
+                    ClosingBalance = runningBalance,
+                    PalletPrice = palletPrice,
+                    ExtraOpeningPrice = extraPrice,
+                    MonthlyCost = monthlyCost,
+                    PaymentsMade = payments,
+                    RemainingBalance = openingBalance + monthlyCost - payments
+                };
+
+                return View("Statement", vm);
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogError(ex, "Failed to load account details for client {ClientId}", id);
+                TempData["Error"] = "فشل في تحميل بيانات الحساب";
+                return RedirectToAction("Index");
+            }
+        }
+    }
+}

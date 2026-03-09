@@ -1,0 +1,101 @@
+﻿@model IEnumerable<MVC.ViewModels.Accounts.ClientAccountVM>
+@{
+    ViewData["Title"] = "Accounts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row g-3 mb-3">
+        <div class="col-12 col-lg-3">
+            <div class="card shadow-sm p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-0">Total Clients</h6>
+                        <div class="fs-4">@((ViewBag.Dashboard?.TotalClients) ?? 0)</div>
+                    </div>
+                    <div><i class="bi bi-people fs-1 text-primary"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-3">
+            <div class="card shadow-sm p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-0">Total Pallets</h6>
+                        <div class="fs-4">@((ViewBag.Dashboard?.TotalPallets) ?? 0)</div>
+                    </div>
+                    <div><i class="bi bi-box-seam fs-1 text-success"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-3">
+            <div class="card shadow-sm p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-0">Today's Deposits</h6>
+                        <div class="fs-4">@((ViewBag.Dashboard?.TodaysDeposits) ?? 0)</div>
+                    </div>
+                    <div><i class="bi bi-arrow-down-circle fs-1 text-info"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-3">
+            <div class="card shadow-sm p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-0">Today's Withdrawals</h6>
+                        <div class="fs-4">@((ViewBag.Dashboard?.TodaysWithdrawals) ?? 0)</div>
+                    </div>
+                    <div><i class="bi bi-arrow-up-circle fs-1 text-danger"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="d-flex justify-content-between mb-2">
+                <h5 class="mb-0">Client Accounts</h5>
+                <div class="d-flex gap-2">
+                    <input id="searchInput" class="form-control form-control-sm" placeholder="Search by name..." style="width:240px" />
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Refresh</a>
+                </div>
+            </div>
+
+            <table class="table table-hover" id="clientsTable">
+                <thead>
+                    <tr>
+                        <th>Client</th>
+                        <th class="text-end">Cartons</th>
+                        <th class="text-end">Pallets</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var c in Model)
+                    {
+                        <tr>
+                            <td>@c.ClientName</td>
+                            <td class="text-end">@c.TotalCartons</td>
+                            <td class="text-end">@c.TotalPallets</td>
+                            <td class="text-end"><a class="btn btn-sm btn-primary" asp-action="Details" asp-route-id="@c.ClientId">View</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('searchInput').addEventListener('input', function (e) {
+            var q = e.target.value.toLowerCase();
+            var rows = document.querySelectorAll('#clientsTable tbody tr');
+            rows.forEach(r => {
+                var name = r.cells[0].innerText.toLowerCase();
+                r.style.display = name.indexOf(q) === -1 ? 'none' : '';
+            });
+        });
+    </script>
+}
