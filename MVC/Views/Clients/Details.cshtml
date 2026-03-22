@@ -4,69 +4,442 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-4">
+<style>
+    /* تنسيقات متناسقة مع التصميم العام الهادئ */
+    .page-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* تنسيق البطاقات */
+    .info-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        transition: all 0.2s ease;
+        border: 1px solid rgba(44,125,160,0.1);
+    }
+
+        .info-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+    .card-header-custom {
+        background: linear-gradient(135deg, var(--primary-color, #2c7da0) 0%, var(--secondary-color, #2e8b57) 100%);
+        padding: 1rem 1.5rem;
+        color: white;
+    }
+
+        .card-header-custom h5 {
+            margin: 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .card-header-custom h5 i {
+                font-size: 1.2rem;
+            }
+
+    .card-body-custom {
+        padding: 1.5rem;
+    }
+
+    /* تنسيق المعلومات العامة */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 0.5rem;
+    }
+
+    .info-icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(44,125,160,0.1);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color, #2c7da0);
+        font-size: 1.2rem;
+    }
+
+    .info-content {
+        flex: 1;
+    }
+
+    .info-label {
+        font-size: 0.75rem;
+        color: #6c757d;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .info-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-dark, #2c3e50);
+        word-break: break-word;
+    }
+
+    /* تنسيق الإجماليات */
+    .totals-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .total-item {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 1rem;
+        transition: all 0.2s ease;
+    }
+
+        .total-item:hover {
+            transform: translateY(-3px);
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+    .total-label {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-bottom: 0.5rem;
+    }
+
+    .total-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color, #2c7da0);
+    }
+
+    .total-value-success {
+        color: var(--secondary-color, #2e8b57);
+    }
+
+    /* تنسيق الحركات */
+    .movement-item {
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+        transition: all 0.2s ease;
+    }
+
+        .movement-item:hover {
+            border-color: var(--primary-light, #61a5c2);
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+    .movement-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .movement-id {
+        font-weight: 700;
+        color: var(--primary-color, #2c7da0);
+        font-size: 0.9rem;
+    }
+
+    .movement-date {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+
+    .movement-details {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .movement-detail {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        background: #f8f9fa;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+    }
+
+    /* تنسيق الجداول */
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .custom-table thead th {
+            background: #f8f9fa;
+            color: var(--text-dark, #2c3e50);
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary-light, #61a5c2);
+            padding: 1rem;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .custom-table tbody td {
+            padding: 0.75rem;
+            text-align: center;
+            color: #4a5568;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .custom-table tbody tr:hover {
+            background-color: #f8f9fc;
+        }
+
+        .custom-table tfoot {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+            .custom-table tfoot td {
+                padding: 0.75rem;
+                text-align: center;
+                border-top: 2px solid var(--primary-light, #61a5c2);
+            }
+
+    /* تنسيق الأزرار */
+    .btn-custom-primary {
+        background: linear-gradient(135deg, var(--primary-color, #2c7da0) 0%, var(--secondary-color, #2e8b57) 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 0.5rem 1.2rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-custom-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(44,125,160,0.3);
+            color: white;
+        }
+
+    .btn-custom-outline {
+        background: transparent;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 0.35rem 1rem;
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+        .btn-custom-outline:hover {
+            background: #f8f9fa;
+            transform: translateY(-1px);
+        }
+
+    /* تنسيق التنبيهات */
+    .alert-custom {
+        border-radius: 12px;
+        border: none;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        animation: slideDown 0.3s ease-out;
+    }
+
+    .alert-danger-custom {
+        background: #f8d7da;
+        color: #721c24;
+        border-right: 4px solid #dc3545;
+    }
+
+    /* تحسين العرض على الموبايل */
+    @@media (max-width: 768px) {
+        .card-body-custom
+
+    {
+        padding: 1rem;
+    }
+
+    .total-value {
+        font-size: 1.5rem;
+    }
+
+    .movement-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .btn-custom-primary,
+    .btn-custom-outline {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    }
+
+    /* تأثيرات */
+    .fade-in {
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    @@keyframes fadeInUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    @@keyframes slideDown {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    /* تنسيق الـ Badge */
+    .client-badge {
+        background: rgba(44,125,160,0.1);
+        color: var(--primary-color, #2c7da0);
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+</style>
+
+<div class="container-fluid p-3 p-md-4 fade-in page-container">
 
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger">@TempData["Error"]</div>
+        <div class="alert-custom alert-danger-custom">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @TempData["Error"]
+        </div>
     }
 
     <!-- Header Card -->
-    <div class="card shadow-sm border-0 mb-4">
-        <div class="card-body d-flex justify-content-between align-items-center">
-            <div>
-                <h4 class="mb-1 fw-bold">تفاصيل العميل</h4>
-                <div class="text-muted">@Model.ClientName</div>
-            </div>
-            <div>
-                <a asp-action="Index" class="btn btn-outline-secondary me-2">
-                    <i class="bi bi-arrow-right"></i> رجوع
-                </a>
-                <a asp-action="Edit" asp-route-id="@Model.ClientId" class="btn btn-primary">
-                    <i class="bi bi-pencil-square"></i> تعديل
-                </a>
+    <div class="info-card">
+        <div class="card-header-custom">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <h5>
+                    <i class="bi bi-person-circle"></i>
+                    تفاصيل العميل
+                </h5>
+                <div class="d-flex gap-2">
+                    <a asp-action="Index" class="btn-custom-outline text-decoration-none">
+                        <i class="bi bi-arrow-right"></i>
+                        رجوع
+                    </a>
+                    <a asp-action="Edit" asp-route-id="@Model.ClientId" class="btn-custom-primary">
+                        <i class="bi bi-pencil-square"></i>
+                        تعديل
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- معلومات عامة -->
-    <div class="card shadow-sm border-0 mb-4">
-        <div class="card-body">
-            <h5 class="fw-bold mb-3 border-bottom pb-2">معلومات عامة</h5>
-
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="text-muted">الاسم</div>
-                    <div class="fw-semibold">@Model.ClientName</div>
+    <div class="info-card">
+        <div class="card-header-custom" style="background: linear-gradient(135deg, #2c7da0 0%, #2c7da0 100%);">
+            <h5><i class="bi bi-info-circle"></i> معلومات عامة</h5>
+        </div>
+        <div class="card-body-custom">
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="bi bi-building"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">اسم العميل</div>
+                        <div class="info-value">@Model.ClientName</div>
+                    </div>
                 </div>
 
-                <div class="col-md-4">
-                    <div class="text-muted">العنوان</div>
-                    <div class="fw-semibold">@Model.Address</div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="bi bi-geo-alt"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">العنوان</div>
+                        <div class="info-value">@(!string.IsNullOrEmpty(Model.Address) ? Model.Address : "—")</div>
+                    </div>
                 </div>
 
-                <div class="col-md-4">
-                    <div class="text-muted">الهاتف</div>
-                    <div class="fw-semibold">@Model.PhoneNumber</div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="bi bi-telephone"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">رقم الهاتف</div>
+                        <div class="info-value" dir="ltr">@(Model.PhoneNumber == 0 ? Model.PhoneNumber: "—")</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- الإجماليات -->
-    <div class="card shadow-sm border-0 mb-4 bg-light">
-        <div class="card-body">
-            <h5 class="fw-bold mb-3">إجمالي الصادرات / الواردات</h5>
-
-            <div class="row text-center">
-                <div class="col-md-6">
-                    <h6 class="text-muted">إجمالي الكرتون</h6>
-                    <h3 class="fw-bold text-primary">@Model.TotalCartons</h3>
+    <div class="info-card">
+        <div class="card-header-custom" style="background: linear-gradient(135deg, #2e8b57 0%, #2e8b57 100%);">
+            <h5><i class="bi bi-graph-up"></i> إجمالي الصادرات / الواردات</h5>
+        </div>
+        <div class="card-body-custom">
+            <div class="totals-grid">
+                <div class="total-item">
+                    <div class="total-label">
+                        <i class="bi bi-box-seam"></i> إجمالي الكرتون
+                    </div>
+                    <div class="total-value">@Model.TotalCartons.ToString("N0")</div>
                 </div>
 
-                <div class="col-md-6">
-                    <h6 class="text-muted">إجمالي البالتات</h6>
-                    <h3 class="fw-bold text-success">@Model.TotalPallets</h3>
+                <div class="total-item">
+                    <div class="total-label">
+                        <i class="bi bi-cube"></i> إجمالي البالتات
+                    </div>
+                    <div class="total-value total-value-success">@Model.TotalPallets.ToString("N0")</div>
                 </div>
             </div>
 
@@ -74,7 +447,8 @@
                 <a asp-controller="Query"
                    asp-action="ClientTotalCsv"
                    asp-route-clientId="@Model.ClientId"
-                   class="btn btn-outline-dark btn-sm">
+                   class="btn-custom-outline text-decoration-none">
+                    <i class="bi bi-download"></i>
                     تصدير CSV
                 </a>
             </div>
@@ -82,86 +456,144 @@
     </div>
 
     <!-- الحركات الأخيرة -->
-    <div class="card shadow-sm border-0 mb-4">
-        <div class="card-body">
-            <h5 class="fw-bold mb-3">الحركات الأخيرة</h5>
-
+    <div class="info-card">
+        <div class="card-header-custom" style="background: linear-gradient(135deg, #61a5c2 0%, #61a5c2 100%);">
+            <h5><i class="bi bi-activity"></i> الحركات الأخيرة</h5>
+        </div>
+        <div class="card-body-custom">
             @if ((Model.RecentInbounds?.Any() ?? false) || (Model.RecentOutbounds?.Any() ?? false))
             {
-                <div class="row">
-
+                <div class="row g-4">
                     <div class="col-md-6">
-                        <h6 class="text-muted">الواردات</h6>
-                        @foreach (var i in Model.RecentInbounds)
+                        <h6 class="fw-bold mb-3">
+                            <i class="bi bi-arrow-down-circle text-success"></i>
+                            الواردات
+                        </h6>
+                        @foreach (var i in Model.RecentInbounds.OrderByDescending(x => x.CreatedAt).Take(5))
                         {
-                            <div class="border rounded p-2 mb-2 small d-flex justify-content-between align-items-center">
-                                <div>
-                                    <div>أذن #@i.Id — @i.CreatedAt.ToLocalTime().ToString("g")</div>
-                                    <div class="text-muted small">العميل: @Model.ClientName — كرتون: @i.Cartons — بالت: @i.Pallets</div>
+                            <div class="movement-item">
+                                <div class="movement-header">
+                                    <span class="movement-id">
+                                        <i class="bi bi-receipt"></i>
+                                        إذن #@i.Id
+                                    </span>
+                                    <span class="movement-date">
+                                        <i class="bi bi-calendar3"></i>
+                                        @i.CreatedAt.ToLocalTime().ToString("dd MMMM yyyy - hh:mm tt")
+                                    </span>
                                 </div>
-                                <div>
-                                    <a class="btn btn-sm btn-outline-primary" asp-controller="Inbound" asp-action="Details" asp-route-id="@i.Id">تفاصيل</a>
+                                <div class="movement-details">
+                                    <span class="movement-detail">
+                                        <i class="bi bi-box-seam"></i>
+                                        كرتون: @i.Cartons.ToString("N0")
+                                    </span>
+                                    <span class="movement-detail">
+                                        <i class="bi bi-cube"></i>
+                                        بالت: @i.Pallets.ToString("N0")
+                                    </span>
+                                </div>
+                                <div class="mt-2 text-end">
+                                    <a class="btn-custom-outline text-decoration-none"
+                                       asp-controller="Inbound"
+                                       asp-action="Details"
+                                       asp-route-id="@i.Id"
+                                       style="font-size: 0.75rem; padding: 0.2rem 0.8rem;">
+                                        <i class="bi bi-eye"></i>
+                                        تفاصيل
+                                    </a>
                                 </div>
                             </div>
                         }
                     </div>
 
                     <div class="col-md-6">
-                        <h6 class="text-muted">الصادرات</h6>
-                        @foreach (var o in Model.RecentOutbounds)
+                        <h6 class="fw-bold mb-3">
+                            <i class="bi bi-arrow-up-circle text-danger"></i>
+                            الصادرات
+                        </h6>
+                        @foreach (var o in Model.RecentOutbounds.OrderByDescending(x => x.CreatedAt).Take(5))
                         {
-                            <div class="border rounded p-2 mb-2 small d-flex justify-content-between align-items-center">
-                                <div>
-                                    <div>أذن #@o.Id — @o.CreatedAt.ToLocalTime().ToString("g")</div>
-                                    <div class="text-muted small">العميل: @Model.ClientName — خطوط: @o.DetailsCount — كرتون: @o.Cartons — بالت: @o.Pallets</div>
+                            <div class="movement-item">
+                                <div class="movement-header">
+                                    <span class="movement-id">
+                                        <i class="bi bi-receipt"></i>
+                                        إذن #@o.Id
+                                    </span>
+                                    <span class="movement-date">
+                                        <i class="bi bi-calendar3"></i>
+                                        @o.CreatedAt.ToLocalTime().ToString("dd MMMM yyyy - hh:mm tt")
+                                    </span>
                                 </div>
-                                <div>
-                                    <a class="btn btn-sm btn-outline-primary" asp-controller="Outbound" asp-action="Details" asp-route-id="@o.Id">تفاصيل</a>
+                                <div class="movement-details">
+                                    <span class="movement-detail">
+                                        <i class="bi bi-layers"></i>
+                                        خطوط: @o.DetailsCount
+                                    </span>
+                                    <span class="movement-detail">
+                                        <i class="bi bi-box-seam"></i>
+                                        كرتون: @o.Cartons.ToString("N0")
+                                    </span>
+                                    <span class="movement-detail">
+                                        <i class="bi bi-cube"></i>
+                                        بالت: @o.Pallets.ToString("N0")
+                                    </span>
+                                </div>
+                                <div class="mt-2 text-end">
+                                    <a class="btn-custom-outline text-decoration-none"
+                                       asp-controller="Outbound"
+                                       asp-action="Details"
+                                       asp-route-id="@o.Id"
+                                       style="font-size: 0.75rem; padding: 0.2rem 0.8rem;">
+                                        <i class="bi bi-eye"></i>
+                                        تفاصيل
+                                    </a>
                                 </div>
                             </div>
                         }
                     </div>
-
                 </div>
             }
             else
             {
-                <div class="text-muted">لا توجد حركات حديثة.</div>
+                <div class="text-center py-4 text-muted">
+                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                    <p>لا توجد حركات حديثة لهذا العميل</p>
+                </div>
             }
         </div>
     </div>
 
     <!-- تفصيل حسب المنتج -->
-    <div class="card shadow-sm border-0 mb-4">
-        <div class="card-body">
-            <h5 class="fw-bold mb-3">تفصيل حسب المنتج</h5>
-
+    <div class="info-card">
+        <div class="card-header-custom" style="background: linear-gradient(135deg, #2c7da0 0%, #2c7da0 100%);">
+            <h5><i class="bi bi-boxes"></i> تفصيل حسب المنتج</h5>
+        </div>
+        <div class="card-body-custom">
             @if (Model.Products?.Any() ?? false)
             {
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead class="table-light">
+                    <table class="custom-table">
+                        <thead>
                             <tr>
                                 <th>المنتج</th>
                                 <th class="text-end">كرتون</th>
                                 <th class="text-end">بالت</th>
-                            </tr>
                         </thead>
                         <tbody>
-                            @foreach (var p in Model.Products)
+                            @foreach (var p in Model.Products.OrderByDescending(x => x.Cartons + x.Pallets))
                             {
                                 <tr>
-                                    <td>@p.ProductName</td>
-                                    <td class="text-end">@p.Cartons</td>
-                                    <td class="text-end">@p.Pallets</td>
+                                    <td class="text-center fw-semibold">@p.ProductName</td>
+                                    <td class="text-end">@p.Cartons.ToString("N0")</td>
+                                    <td class="text-end">@p.Pallets.ToString("N0")</td>
                                 </tr>
                             }
                         </tbody>
-                        <tfoot class="fw-bold">
+                        <tfoot>
                             <tr>
-                                <td>الإجمالي</td>
-                                <td class="text-end">@Model.TotalCartons</td>
-                                <td class="text-end">@Model.TotalPallets</td>
+                                <td class="text-center fw-bold">الإجمالي</td>
+                                <td class="text-end fw-bold">@Model.TotalCartons.ToString("N0")</td>
+                                <td class="text-end fw-bold">@Model.TotalPallets.ToString("N0")</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -169,21 +601,25 @@
             }
             else
             {
-                <div class="text-muted">لا توجد بيانات عن المنتجات.</div>
+                <div class="text-center py-4 text-muted">
+                    <i class="bi bi-box fs-1 d-block mb-2"></i>
+                    <p>لا توجد بيانات عن المنتجات لهذا العميل</p>
+                </div>
             }
         </div>
     </div>
 
     <!-- تفصيل حسب المخزن -->
-    <div class="card shadow-sm border-0 mb-4">
-        <div class="card-body">
-            <h5 class="fw-bold mb-3">تفصيل حسب المخزن</h5>
-
+    <div class="info-card">
+        <div class="card-header-custom" style="background: linear-gradient(135deg, #2e8b57 0%, #2e8b57 100%);">
+            <h5><i class="bi bi-archive"></i> تفصيل حسب المخزن</h5>
+        </div>
+        <div class="card-body-custom">
             @if (Model.Sections?.Any() ?? false)
             {
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead class="table-light">
+                    <table class="custom-table">
+                        <thead>
                             <tr>
                                 <th>المخزن</th>
                                 <th class="text-end">كرتون</th>
@@ -191,12 +627,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var s in Model.Sections)
+                            @foreach (var s in Model.Sections.OrderByDescending(x => x.Cartons + x.Pallets))
                             {
                                 <tr>
-                                    <td>@s.SectionName</td>
-                                    <td class="text-end">@s.Cartons</td>
-                                    <td class="text-end">@s.Pallets</td>
+                                    <td class="text-center fw-semibold">@s.SectionName</td>
+                                    <td class="text-end">@s.Cartons.ToString("N0")</td>
+                                    <td class="text-end">@s.Pallets.ToString("N0")</td>
                                 </tr>
                             }
                         </tbody>
@@ -205,9 +641,44 @@
             }
             else
             {
-                <div class="text-muted">لا توجد بيانات عن المخازن.</div>
+                <div class="text-center py-4 text-muted">
+                    <i class="bi bi-building fs-1 d-block mb-2"></i>
+                    <p>لا توجد بيانات عن المخازن لهذا العميل</p>
+                </div>
             }
         </div>
     </div>
 
+    <!-- Footer Info -->
+    <div class="text-center mt-3">
+        <small class="text-muted">
+            <i class="bi bi-clock"></i>
+            آخر تحديث: @DateTime.Now.ToLocalTime().ToString("dd MMMM yyyy - hh:mm tt")
+        </small>
+    </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('صفحة تفاصيل العميل جاهزة');
+
+        // إضافة تأثير fade-out للـ alerts بعد 5 ثواني
+        const alerts = document.querySelectorAll('.alert-custom');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                alert.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => {
+                    if (alert.parentNode) alert.remove();
+                }, 500);
+            }, 5000);
+        });
+
+        // إضافة تأثير متدرج للعناصر
+        const cards = document.querySelectorAll('.info-card');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+            card.style.animation = 'fadeInUp 0.5s ease-out backwards';
+        });
+    });
+</script>

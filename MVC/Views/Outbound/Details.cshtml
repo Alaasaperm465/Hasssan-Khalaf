@@ -1,64 +1,438 @@
-@model MVC.ViewModels.Outbound.OutboundDetailsVM
+﻿@model MVC.ViewModels.Outbound.OutboundDetailsVM
 @{
-    ViewData["Title"] = "?????? ????????";
+    ViewData["Title"] = "تفاصيل المبيعات";
 }
 
 <style>
-    /* reuse styles from Inbound details for consistency */
-    .no-print { }
+    /* تنسيقات متناسقة مع التصميم العام الهادئ */
+    .details-header {
+        background: linear-gradient(135deg, var(--primary-color, #2c7da0) 0%, var(--secondary-color, #2e8b57) 100%);
+        border-radius: 15px 15px 0 0;
+        padding: 1.5rem;
+        color: white;
+        margin-bottom: 0;
+    }
+
+    .details-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+
+    .info-section {
+        padding: 1.5rem;
+        background: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .info-icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(44,125,160,0.1);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color, #2c7da0);
+        font-size: 1.2rem;
+    }
+
+    .info-label {
+        font-size: 0.8rem;
+        color: #6c757d;
+        margin-bottom: 2px;
+    }
+
+    .info-value {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text-dark, #2c3e50);
+    }
+
+    /* تنسيق الجدول المحسن */
+    .details-table {
+        padding: 1.5rem;
+    }
+
+        .details-table .table {
+            margin-bottom: 0;
+        }
+
+            .details-table .table thead th {
+                background: #f8f9fa;
+                color: var(--text-dark, #2c3e50);
+                font-weight: 600;
+                border-bottom: 2px solid var(--primary-light, #61a5c2);
+                padding: 1rem;
+                font-size: 0.9rem;
+                text-align: center;
+            }
+
+            .details-table .table tbody td {
+                padding: 1rem;
+                vertical-align: middle;
+                text-align: center;
+                color: #4a5568;
+            }
+
+            .details-table .table tbody tr {
+                transition: all 0.2s ease;
+                border-bottom: 1px solid #e9ecef;
+            }
+
+                .details-table .table tbody tr:hover {
+                    background-color: #f8f9fc;
+                    transform: scale(1.01);
+                }
+
+            .details-table .table tfoot {
+                background: #f8f9fa;
+                font-weight: 600;
+            }
+
+                .details-table .table tfoot th,
+                .details-table .table tfoot td {
+                    padding: 1rem;
+                    font-size: 1rem;
+                    border-top: 2px solid var(--primary-light, #61a5c2);
+                }
+
+    /* تنسيق المنتج والمخزن */
+    .product-name {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .product-icon {
+        width: 32px;
+        height: 32px;
+        background: rgba(44,125,160,0.1);
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color, #2c7da0);
+    }
+
+    .section-badge {
+        background: rgba(46,139,87,0.1);
+        color: var(--secondary-color, #2e8b57);
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        display: inline-block;
+    }
+
+    /* تنسيق الأعداد */
+    .quantity-badge {
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .carton-badge {
+        color: var(--primary-color, #2c7da0);
+    }
+
+    .pallet-badge {
+        color: var(--secondary-color, #2e8b57);
+    }
+
+    /* تنسيق الأزرار */
+    .btn-back {
+        background: white;
+        border: 1px solid #dee2e6;
+        color: var(--text-dark, #2c3e50);
+        border-radius: 10px;
+        padding: 0.5rem 1.2rem;
+        transition: all 0.2s ease;
+    }
+
+        .btn-back:hover {
+            background: #f8f9fa;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+    .btn-print {
+        background: transparent;
+        border: 1px solid #dee2e6;
+        color: var(--text-dark, #2c3e50);
+        border-radius: 10px;
+        padding: 0.5rem 1.2rem;
+        transition: all 0.2s ease;
+    }
+
+        .btn-print:hover {
+            background: var(--primary-color, #2c7da0);
+            color: white;
+            border-color: var(--primary-color, #2c7da0);
+            transform: translateY(-1px);
+        }
+
+    /* تنسيق الـ ID */
+    .sale-id {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--primary-color, #2c7da0);
+        background: rgba(44,125,160,0.1);
+        padding: 0.25rem 1rem;
+        border-radius: 20px;
+        display: inline-block;
+    }
+
+    /* تحسين العرض على الموبايل */
+    @@media (max-width: 768px) {
+        .details-header
+
+    {
+        padding: 1rem;
+    }
+
+    .info-section {
+        padding: 1rem;
+    }
+
+    .details-table {
+        padding: 1rem;
+    }
+
+        .details-table .table thead th,
+        .details-table .table tbody td,
+        .details-table .table tfoot th,
+        .details-table .table tfoot td {
+            padding: 0.75rem;
+            font-size: 0.85rem;
+        }
+
+    .info-value {
+        font-size: 0.95rem;
+    }
+
+    .sale-id {
+        font-size: 1rem;
+    }
+
+    }
+
+    /* تنسيق الطباعة */
+    @@media print {
+        body
+
+    {
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    .details-card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+    }
+
+    .details-header {
+        background: #f8f9fa !important;
+        color: black !important;
+        border-bottom: 2px solid #ddd;
+    }
+
+    .info-icon {
+        background: #f0f0f0 !important;
+    }
+
+    .details-table .table thead th {
+        background: #f0f0f0 !important;
+        border-bottom: 2px solid #ddd;
+    }
+
+    .btn-print, .btn-back {
+        display: none !important;
+    }
+
+    }
+
+    /* تأثير fade-in */
+    .fade-in {
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    @@keyframes fadeInUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
 </style>
 
-<div class="container mt-4">
-    <div class="card p-3">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4>??? ?????? #@Model.Id</h4>
-            <div>
-                <button id="printBtn" class="btn btn-outline-secondary no-print">???? ?????</button>
+<div class="container-fluid p-3 p-md-4 fade-in">
+    <div class="details-card">
+        <!-- Header with ID and Actions -->
+        <div class="details-header">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="bi bi-receipt fs-3"></i>
+                    <div>
+                        <div class="small opacity-75">رقم الإذن</div>
+                        <div class="sale-id">#@Model.Id</div>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 no-print">
+                    <button id="printBtn" class="btn-print">
+                        <i class="bi bi-printer me-2"></i>
+                        طباعة
+                    </button>
+                </div>
             </div>
         </div>
 
-        <div class="mb-3 text-muted">
-            <div><strong>??????:</strong> @Model.ClientName</div>
-            <div><strong>????? ???????:</strong> @Model.CreatedAt.ToLocalTime().ToString("g")</div>
+        <!-- Information Section -->
+        <div class="info-section">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="bi bi-building"></i>
+                        </div>
+                        <div>
+                            <div class="info-label">العميل</div>
+                            <div class="info-value">@Model.ClientName</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="bi bi-calendar3"></i>
+                        </div>
+                        <div>
+                            <div class="info-label">تاريخ الإنشاء</div>
+                            <div class="info-value">@Model.CreatedAt.ToLocalTime().ToString("dddd, dd MMMM yyyy - hh:mm tt")</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="table-responsive">
-            <table class="table table-striped table-bordered">
-                <thead>
-                    <tr>
-                        <th>??????</th>
-                        <th>??????</th>
-                        <th class="text-end">???????</th>
-                        <th class="text-end">????????</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach(var d in Model.Details)
-                    {
+        <!-- Details Table -->
+        <div class="details-table">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td>@(d.ProductName ?? d.ProductId.ToString())</td>
-                            <td>@(d.SectionName ?? d.SectionId.ToString())</td>
-                            <td class="text-end">@d.Cartons</td>
-                            <td class="text-end">@d.Pallets</td>
+                            <th style="width: 40%">المنتج</th>
+                            <th style="width: 30%">المخزن</th>
+                            <th style="width: 15%" class="text-end">عدد الكرتون</th>
+                            <th style="width: 15%" class="text-end">عدد البالتات</th>
+                    </thead>
+                    <tbody>
+                        @foreach (var d in Model.Details)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="product-name">
+                                        <div class="product-icon">
+                                            <i class="bi bi-box"></i>
+                                        </div>
+                                        <span>@(d.ProductName ?? d.ProductId.ToString())</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="section-badge">
+                                        <i class="bi bi-building me-1"></i>
+                                        @(d.SectionName ?? d.SectionId.ToString())
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <span class="quantity-badge carton-badge">
+                                        <i class="bi bi-box-seam me-1"></i>
+                                        @d.Cartons.ToString("N0")
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <span class="quantity-badge pallet-badge">
+                                        <i class="bi bi-cube me-1"></i>
+                                        @d.Pallets.ToString("N0")
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="2" class="text-start">الإجمالي الكلي</th>
+                            <th class="text-end">
+                                <span class="quantity-badge carton-badge">
+                                    <i class="bi bi-box-seam me-1"></i>
+                                    @Model.TotalCartons.ToString("N0")
+                                </span>
+                            </th>
+                            <th class="text-end">
+                                <span class="quantity-badge pallet-badge">
+                                    <i class="bi bi-cube me-1"></i>
+                                    @Model.TotalPallets.ToString("N0")
+                                </span>
+                            </th>
                         </tr>
-                    }
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th colspan="2">????????</th>
-                        <th class="text-end">@Model.TotalCartons</th>
-                        <th class="text-end">@Model.TotalPallets</th>
-                    </tr>
-                </tfoot>
-            </table>
+                    </tfoot>
+                </table>
+            </div>
         </div>
 
-        <div class="mt-3 no-print">
-            <a class="btn btn-secondary" asp-action="Index">????</a>
+        <!-- Footer Actions -->
+        <div class="p-3 border-top no-print" style="background: #f8f9fa;">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div class="text-muted small">
+                    <i class="bi bi-info-circle"></i>
+                    تم إنشاء هذا الإذن بواسطة النظام
+                </div>
+                <div class="d-flex gap-2">
+                    <a class="btn-back" asp-action="Index">
+                        <i class="bi bi-arrow-right me-2"></i>
+                        العودة إلى قائمة المبيعات
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    document.getElementById('printBtn').addEventListener('click', function(){ window.print(); });
+    // تهيئة الطباعة
+    document.getElementById('printBtn').addEventListener('click', function () {
+        window.print();
+    });
+
+    // إضافة تأثير عند تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('صفحة تفاصيل المبيعات جاهزة');
+
+        // إضافة تأثير بسيط على الصفوف
+        const rows = document.querySelectorAll('.details-table tbody tr');
+        rows.forEach((row, index) => {
+            row.style.animationDelay = `${index * 0.05}s`;
+            row.style.animation = 'fadeInUp 0.3s ease-out backwards';
+        });
+    });
 </script>

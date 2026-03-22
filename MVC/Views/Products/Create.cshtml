@@ -1,41 +1,477 @@
 ﻿@model Hassann_Khala.Domain.Product
 @{
-    ViewData["Title"] = "إضافة منتج";
+    ViewData["Title"] = "إضافة منتج جديد";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-3">
-    <div class="card p-3">
-        <h4>إضافة منتج جديد</h4>
-        <form asp-action="Create" method="post" enctype="multipart/form-data">
-            @Html.AntiForgeryToken()
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="mb-3">
-                <label class="form-label">الاسم</label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">النوع</label>
-                <select asp-for="Type" class="form-select" asp-items="@(Html.GetEnumSelectList(typeof(Hassann_Khala.Domain.ProductType)))">
-                    <option value="">-- اختر النوع --</option>
-                </select>
-                <span asp-validation-for="Type" class="text-danger"></span>
+<style>
+    /* تنسيقات متناسقة مع التصميم العام الهادئ */
+    .form-container {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+        transition: all 0.2s ease;
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, var(--primary-color, #2c7da0) 0%, var(--secondary-color, #2e8b57) 100%);
+        padding: 1.2rem 1.5rem;
+        color: white;
+    }
+
+    .form-body {
+        padding: 2rem;
+    }
+
+    /* تنسيق الحقول */
+    .form-group-modern {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label-modern {
+        font-weight: 600;
+        color: var(--text-dark, #2c3e50);
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .form-label-modern i {
+            color: var(--primary-color, #2c7da0);
+            font-size: 1rem;
+        }
+
+    .required-field::after {
+        content: "*";
+        color: #dc3545;
+        margin-right: 4px;
+    }
+
+    .form-control-modern, .form-select-modern {
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 0.6rem 1rem;
+        transition: all 0.2s ease;
+        background-color: white;
+        width: 100%;
+    }
+
+        .form-control-modern:focus, .form-select-modern:focus {
+            border-color: var(--primary-light, #61a5c2);
+            box-shadow: 0 0 0 0.2rem rgba(44,125,160,0.1);
+            outline: none;
+        }
+
+    textarea.form-control-modern {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    /* تنسيق الأزرار */
+    .btn-primary-gradient {
+        background: linear-gradient(135deg, var(--primary-color, #2c7da0) 0%, var(--secondary-color, #2e8b57) 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 0.6rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-primary-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44,125,160,0.3);
+            color: white;
+        }
+
+    .btn-secondary-custom {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        padding: 0.6rem 1.5rem;
+        transition: all 0.2s ease;
+        color: var(--text-dark, #2c3e50);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+        .btn-secondary-custom:hover {
+            background: #f8f9fa;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            color: var(--text-dark, #2c3e50);
+            text-decoration: none;
+        }
+
+    /* تنسيق الـ Help Text */
+    .help-text {
+        font-size: 0.75rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+        .help-text i {
+            font-size: 0.7rem;
+        }
+
+    /* تنسيق الفاليديشن */
+    .text-danger {
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+        .text-danger i {
+            font-size: 0.75rem;
+        }
+
+    /* تنسيق أنواع المنتجات */
+    .product-type-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        margin-top: 0.5rem;
+    }
+
+    .product-type-1 {
+        background: rgba(44,125,160,0.1);
+        color: #2c7da0;
+    }
+
+    .product-type-2 {
+        background: rgba(46,139,87,0.1);
+        color: #2e8b57;
+    }
+
+    .product-type-4 {
+        background: rgba(220,53,69,0.1);
+        color: #dc3545;
+    }
+
+    /* تحسين العرض على الموبايل */
+    @@media (max-width: 768px) {
+        .form-body
+
+    {
+        padding: 1.5rem;
+    }
+
+    .btn-primary-gradient,
+    .btn-secondary-custom {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .d-flex.gap-2 {
+        flex-direction: column;
+        gap: 0.75rem !important;
+    }
+
+    }
+
+    /* تأثيرات */
+    .fade-in {
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    @@keyframes fadeInUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    /* تأثير للـ input focus */
+    .form-control-modern:focus, .form-select-modern:focus {
+        animation: pulse 0.3s ease;
+    }
+
+    @@keyframes pulse {
+        0%
+
+    {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.01);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+
+    }
+
+    /* تنسيق التوضيح */
+    .info-note {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 0.75rem;
+        margin-top: 0.5rem;
+        border: 1px solid #e9ecef;
+    }
+</style>
+
+<div class="container-fluid p-3 p-md-4 fade-in">
+    <div class="form-container">
+        <div class="form-card">
+            <div class="form-header">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="bi bi-plus-circle fs-3"></i>
+                    <div>
+                        <h4 class="mb-0 fw-bold">إضافة منتج جديد</h4>
+                        <p class="mb-0 opacity-75 small">قم بإدخال بيانات المنتج لإضافته إلى النظام</p>
+                    </div>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">الوصف</label>
-                <textarea asp-for="Description" class="form-control"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
+            <div class="form-body">
+                <form asp-action="Create" method="post" enctype="multipart/form-data" id="productForm">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <!-- اسم المنتج -->
+                    <div class="form-group-modern">
+                        <label asp-for="Name" class="form-label-modern required-field">
+                            <i class="bi bi-tag"></i>
+                            اسم المنتج
+                        </label>
+                        <input asp-for="Name" class="form-control-modern" placeholder="أدخل اسم المنتج..." />
+                        <div class="help-text">
+                            <i class="bi bi-info-circle"></i>
+                            الاسم الظاهر للمنتج في النظام
+                        </div>
+                        <span asp-validation-for="Name" class="text-danger">
+                            <i class="bi bi-exclamation-circle"></i>
+                            <span></span>
+                        </span>
+                    </div>
+
+                    <!-- نوع المنتج -->
+                    <div class="form-group-modern">
+                        <label asp-for="Type" class="form-label-modern required-field">
+                            <i class="bi bi-boxes"></i>
+                            نوع المنتج
+                        </label>
+                        <select asp-for="Type" class="form-select-modern" asp-items="@(Html.GetEnumSelectList(typeof(Hassann_Khala.Domain.ProductType)))">
+                            <option value="">-- اختر نوع المنتج --</option>
+                        </select>
+                        <div class="help-text">
+                            <i class="bi bi-info-circle"></i>
+                            تحديد نوع المنتج (كرتون / بالات / آخر)
+                        </div>
+                        <span asp-validation-for="Type" class="text-danger">
+                            <i class="bi bi-exclamation-circle"></i>
+                            <span></span>
+                        </span>
+
+                        <!-- توضيح أنواع المنتجات -->
+                        <div class="info-note mt-2">
+                            <div class="d-flex flex-wrap gap-2">
+                                <div class="product-type-badge product-type-1">
+                                    <i class="bi bi-box-seam me-1"></i> كرتون
+                                </div>
+                                <div class="product-type-badge product-type-2">
+                                    <i class="bi bi-cube me-1"></i> بالات
+                                </div>
+                                <div class="product-type-badge product-type-4">
+                                    <i class="bi bi-box me-1"></i> آخر
+                                </div>
+                            </div>
+                            <div class="help-text mt-2">
+                                <i class="bi bi-info-circle"></i>
+                                نوع المنتج يحدد كيفية التعامل مع الكميات والتسعير
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- الوصف -->
+                    <div class="form-group-modern">
+                        <label asp-for="Description" class="form-label-modern">
+                            <i class="bi bi-file-text"></i>
+                            الوصف
+                        </label>
+                        <textarea asp-for="Description" class="form-control-modern" placeholder="أدخل وصف المنتج (اختياري)..."></textarea>
+                        <div class="help-text">
+                            <i class="bi bi-info-circle"></i>
+                            معلومات إضافية عن المنتج (مثل المواصفات، الاستخدامات، إلخ)
+                        </div>
+                        <span asp-validation-for="Description" class="text-danger">
+                            <i class="bi bi-exclamation-circle"></i>
+                            <span></span>
+                        </span>
+                    </div>
+
+                    <!-- معلومات إضافية -->
+                    <div class="alert alert-info mt-4 mb-4" style="background: #e7f3ff; border: none; border-radius: 12px;">
+                        <div class="d-flex gap-2">
+                            <i class="bi bi-info-circle-fill" style="color: var(--primary-color); font-size: 1.2rem;"></i>
+                            <div>
+                                <strong class="small">معلومات مهمة:</strong>
+                                <p class="mb-0 small text-muted">بعد إضافة المنتج، يمكنك إضافة صورة للمنتج من خلال صفحة تعديل المنتج. المنتجات النشطة فقط هي التي تظهر في قوائم الاختيار.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- أزرار التحكم -->
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn-primary-gradient" id="submitBtn">
+                            <i class="bi bi-check-lg"></i>
+                            إضافة المنتج
+                        </button>
+                        <a asp-action="Index" class="btn-secondary-custom">
+                            <i class="bi bi-arrow-right"></i>
+                            إلغاء والعودة
+                        </a>
+                    </div>
+                </form>
             </div>
-            <div class="d-flex gap-2">
-                <button class="btn btn-primary">حفظ</button>
-                <a asp-action="Index" class="btn btn-secondary">إلغاء</a>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // تحسينات إضافية للواجهة
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('صفحة إضافة منتج جاهزة');
+
+            // تأثير عند التركيز على الحقول
+            const inputs = document.querySelectorAll('.form-control-modern, .form-select-modern');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.style.transform = 'scale(1.01)';
+                    this.style.transition = 'transform 0.2s ease';
+                });
+
+                input.addEventListener('blur', function() {
+                    this.style.transform = '';
+                });
+            });
+
+            // تحسين الـ Select
+            const typeSelect = document.querySelector('select[asp-for="Type"]');
+            if (typeSelect) {
+                typeSelect.addEventListener('change', function() {
+                    if (this.value) {
+                        this.style.borderColor = 'var(--primary-light)';
+                    } else {
+                        this.style.borderColor = '#e0e0e0';
+                    }
+                });
+            }
+
+            // التحقق من صحة الاسم أثناء الكتابة
+            const nameInput = document.querySelector('input[asp-for="Name"]');
+            if (nameInput) {
+                nameInput.addEventListener('input', function() {
+                    if (this.value.trim().length < 2 && this.value.length > 0) {
+                        this.style.borderColor = '#dc3545';
+                    } else if (this.value.trim().length >= 2) {
+                        this.style.borderColor = 'var(--primary-light)';
+                    } else {
+                        this.style.borderColor = '#e0e0e0';
+                    }
+                });
+            }
+
+            // تأكيد قبل الإلغاء إذا كان هناك تغييرات
+            const form = document.getElementById('productForm');
+            const cancelBtn = document.querySelector('.btn-secondary-custom');
+            let formDirty = false;
+
+            if (form && cancelBtn) {
+                const formInputs = form.querySelectorAll('input, select, textarea');
+                formInputs.forEach(input => {
+                    input.addEventListener('input', function() {
+                        formDirty = true;
+                    });
+                    input.addEventListener('change', function() {
+                        formDirty = true;
+                    });
+                });
+
+                cancelBtn.addEventListener('click', function(e) {
+                    if (formDirty) {
+                        if (!confirm('⚠️ هل أنت متأكد من الإلغاء؟\n\nسيتم فقدان جميع البيانات المدخلة.')) {
+                            e.preventDefault();
+                        }
+                    }
+                });
+            }
+
+            // منع الإرسال المزدوج
+            const submitBtn = document.getElementById('submitBtn');
+            if (form && submitBtn) {
+                let isSubmitting = false;
+
+                form.addEventListener('submit', function(e) {
+                    if (isSubmitting) {
+                        e.preventDefault();
+                        return;
+                    }
+
+                    // التحقق من صحة الفورم
+                    if (!form.checkValidity()) {
+                        return;
+                    }
+
+                    isSubmitting = true;
+                    const originalHtml = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> جاري الإضافة...';
+                    submitBtn.disabled = true;
+
+                    // إعادة تمكين الزر في حالة حدوث خطأ (سيتم إعادة التمكين بعد 10 ثواني كحد أقصى)
+                    setTimeout(() => {
+                        if (isSubmitting) {
+                            isSubmitting = false;
+                            submitBtn.innerHTML = originalHtml;
+                            submitBtn.disabled = false;
+                        }
+                    }, 10000);
+                });
+            }
+
+            // إضافة تأثيرات للـ Validation
+            const validationSpans = document.querySelectorAll('.text-danger');
+            validationSpans.forEach(span => {
+                if (span.innerText.trim()) {
+                    span.style.display = 'flex';
+                }
+            });
+        });
+    </script>
 }

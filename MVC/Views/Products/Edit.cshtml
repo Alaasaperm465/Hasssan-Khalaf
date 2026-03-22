@@ -1,81 +1,651 @@
-@model Hassann_Khala.Domain.Product
+﻿@model Hassann_Khala.Domain.Product
 
 @{
-    ViewData["Title"] = "Edit Product";
+    ViewData["Title"] = "تعديل المنتج";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-3">
-    <div class="card p-3">
-        <h4>Edit Product</h4>
-        <form asp-action="Edit" method="post" enctype="multipart/form-data">
-            @Html.AntiForgeryToken()
-            <input type="hidden" asp-for="Id" />
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="mb-3">
-                <label class="form-label">Name</label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
+<style>
+    /* تنسيقات متناسقة مع التصميم العام الهادئ */
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
 
-            <div class="mb-3">
-                <label class="form-label">Price</label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
+    .form-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+        transition: all 0.2s ease;
+    }
 
-            <div class="mb-3">
-                <label class="form-label">Type</label>
-                <select asp-for="Type" class="form-select" asp-items="@(Html.GetEnumSelectList(typeof(Hassann_Khala.Domain.ProductType)))">
-                    <option value="">-- ???? ????? --</option>
-                </select>
-                <span asp-validation-for="Type" class="text-danger"></span>
-            </div>
+    .form-header {
+        background: linear-gradient(135deg, var(--primary-color, #2c7da0) 0%, var(--secondary-color, #2e8b57) 100%);
+        padding: 1.2rem 1.5rem;
+        color: white;
+    }
 
-            <div class="mb-3">
-                <label class="form-label">Description</label>
-                <textarea asp-for="Description" class="form-control"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
+    .form-body {
+        padding: 2rem;
+    }
 
-            <div class="mb-3">
-                <label class="form-label">Current Image</label>
-                <div>
-                    @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
-                    {
-                        <img src="@Model.ImageUrl" alt="@Model.Name" style="max-height:120px; max-width:240px;" />
-                    }
-                    else
-                    {
-                        <div class="text-muted">No image</div>
-                    }
+    /* تنسيق الحقول */
+    .form-group-modern {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label-modern {
+        font-weight: 600;
+        color: var(--text-dark, #2c3e50);
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .form-label-modern i {
+            color: var(--primary-color, #2c7da0);
+            font-size: 1rem;
+        }
+
+    .required-field::after {
+        content: "*";
+        color: #dc3545;
+        margin-right: 4px;
+    }
+
+    .form-control-modern, .form-select-modern {
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 0.6rem 1rem;
+        transition: all 0.2s ease;
+        background-color: white;
+        width: 100%;
+    }
+
+        .form-control-modern:focus, .form-select-modern:focus {
+            border-color: var(--primary-light, #61a5c2);
+            box-shadow: 0 0 0 0.2rem rgba(44,125,160,0.1);
+            outline: none;
+        }
+
+    textarea.form-control-modern {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    /* تنسيق الصورة */
+    .image-preview {
+        margin-top: 1rem;
+        text-align: center;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 12px;
+        border: 1px solid #e9ecef;
+    }
+
+    .current-image {
+        max-height: 150px;
+        max-width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .no-image {
+        padding: 2rem;
+        text-align: center;
+        color: #6c757d;
+        background: white;
+        border-radius: 10px;
+    }
+
+        .no-image i {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.5;
+        }
+
+    /* تنسيق الـ Checkbox */
+    .form-check-modern {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border: 1px solid #e9ecef;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+        .form-check-modern:hover {
+            background: white;
+            border-color: var(--primary-light, #61a5c2);
+        }
+
+        .form-check-modern input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .form-check-modern label {
+            cursor: pointer;
+            margin: 0;
+            font-weight: 500;
+            color: var(--text-dark, #2c3e50);
+        }
+
+    /* تنسيق الأزرار */
+    .btn-primary-gradient {
+        background: linear-gradient(135deg, var(--primary-color, #2c7da0) 0%, var(--secondary-color, #2e8b57) 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 0.6rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-primary-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44,125,160,0.3);
+            color: white;
+        }
+
+    .btn-secondary-custom {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        padding: 0.6rem 1.5rem;
+        transition: all 0.2s ease;
+        color: var(--text-dark, #2c3e50);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+        .btn-secondary-custom:hover {
+            background: #f8f9fa;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            color: var(--text-dark, #2c3e50);
+            text-decoration: none;
+        }
+
+    /* تنسيق الـ Help Text */
+    .help-text {
+        font-size: 0.75rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+        .help-text i {
+            font-size: 0.7rem;
+        }
+
+    /* تنسيق الفاليديشن */
+    .text-danger {
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+        .text-danger i {
+            font-size: 0.75rem;
+        }
+
+    /* تنسيق السعر */
+    .input-group-custom {
+        position: relative;
+    }
+
+        .input-group-custom .input-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            pointer-events: none;
+        }
+
+        .input-group-custom .form-control-modern {
+            padding-right: 35px;
+        }
+
+    .price-suffix {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+        font-size: 0.85rem;
+    }
+
+    /* تحسين العرض على الموبايل */
+    @@media (max-width: 768px) {
+        .form-body
+
+    {
+        padding: 1.5rem;
+    }
+
+    .btn-primary-gradient,
+    .btn-secondary-custom {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .d-flex.gap-2 {
+        flex-direction: column;
+        gap: 0.75rem !important;
+    }
+
+    .image-preview {
+        margin-top: 0.75rem;
+    }
+
+    }
+
+    /* تأثيرات */
+    .fade-in {
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    @@keyframes fadeInUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    /* تأثير للـ input focus */
+    .form-control-modern:focus, .form-select-modern:focus {
+        animation: pulse 0.3s ease;
+    }
+
+    @@keyframes pulse {
+        0%
+
+    {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.01);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+
+    }
+
+    /* تنسيق الـ Badge */
+    .product-id-badge {
+        background: rgba(44,125,160,0.1);
+        color: var(--primary-color, #2c7da0);
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+</style>
+
+<div class="container-fluid p-3 p-md-4 fade-in">
+    <div class="form-container">
+        <div class="form-card">
+            <div class="form-header">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-pencil-square fs-3"></i>
+                        <div>
+                            <h4 class="mb-0 fw-bold">تعديل المنتج</h4>
+                            <p class="mb-0 opacity-75 small">تحديث معلومات المنتج</p>
+                        </div>
+                    </div>
+                    <div class="product-id-badge">
+                        <i class="bi bi-hash"></i>
+                        معرف المنتج: @Model.Id
+                    </div>
                 </div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Upload New Image (optional)</label>
-                <input type="file" name="imageFile" accept="image/*" class="form-control" />
-            </div>
+            <div class="form-body">
+                <form asp-action="Edit" method="post" enctype="multipart/form-data" id="productForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-            <div class="mb-3">
-                <label class="form-label">Image URL (optional)</label>
-                <input asp-for="ImageUrl" class="form-control" />
-                <span asp-validation-for="ImageUrl" class="text-danger"></span>
-            </div>
+                    <!-- اسم المنتج -->
+                    <div class="form-group-modern">
+                        <label asp-for="Name" class="form-label-modern required-field">
+                            <i class="bi bi-tag"></i>
+                            اسم المنتج
+                        </label>
+                        <input asp-for="Name" class="form-control-modern" placeholder="أدخل اسم المنتج..." />
+                        <div class="help-text">
+                            <i class="bi bi-info-circle"></i>
+                            الاسم الظاهر للمنتج في النظام
+                        </div>
+                        <span asp-validation-for="Name" class="text-danger">
+                            <i class="bi bi-exclamation-circle"></i>
+                            <span></span>
+                        </span>
+                    </div>
 
-            <div class="form-check mb-3">
-                <input asp-for="IsActive" class="form-check-input" />
-                <label class="form-check-label">Active</label>
-            </div>
+                    <!-- السعر -->
+                    <div class="form-group-modern">
+                        <label asp-for="Price" class="form-label-modern">
+                            <i class="bi bi-cash-stack"></i>
+                            السعر
+                        </label>
+                        <div class="position-relative">
+                            <input asp-for="Price" class="form-control-modern" type="number" step="0.01" placeholder="0.00" />
+                            <span class="price-suffix">ج.م</span>
+                        </div>
+                        <div class="help-text">
+                            <i class="bi bi-info-circle"></i>
+                            سعر الوحدة من المنتج
+                        </div>
+                        <span asp-validation-for="Price" class="text-danger">
+                            <i class="bi bi-exclamation-circle"></i>
+                            <span></span>
+                        </span>
+                    </div>
 
-            <div class="d-flex gap-2">
-                <button class="btn btn-primary">Save</button>
-                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                    <!-- نوع المنتج -->
+                    <div class="form-group-modern">
+                        <label asp-for="Type" class="form-label-modern required-field">
+                            <i class="bi bi-boxes"></i>
+                            نوع المنتج
+                        </label>
+                        <select asp-for="Type" class="form-select-modern" asp-items="@(Html.GetEnumSelectList(typeof(Hassann_Khala.Domain.ProductType)))">
+                            <option value="">-- اختر نوع المنتج --</option>
+                        </select>
+                        <div class="help-text">
+                            <i class="bi bi-info-circle"></i>
+                            تحديد نوع المنتج (كرتون / بالات / آخر)
+                        </div>
+                        <span asp-validation-for="Type" class="text-danger">
+                            <i class="bi bi-exclamation-circle"></i>
+                            <span></span>
+                        </span>
+                    </div>
+
+                    <!-- الوصف -->
+                    <div class="form-group-modern">
+                        <label asp-for="Description" class="form-label-modern">
+                            <i class="bi bi-file-text"></i>
+                            الوصف
+                        </label>
+                        <textarea asp-for="Description" class="form-control-modern" placeholder="أدخل وصف المنتج (اختياري)..."></textarea>
+                        <div class="help-text">
+                            <i class="bi bi-info-circle"></i>
+                            معلومات إضافية عن المنتج
+                        </div>
+                        <span asp-validation-for="Description" class="text-danger">
+                            <i class="bi bi-exclamation-circle"></i>
+                            <span></span>
+                        </span>
+                    </div>
+
+                    <!-- الصورة الحالية -->
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">
+                            <i class="bi bi-image"></i>
+                            الصورة الحالية
+                        </label>
+                        <div class="image-preview">
+                            @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+                            {
+                                <img src="@Model.ImageUrl" alt="@Model.Name" class="current-image" />
+                                <div class="help-text mt-2">
+                                    <i class="bi bi-info-circle"></i>
+                                    الصورة الحالية للمنتج
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="no-image">
+                                    <i class="bi bi-image"></i>
+                                    <div>لا توجد صورة مرفقة</div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- رفع صورة جديدة -->
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">
+                            <i class="bi bi-cloud-upload"></i>
+                            رفع صورة جديدة (اختياري)
+                        </label>
+                        <input type="file" name="imageFile" accept="image/*" class="form-control-modern" id="imageFile" />
+                        <div class="help-text">
+                            <i class="bi bi-info-circle"></i>
+                            يمكنك رفع صورة جديدة لاستبدال الصورة الحالية
+                        </div>
+                    </div>
+
+                    <!-- رابط الصورة -->
+                    <div class="form-group-modern">
+                        <label asp-for="ImageUrl" class="form-label-modern">
+                            <i class="bi bi-link"></i>
+                            رابط الصورة (اختياري)
+                        </label>
+                        <input asp-for="ImageUrl" class="form-control-modern" placeholder="https://example.com/image.jpg" />
+                        <div class="help-text">
+                            <i class="bi bi-info-circle"></i>
+                            رابط خارجي لصورة المنتج (سيتم استخدامه إذا لم يتم رفع صورة)
+                        </div>
+                        <span asp-validation-for="ImageUrl" class="text-danger">
+                            <i class="bi bi-exclamation-circle"></i>
+                            <span></span>
+                        </span>
+                    </div>
+
+                    <!-- حالة المنتج -->
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">
+                            <i class="bi bi-toggle-on"></i>
+                            حالة المنتج
+                        </label>
+                        <label class="form-check-modern">
+                            <input asp-for="IsActive" class="form-check-input" />
+                            <label class="form-check-label" asp-for="IsActive">
+                                <i class="bi bi-check-circle-fill text-success me-1"></i>
+                                نشط / Active
+                            </label>
+                        </label>
+                        <div class="help-text">
+                            <i class="bi bi-info-circle"></i>
+                            تحديد إذا كان المنتج متاح للاستخدام في النظام
+                        </div>
+                    </div>
+
+                    <!-- معلومات إضافية -->
+                    <div class="alert alert-info mt-4 mb-4" style="background: #e7f3ff; border: none; border-radius: 12px;">
+                        <div class="d-flex gap-2">
+                            <i class="bi bi-info-circle-fill" style="color: var(--primary-color); font-size: 1.2rem;"></i>
+                            <div>
+                                <strong class="small">معلومات مهمة:</strong>
+                                <p class="mb-0 small text-muted">تعديل المنتج سيؤثر على جميع الحركات المرتبطة به. تأكد من صحة البيانات قبل الحفظ.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- أزرار التحكم -->
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn-primary-gradient" id="submitBtn">
+                            <i class="bi bi-check-lg"></i>
+                            حفظ التغييرات
+                        </button>
+                        <a asp-action="Index" class="btn-secondary-custom">
+                            <i class="bi bi-arrow-right"></i>
+                            إلغاء والعودة
+                        </a>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // تحسينات إضافية للواجهة
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('صفحة تعديل المنتج جاهزة');
+
+            // معاينة الصورة قبل الرفع
+            const imageFileInput = document.getElementById('imageFile');
+            if (imageFileInput) {
+                imageFileInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            // إضافة معاينة مؤقتة للصورة
+                            const previewDiv = document.querySelector('.image-preview');
+                            if (previewDiv) {
+                                const oldImage = previewDiv.querySelector('img');
+                                const oldNoImage = previewDiv.querySelector('.no-image');
+
+                                if (oldImage) {
+                                    // تحديث الصورة الحالية
+                                    oldImage.src = event.target.result;
+                                } else if (oldNoImage) {
+                                    // استبدال رسالة "لا توجد صورة" بالصورة الجديدة
+                                    previewDiv.innerHTML = `<img src="${event.target.result}" alt="معاينة الصورة" class="current-image" />
+                                                              <div class="help-text mt-2">
+                                                                  <i class="bi bi-info-circle"></i>
+                                                                  الصورة الجديدة (سيتم حفظها عند الحفظ)
+                                                              </div>`;
+                                } else {
+                                    // إضافة صورة جديدة
+                                    const newImage = document.createElement('img');
+                                    newImage.src = event.target.result;
+                                    newImage.className = 'current-image';
+                                    newImage.alt = 'معاينة الصورة';
+                                    previewDiv.innerHTML = '';
+                                    previewDiv.appendChild(newImage);
+                                    const helpText = document.createElement('div');
+                                    helpText.className = 'help-text mt-2';
+                                    helpText.innerHTML = '<i class="bi bi-info-circle"></i> الصورة الجديدة (سيتم حفظها عند الحفظ)';
+                                    previewDiv.appendChild(helpText);
+                                }
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            // تأثير عند التركيز على الحقول
+            const inputs = document.querySelectorAll('.form-control-modern, .form-select-modern');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.style.transform = 'scale(1.01)';
+                    this.style.transition = 'transform 0.2s ease';
+                });
+
+                input.addEventListener('blur', function() {
+                    this.style.transform = '';
+                });
+            });
+
+            // تنسيق السعر
+            const priceInput = document.querySelector('input[asp-for="Price"]');
+            if (priceInput) {
+                priceInput.addEventListener('blur', function() {
+                    let value = parseFloat(this.value);
+                    if (!isNaN(value) && value !== 0 && this.value !== '') {
+                        this.value = value.toFixed(2);
+                    }
+                });
+            }
+
+            // تأكيد قبل الإلغاء إذا كان هناك تغييرات
+            const form = document.getElementById('productForm');
+            const cancelBtn = document.querySelector('.btn-secondary-custom');
+            let formDirty = false;
+
+            if (form && cancelBtn) {
+                const formInputs = form.querySelectorAll('input:not([type="hidden"]), select, textarea');
+                formInputs.forEach(input => {
+                    input.addEventListener('input', function() {
+                        formDirty = true;
+                    });
+                    input.addEventListener('change', function() {
+                        formDirty = true;
+                    });
+                });
+
+                cancelBtn.addEventListener('click', function(e) {
+                    if (formDirty) {
+                        if (!confirm('⚠️ هل أنت متأكد من الإلغاء؟\n\nسيتم فقدان جميع التغييرات التي قمت بها.')) {
+                            e.preventDefault();
+                        }
+                    }
+                });
+            }
+
+            // منع الإرسال المزدوج
+            const submitBtn = document.getElementById('submitBtn');
+            if (form && submitBtn) {
+                let isSubmitting = false;
+
+                form.addEventListener('submit', function(e) {
+                    if (isSubmitting) {
+                        e.preventDefault();
+                        return;
+                    }
+
+                    if (!form.checkValidity()) {
+                        return;
+                    }
+
+                    isSubmitting = true;
+                    const originalHtml = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> جاري الحفظ...';
+                    submitBtn.disabled = true;
+
+                    setTimeout(() => {
+                        if (isSubmitting) {
+                            isSubmitting = false;
+                            submitBtn.innerHTML = originalHtml;
+                            submitBtn.disabled = false;
+                        }
+                    }, 10000);
+                });
+            }
+        });
+    </script>
 }

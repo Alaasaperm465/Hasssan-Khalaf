@@ -1,22 +1,472 @@
-@model Hassann_Khala.Domain.Issuance
+﻿@model Hassann_Khala.Domain.Issuance
 @{
-    ViewData["Title"] = "Issuance Details";
+    ViewData["Title"] = "تفاصيل إذن الصرف";
 }
 
-<div class="container mt-3">
-    <h4>Issuance: @Model.SerialNumber</h4>
-    <div>Created: @Model.CreatedAt.ToString("g")</div>
-    <table class="table table-sm table-striped mt-3">
-        <thead><tr><th>#</th><th>Value</th><th>Product</th><th>Section</th></tr></thead>
-        <tbody>
-            @for(int i=0;i<Model.Items.Count;i++){
-                <tr>
-                    <td>@(i+1)</td>
-                    <td>@Model.Items[i].FieldValue</td>
-                    <td>@Model.Items[i].ProductId</td>
-                    <td>@Model.Items[i].SectionId</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+<style>
+    /* تنسيقات متناسقة مع التصميم العام الهادئ */
+    .details-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .details-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+
+    .details-header {
+        background: linear-gradient(135deg, var(--primary-color, #2c7da0) 0%, var(--secondary-color, #2e8b57) 100%);
+        padding: 1.2rem 1.5rem;
+        color: white;
+    }
+
+    .details-body {
+        padding: 2rem;
+    }
+
+    /* تنسيق المعلومات */
+    .info-section {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .info-icon {
+        width: 45px;
+        height: 45px;
+        background: rgba(44,125,160,0.1);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color, #2c7da0);
+        font-size: 1.3rem;
+    }
+
+    .info-content {
+        flex: 1;
+    }
+
+    .info-label {
+        font-size: 0.75rem;
+        color: #6c757d;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .info-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-dark, #2c3e50);
+        word-break: break-word;
+    }
+
+    .serial-badge {
+        background: rgba(44,125,160,0.15);
+        color: var(--primary-color, #2c7da0);
+        padding: 0.5rem 1rem;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* تنسيق الجدول */
+    .table-container {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        border: 1px solid #e9ecef;
+    }
+
+    .details-table {
+        margin-bottom: 0;
+    }
+
+        .details-table thead th {
+            background: #f8f9fa;
+            color: var(--text-dark, #2c3e50);
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary-light, #61a5c2);
+            padding: 1rem;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .details-table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            text-align: center;
+            color: #4a5568;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .details-table tbody tr:hover {
+            background-color: #f8f9fc;
+        }
+
+        .details-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+    /* تنسيق الأزرار */
+    .btn-back {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        padding: 0.6rem 1.2rem;
+        transition: all 0.2s ease;
+        color: var(--text-dark, #2c3e50);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+        .btn-back:hover {
+            background: #f8f9fa;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-decoration: none;
+            color: var(--text-dark, #2c3e50);
+        }
+
+    .btn-print {
+        background: transparent;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        padding: 0.6rem 1.2rem;
+        transition: all 0.2s ease;
+        color: var(--text-dark, #2c3e50);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-print:hover {
+            background: var(--primary-color, #2c7da0);
+            color: white;
+            border-color: var(--primary-color, #2c7da0);
+            transform: translateY(-1px);
+        }
+
+    /* تنسيق الأرقام */
+    .row-number {
+        font-weight: 600;
+        color: var(--primary-color, #2c7da0);
+        background: rgba(44,125,160,0.1);
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+    }
+
+    .badge-product, .badge-section {
+        background: #f8f9fa;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        display: inline-block;
+    }
+
+    .badge-product {
+        color: var(--primary-color, #2c7da0);
+        border: 1px solid rgba(44,125,160,0.2);
+    }
+
+    .badge-section {
+        color: var(--secondary-color, #2e8b57);
+        border: 1px solid rgba(46,139,87,0.2);
+    }
+
+    /* تنسيق الفوتر */
+    .footer-info {
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e9ecef;
+        text-align: center;
+    }
+
+    /* تحسين العرض على الموبايل */
+    @@media (max-width: 768px) {
+        .details-body
+
+    {
+        padding: 1rem;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .details-table thead th,
+    .details-table tbody td {
+        padding: 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .btn-back, .btn-print {
+        width: 100%;
+        justify-content: center;
+    }
+
+    }
+
+    /* تنسيق الطباعة */
+    @@media print {
+        .no-print
+
+    {
+        display: none !important;
+    }
+
+    body {
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .details-card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+    }
+
+    .details-header {
+        background: #f8f9fa !important;
+        color: black !important;
+        border-bottom: 2px solid #ddd;
+    }
+
+    .info-icon {
+        background: #f0f0f0 !important;
+    }
+
+    .details-table thead th {
+        background: #f0f0f0 !important;
+        border-bottom: 2px solid #ddd;
+    }
+
+    .btn-print, .btn-back {
+        display: none !important;
+    }
+
+    }
+
+    /* تأثيرات */
+    .fade-in {
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    @@keyframes fadeInUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+</style>
+
+<div class="container-fluid p-3 p-md-4 fade-in details-container">
+    <div class="details-card">
+        <div class="details-header">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="bi bi-file-text fs-3"></i>
+                    <div>
+                        <h4 class="mb-0 fw-bold">تفاصيل إذن الصرف</h4>
+                        <p class="mb-0 opacity-75 small">Issuance Details</p>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 no-print">
+                    <button id="printBtn" class="btn-print">
+                        <i class="bi bi-printer"></i>
+                        طباعة / Print
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="details-body">
+            <!-- Information Section -->
+            <div class="info-section">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="bi bi-hash"></i>
+                        </div>
+                        <div class="info-content">
+                            <div class="info-label">الرقم التسلسلي / Serial Number</div>
+                            <div class="info-value">
+                                <span class="serial-badge">
+                                    <i class="bi bi-receipt"></i>
+                                    @Model.SerialNumber
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="bi bi-calendar3"></i>
+                        </div>
+                        <div class="info-content">
+                            <div class="info-label">تاريخ الإنشاء / Created Date</div>
+                            <div class="info-value">
+                                <i class="bi bi-clock me-1"></i>
+                                @Model.CreatedAt.ToLocalTime().ToString("dddd, dd MMMM yyyy - hh:mm tt")
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="bi bi-list-check"></i>
+                        </div>
+                        <div class="info-content">
+                            <div class="info-label">عدد البنود / Items Count</div>
+                            <div class="info-value">
+                                <span class="badge bg-primary" style="background: var(--primary-color) !important; padding: 0.35rem 1rem; border-radius: 20px;">
+                                    @Model.Items.Count @(Model.Items.Count == 1 ? "بند" : "بنود")
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Items Table -->
+            <div class="table-container">
+                <div class="table-responsive">
+                    <table class="table details-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%">#</th>
+                                <th style="width: 40%">القيمة / Value</th>
+                                <th style="width: 25%">المنتج / Product</th>
+                                <th style="width: 25%">المخزن / Section</th>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.Items.Count; i++)
+                            {
+                                <tr>
+                                    <td class="text-center">
+                                        <span class="row-number">@(i + 1)</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex align-items-center justify-content-center gap-2">
+                                            <i class="bi bi-file-text" style="color: var(--primary-color);"></i>
+                                            <span class="fw-medium">@Model.Items[i].FieldValue</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        @if (Model.Items[i].ProductId > 0)
+                                        {
+                                            <span class="badge-product">
+                                                <i class="bi bi-box me-1"></i>
+                                                @Model.Items[i].ProductId
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">—</span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        @if (Model.Items[i].SectionId > 0)
+                                        {
+                                            <span class="badge-section">
+                                                <i class="bi bi-building me-1"></i>
+                                                @Model.Items[i].SectionId
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">—</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Footer Info -->
+            <div class="footer-info">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div class="text-muted small">
+                        <i class="bi bi-info-circle"></i>
+                        تم إنشاء هذا الإذن بواسطة النظام
+                    </div>
+                    <div class="text-muted small">
+                        <i class="bi bi-clock-history"></i>
+                        آخر تحديث: @DateTime.Now.ToLocalTime().ToString("dd MMMM yyyy - hh:mm tt")
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex gap-2 mt-4 no-print">
+                <a asp-action="Index" class="btn-back">
+                    <i class="bi bi-arrow-right"></i>
+                    العودة إلى القائمة / Back to List
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+    // Print functionality
+    document.getElementById('printBtn').addEventListener('click', function () {
+        window.print();
+    });
+
+    // Add animation to rows
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('صفحة تفاصيل إذن الصرف جاهزة');
+
+        // Add staggered animation to table rows
+        const rows = document.querySelectorAll('.details-table tbody tr');
+        rows.forEach((row, index) => {
+            row.style.animationDelay = `${index * 0.05}s`;
+            row.style.animation = 'fadeInUp 0.3s ease-out backwards';
+        });
+
+        // Add fade-in animation to info section
+        const infoSection = document.querySelector('.info-section');
+        if (infoSection) {
+            infoSection.style.animation = 'fadeInUp 0.4s ease-out';
+        }
+    });
+</script>

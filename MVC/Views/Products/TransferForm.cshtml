@@ -1,71 +1,622 @@
 ﻿@model Hassann_Khala.Application.DTOs.Product.ProductTransferDto
 @{
-    ViewData["Title"] = "Product Transfer";
+    ViewData["Title"] = "نقل المنتجات بين العنابر";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-3">
-    <h3>نقل منتجات بين العنابر</h3>
-
-    @if (TempData["Success"] != null)
-    {
-        <div class="alert alert-success">@TempData["Success"]</div>
-    }
-    @if (TempData["Error"] != null)
-    {
-        <div class="alert alert-danger">@TempData["Error"]</div>
+<style>
+    /* تنسيقات متناسقة مع التصميم العام الهادئ */
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
     }
 
-    <form asp-action="ProductTransfer" method="post">
-        @Html.AntiForgeryToken()
+    .form-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+        transition: all 0.2s ease;
+    }
 
-        <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+    .form-header {
+        background: linear-gradient(135deg, var(--primary-color, #2c7da0) 0%, var(--secondary-color, #2e8b57) 100%);
+        padding: 1.2rem 1.5rem;
+        color: white;
+    }
 
-        <div class="row g-2">
-            <div class="col-md-4">
-                <label class="form-label">العميل</label>
-                <select asp-for="ClientId" class="form-select" asp-items="@(IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewBag.Clients">
-                    <option value="">-- اختر العميل --</option>
-                </select>
-            </div>
-            <div class="col-md-4">
-                <label class="form-label">الصنف</label>
-                <select asp-for="ProductId" class="form-select" asp-items="@(IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewBag.Products">
-                    <option value="">-- اختر المنتج --</option>
-                </select>
-            </div>
-            <div class="col-md-4"></div>
+    .form-body {
+        padding: 2rem;
+    }
 
-            <div class="col-md-6 mt-2">
-                <label class="form-label">العنبر المحول منه </label>
-                <select asp-for="FromSectionId" class="form-select" asp-items="@(IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewBag.Sections">
-                    <option value="">-- اختر العنبر --</option>
-                </select>
-            </div>
-            <div class="col-md-6 mt-2">
-                <label class="form-label">العنبر المحول اليه </label>
-                <select asp-for="ToSectionId" class="form-select" asp-items="@(IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewBag.Sections">
-                    <option value="">-- اختر العنبر --</option>
-                </select>
+    /* تنسيق الحقول */
+    .form-group-modern {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label-modern {
+        font-weight: 600;
+        color: var(--text-dark, #2c3e50);
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .form-label-modern i {
+            color: var(--primary-color, #2c7da0);
+            font-size: 1rem;
+        }
+
+    .required-field::after {
+        content: "*";
+        color: #dc3545;
+        margin-right: 4px;
+    }
+
+    .form-control-modern, .form-select-modern {
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 0.6rem 1rem;
+        transition: all 0.2s ease;
+        background-color: white;
+        width: 100%;
+    }
+
+        .form-control-modern:focus, .form-select-modern:focus {
+            border-color: var(--primary-light, #61a5c2);
+            box-shadow: 0 0 0 0.2rem rgba(44,125,160,0.1);
+            outline: none;
+        }
+
+    /* تنسيق الأزرار */
+    .btn-primary-gradient {
+        background: linear-gradient(135deg, var(--primary-color, #2c7da0) 0%, var(--secondary-color, #2e8b57) 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 0.6rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-primary-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44,125,160,0.3);
+            color: white;
+        }
+
+    .btn-secondary-custom {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        padding: 0.6rem 1.5rem;
+        transition: all 0.2s ease;
+        color: var(--text-dark, #2c3e50);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+        .btn-secondary-custom:hover {
+            background: #f8f9fa;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            color: var(--text-dark, #2c3e50);
+            text-decoration: none;
+        }
+
+    /* تنسيق الـ Alert */
+    .alert-custom {
+        border-radius: 12px;
+        border: none;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        animation: slideDown 0.3s ease-out;
+    }
+
+    .alert-success-custom {
+        background: #d4edda;
+        color: #155724;
+        border-right: 4px solid #28a745;
+    }
+
+    .alert-danger-custom {
+        background: #f8d7da;
+        color: #721c24;
+        border-right: 4px solid #dc3545;
+    }
+
+    /* تنسيق الـ Help Text */
+    .help-text {
+        font-size: 0.75rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+        .help-text i {
+            font-size: 0.7rem;
+        }
+
+    /* تنسيق الفاليديشن */
+    .text-danger {
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+        .text-danger i {
+            font-size: 0.75rem;
+        }
+
+    /* تنسيق أيقونة النقل */
+    .transfer-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 1rem 0;
+        color: var(--primary-color, #2c7da0);
+        font-size: 2rem;
+    }
+
+    /* تحسين العرض على الموبايل */
+    @@media (max-width: 768px) {
+        .form-body
+
+    {
+        padding: 1.5rem;
+    }
+
+    .btn-primary-gradient,
+    .btn-secondary-custom {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .d-flex.gap-2 {
+        flex-direction: column;
+        gap: 0.75rem !important;
+    }
+
+    .transfer-icon {
+        font-size: 1.5rem;
+        margin: 0.5rem 0;
+    }
+
+    }
+
+    /* تأثيرات */
+    .fade-in {
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    @@keyframes fadeInUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    @@keyframes slideDown {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    /* تنسيق التوضيح */
+    .info-note {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 1rem;
+        margin-top: 1rem;
+        border: 1px solid #e9ecef;
+    }
+
+    /* تنسيق الـ Badge */
+    .direction-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+        margin: 0.5rem 0;
+    }
+</style>
+
+<div class="container-fluid p-3 p-md-4 fade-in">
+    <div class="form-container">
+        <div class="form-card">
+            <div class="form-header">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="bi bi-arrow-left-right fs-3"></i>
+                    <div>
+                        <h4 class="mb-0 fw-bold">نقل المنتجات بين العنابر</h4>
+                        <p class="mb-0 opacity-75 small">نقل الكميات من مخزن إلى آخر لنفس العميل</p>
+                    </div>
+                </div>
             </div>
 
-            <div class="col-md-3 mt-2">
-                <label class="form-label">الكرتون</label>
-                <input asp-for="Cartons" type="number" class="form-control" min="0" />
-            </div>
-            <div class="col-md-3 mt-2">
-                <label class="form-label">عدد البالتات</label>
-                <input asp-for="Pallets" type="number" class="form-control" min="0" />
-            </div>
+            <div class="form-body">
+                <!-- Alert Messages -->
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert-custom alert-success-custom mb-3">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        @TempData["Success"]
+                    </div>
+                }
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert-custom alert-danger-custom mb-3">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        @TempData["Error"]
+                    </div>
+                }
 
-            <div class="col-12 mt-3">
-                <button class="btn btn-primary">نقل </button>
-                <a class="btn btn-secondary" asp-action="Index" asp-controller="Stock">الغاء</a>
+                <form asp-action="ProductTransfer" method="post" id="transferForm">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <!-- Client and Product -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-md-6">
+                            <div class="form-group-modern">
+                                <label asp-for="ClientId" class="form-label-modern required-field">
+                                    <i class="bi bi-building"></i>
+                                    العميل
+                                </label>
+                                <select asp-for="ClientId" class="form-select-modern" asp-items="@(IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewBag.Clients" id="clientSelect">
+                                    <option value="">-- اختر العميل --</option>
+                                </select>
+                                <div class="help-text">
+                                    <i class="bi bi-info-circle"></i>
+                                    العميل المالك للمنتجات
+                                </div>
+                                <span asp-validation-for="ClientId" class="text-danger">
+                                    <i class="bi bi-exclamation-circle"></i>
+                                    <span></span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="form-group-modern">
+                                <label asp-for="ProductId" class="form-label-modern required-field">
+                                    <i class="bi bi-box"></i>
+                                    المنتج (الصنف)
+                                </label>
+                                <select asp-for="ProductId" class="form-select-modern" asp-items="@(IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewBag.Products" id="productSelect">
+                                    <option value="">-- اختر المنتج --</option>
+                                </select>
+                                <div class="help-text">
+                                    <i class="bi bi-info-circle"></i>
+                                    المنتج المراد نقله
+                                </div>
+                                <span asp-validation-for="ProductId" class="text-danger">
+                                    <i class="bi bi-exclamation-circle"></i>
+                                    <span></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transfer Direction -->
+                    <div class="transfer-icon">
+                        <i class="bi bi-building"></i>
+                        <span class="mx-2 fw-semibold">نقل بين المخازن</span>
+                        <i class="bi bi-building"></i>
+                    </div>
+
+                    <!-- From and To Sections -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-md-6">
+                            <div class="form-group-modern">
+                                <label asp-for="FromSectionId" class="form-label-modern required-field">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                    العنبر المحول منه
+                                </label>
+                                <select asp-for="FromSectionId" class="form-select-modern" asp-items="@(IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewBag.Sections" id="fromSectionSelect">
+                                    <option value="">-- اختر العنبر --</option>
+                                </select>
+                                <div class="help-text">
+                                    <i class="bi bi-info-circle"></i>
+                                    المخزن الذي سيتم سحب الكميات منه
+                                </div>
+                                <span asp-validation-for="FromSectionId" class="text-danger">
+                                    <i class="bi bi-exclamation-circle"></i>
+                                    <span></span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="form-group-modern">
+                                <label asp-for="ToSectionId" class="form-label-modern required-field">
+                                    <i class="bi bi-box-arrow-in-left"></i>
+                                    العنبر المحول إليه
+                                </label>
+                                <select asp-for="ToSectionId" class="form-select-modern" asp-items="@(IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewBag.Sections" id="toSectionSelect">
+                                    <option value="">-- اختر العنبر --</option>
+                                </select>
+                                <div class="help-text">
+                                    <i class="bi bi-info-circle"></i>
+                                    المخزن الذي ستضاف إليه الكميات
+                                </div>
+                                <span asp-validation-for="ToSectionId" class="text-danger">
+                                    <i class="bi bi-exclamation-circle"></i>
+                                    <span></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quantities -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-md-6">
+                            <div class="form-group-modern">
+                                <label asp-for="Cartons" class="form-label-modern">
+                                    <i class="bi bi-box-seam"></i>
+                                    عدد الكرتون
+                                </label>
+                                <input asp-for="Cartons" type="number" class="form-control-modern" min="0" step="1" placeholder="0" id="cartonsInput" />
+                                <div class="help-text">
+                                    <i class="bi bi-info-circle"></i>
+                                    عدد الكرتون المطلوب نقله
+                                </div>
+                                <span asp-validation-for="Cartons" class="text-danger">
+                                    <i class="bi bi-exclamation-circle"></i>
+                                    <span></span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="form-group-modern">
+                                <label asp-for="Pallets" class="form-label-modern">
+                                    <i class="bi bi-cube"></i>
+                                    عدد البالتات
+                                </label>
+                                <input asp-for="Pallets" type="number" class="form-control-modern" min="0" step="1" placeholder="0" id="palletsInput" />
+                                <div class="help-text">
+                                    <i class="bi bi-info-circle"></i>
+                                    عدد البالتات المطلوب نقلها
+                                </div>
+                                <span asp-validation-for="Pallets" class="text-danger">
+                                    <i class="bi bi-exclamation-circle"></i>
+                                    <span></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Info Note -->
+                    <div class="info-note">
+                        <div class="d-flex gap-2">
+                            <i class="bi bi-shield-check" style="color: var(--primary-color); font-size: 1.2rem;"></i>
+                            <div>
+                                <strong class="small">تنبيه هام:</strong>
+                                <p class="mb-0 small text-muted">سيتم خصم الكميات المدخلة من المخزن المحول منه وإضافتها إلى المخزن المحول إليه. تأكد من وجود الكميات الكافية في المخزن المصدر قبل النقل.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn-primary-gradient" id="submitBtn">
+                            <i class="bi bi-arrow-repeat"></i>
+                            نقل المنتجات
+                        </button>
+                        <a asp-action="Index" asp-controller="Stock" class="btn-secondary-custom">
+                            <i class="bi bi-arrow-right"></i>
+                            إلغاء
+                        </a>
+                    </div>
+                </form>
             </div>
         </div>
-    </form>
+    </div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // تحسينات إضافية للواجهة
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('صفحة نقل المنتجات بين العنابر جاهزة');
+
+            // تأثير عند التركيز على الحقول
+            const inputs = document.querySelectorAll('.form-control-modern, .form-select-modern');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.style.transform = 'scale(1.01)';
+                    this.style.transition = 'transform 0.2s ease';
+                });
+
+                input.addEventListener('blur', function() {
+                    this.style.transform = '';
+                });
+            });
+
+            // منع اختيار نفس المخزن للمصدر والهدف
+            const fromSectionSelect = document.getElementById('fromSectionSelect');
+            const toSectionSelect = document.getElementById('toSectionSelect');
+
+            if (fromSectionSelect && toSectionSelect) {
+                fromSectionSelect.addEventListener('change', function() {
+                    if (toSectionSelect.value === this.value && this.value) {
+                        alert('⚠️ لا يمكن نقل المنتجات إلى نفس المخزن. الرجاء اختيار مخزن مختلف.');
+                        toSectionSelect.value = '';
+                    }
+                });
+
+                toSectionSelect.addEventListener('change', function() {
+                    if (fromSectionSelect.value === this.value && this.value) {
+                        alert('⚠️ لا يمكن نقل المنتجات إلى نفس المخزن. الرجاء اختيار مخزن مختلف.');
+                        this.value = '';
+                    }
+                });
+            }
+
+            // التحقق من إدخال الكميات
+            const cartonsInput = document.getElementById('cartonsInput');
+            const palletsInput = document.getElementById('palletsInput');
+
+            function validateQuantities() {
+                const cartons = parseFloat(cartonsInput?.value || 0);
+                const pallets = parseFloat(palletsInput?.value || 0);
+
+                if (cartons === 0 && pallets === 0) {
+                    cartonsInput?.style.setProperty('border-color', '#dc3545', 'important');
+                    palletsInput?.style.setProperty('border-color', '#dc3545', 'important');
+                    return false;
+                } else {
+                    cartonsInput?.style.setProperty('border-color', '#e0e0e0', 'important');
+                    palletsInput?.style.setProperty('border-color', '#e0e0e0', 'important');
+                    return true;
+                }
+            }
+
+            if (cartonsInput) {
+                cartonsInput.addEventListener('input', validateQuantities);
+            }
+            if (palletsInput) {
+                palletsInput.addEventListener('input', validateQuantities);
+            }
+
+            // Auto-hide alerts after 5 seconds
+            const alerts = document.querySelectorAll('.alert-custom');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.style.opacity = '0';
+                    alert.style.transition = 'opacity 0.5s ease';
+                    setTimeout(() => {
+                        if (alert.parentNode) alert.remove();
+                    }, 500);
+                }, 5000);
+            });
+
+            // Form submission validation
+            const form = document.getElementById('transferForm');
+            const submitBtn = document.getElementById('submitBtn');
+
+            if (form && submitBtn) {
+                let isSubmitting = false;
+
+                form.addEventListener('submit', function(e) {
+                    // Validate quantities
+                    if (!validateQuantities()) {
+                        e.preventDefault();
+                        alert('⚠️ الرجاء إدخال كمية أكبر من صفر في الكرتون أو البالتات.');
+                        return;
+                    }
+
+                    // Validate sections
+                    const fromSection = fromSectionSelect?.value;
+                    const toSection = toSectionSelect?.value;
+
+                    if (!fromSection || !toSection) {
+                        e.preventDefault();
+                        alert('⚠️ الرجاء اختيار المخزن المحول منه والمخزن المحول إليه.');
+                        return;
+                    }
+
+                    if (fromSection === toSection) {
+                        e.preventDefault();
+                        alert('⚠️ لا يمكن نقل المنتجات إلى نفس المخزن. الرجاء اختيار مخزن مختلف.');
+                        return;
+                    }
+
+                    // Validate client and product
+                    const clientId = document.getElementById('clientSelect')?.value;
+                    const productId = document.getElementById('productSelect')?.value;
+
+                    if (!clientId) {
+                        e.preventDefault();
+                        alert('⚠️ الرجاء اختيار العميل.');
+                        return;
+                    }
+
+                    if (!productId) {
+                        e.preventDefault();
+                        alert('⚠️ الرجاء اختيار المنتج.');
+                        return;
+                    }
+
+                    if (isSubmitting) {
+                        e.preventDefault();
+                        return;
+                    }
+
+                    if (!form.checkValidity()) {
+                        return;
+                    }
+
+                    isSubmitting = true;
+                    const originalHtml = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> جاري النقل...';
+                    submitBtn.disabled = true;
+
+                    setTimeout(() => {
+                        if (isSubmitting) {
+                            isSubmitting = false;
+                            submitBtn.innerHTML = originalHtml;
+                            submitBtn.disabled = false;
+                        }
+                    }, 10000);
+                });
+            }
+
+            // تحسين عرض الـ Select
+            const selects = document.querySelectorAll('.form-select-modern');
+            selects.forEach(select => {
+                select.addEventListener('change', function() {
+                    if (this.value) {
+                        this.style.borderColor = 'var(--primary-light)';
+                    } else {
+                        this.style.borderColor = '#e0e0e0';
+                    }
+                });
+            });
+
+            // تحديث قائمة المخازن بناءً على اختيار العميل (اختياري)
+            const clientSelect = document.getElementById('clientSelect');
+            if (clientSelect) {
+                clientSelect.addEventListener('change', function() {
+                    // يمكن إضافة AJAX هنا لجلب المخازن المتاحة للعميل
+                    console.log('تم اختيار العميل:', this.value);
+                });
+            }
+        });
+    </script>
 }

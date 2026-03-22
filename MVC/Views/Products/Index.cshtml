@@ -1,79 +1,742 @@
 ﻿@model MVC.ViewModels.Products.ProductIndexVM
 @{
-    ViewData["Title"] = "Products";
+    ViewData["Title"] = "المنتجات";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="container mt-3">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 class="mb-0">المنتجات</h1>
-        <a class="btn btn-primary" asp-action="Create">اضافة منتج</a>
+
+<style>
+    /* تنسيقات متناسقة مع التصميم العام الهادئ */
+    .page-header {
+        margin-bottom: 1.5rem;
+    }
+
+    .stats-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        transition: all 0.2s ease;
+        border: 1px solid rgba(44,125,160,0.1);
+    }
+
+        .stats-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+    .stats-icon {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, rgba(44,125,160,0.1) 0%, rgba(46,139,87,0.1) 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color, #2c7da0);
+        font-size: 1.5rem;
+    }
+
+    .stats-number {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--text-dark, #2c3e50);
+        line-height: 1.2;
+    }
+
+    .stats-label {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+    }
+
+    /* تنسيق البحث المحسن */
+    .search-wrapper {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+
+    .search-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9ca3af;
+        pointer-events: none;
+    }
+
+    .search-box-modern {
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 0.75rem 2.5rem 0.75rem 1rem;
+        width: 100%;
+        transition: all 0.2s ease;
+        background: white;
+    }
+
+        .search-box-modern:focus {
+            border-color: var(--primary-light, #61a5c2);
+            box-shadow: 0 0 0 0.2rem rgba(44,125,160,0.1);
+            outline: none;
+        }
+
+    /* تنسيق الجدول المحسن */
+    .products-table {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+        .products-table .table {
+            margin-bottom: 0;
+        }
+
+            .products-table .table thead th {
+                background: #f8f9fa;
+                color: var(--text-dark, #2c3e50);
+                font-weight: 600;
+                border-bottom: 2px solid var(--primary-light, #61a5c2);
+                padding: 1rem;
+                font-size: 0.9rem;
+                text-align: center;
+            }
+
+            .products-table .table tbody td {
+                padding: 1rem;
+                vertical-align: middle;
+                text-align: center;
+                color: #4a5568;
+            }
+
+            .products-table .table tbody tr {
+                transition: all 0.2s ease;
+                border-bottom: 1px solid #e9ecef;
+            }
+
+                .products-table .table tbody tr:hover {
+                    background-color: #f8f9fc;
+                    transform: scale(1.01);
+                }
+
+    /* تنسيق الأزرار */
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--primary-color, #2c7da0) 0%, var(--secondary-color, #2e8b57) 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 0.5rem 1.2rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(44,125,160,0.3);
+            color: white;
+        }
+
+    .btn-outline-primary-custom {
+        color: var(--primary-color, #2c7da0);
+        border: 1px solid var(--primary-color, #2c7da0);
+        background: transparent;
+        border-radius: 8px;
+        padding: 0.35rem 0.8rem;
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        text-decoration: none;
+    }
+
+        .btn-outline-primary-custom:hover {
+            background: var(--primary-color, #2c7da0);
+            color: white;
+            transform: translateY(-1px);
+            text-decoration: none;
+        }
+
+    .btn-outline-danger-custom {
+        color: #dc3545;
+        border: 1px solid #dc3545;
+        background: transparent;
+        border-radius: 8px;
+        padding: 0.35rem 0.8rem;
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        text-decoration: none;
+    }
+
+        .btn-outline-danger-custom:hover {
+            background: #dc3545;
+            color: white;
+            transform: translateY(-1px);
+            text-decoration: none;
+        }
+
+    .btn-search {
+        background: var(--primary-color, #2c7da0);
+        border: none;
+        border-radius: 10px;
+        padding: 0.6rem 1.5rem;
+        color: white;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-search:hover {
+            background: var(--primary-light, #61a5c2);
+            transform: translateY(-1px);
+        }
+
+    /* تنسيق أنواع المنتجات */
+    .product-type-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        display: inline-block;
+    }
+
+    .product-type-1 {
+        background: rgba(44,125,160,0.1);
+        color: #2c7da0;
+    }
+
+    .product-type-2 {
+        background: rgba(46,139,87,0.1);
+        color: #2e8b57;
+    }
+
+    .product-type-4 {
+        background: rgba(220,53,69,0.1);
+        color: #dc3545;
+    }
+
+    /* تنسيق الترقيم */
+    .pagination-custom {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+        .pagination-custom .page-item {
+            list-style: none;
+        }
+
+        .pagination-custom .page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            height: 40px;
+            padding: 0 0.75rem;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            color: var(--text-dark, #2c3e50);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+            .pagination-custom .page-link:hover {
+                background: #f8f9fa;
+                border-color: var(--primary-light, #61a5c2);
+                transform: translateY(-2px);
+            }
+
+        .pagination-custom .active .page-link {
+            background: linear-gradient(135deg, var(--primary-color, #2c7da0) 0%, var(--secondary-color, #2e8b57) 100%);
+            color: white;
+            border: none;
+        }
+
+        .pagination-custom .disabled .page-link {
+            color: #cbd5e0;
+            cursor: not-allowed;
+            background: #f8f9fa;
+        }
+
+    /* تنسيق الـ Alert */
+    .alert-custom {
+        border-radius: 12px;
+        border: none;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        animation: slideDown 0.3s ease-out;
+    }
+
+    .alert-success-custom {
+        background: #d4edda;
+        color: #155724;
+        border-right: 4px solid #28a745;
+    }
+
+    .alert-danger-custom {
+        background: #f8d7da;
+        color: #721c24;
+        border-right: 4px solid #dc3545;
+    }
+
+    /* أيقونات */
+    .product-icon {
+        width: 32px;
+        height: 32px;
+        background: rgba(44,125,160,0.1);
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 8px;
+        color: var(--primary-color, #2c7da0);
+    }
+
+    /* حالة عدم وجود بيانات */
+    .empty-state-modern {
+        text-align: center;
+        padding: 3rem;
+        background: white;
+        border-radius: 15px;
+    }
+
+        .empty-state-modern i {
+            font-size: 4rem;
+            color: var(--primary-light, #61a5c2);
+            opacity: 0.5;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state-modern h5 {
+            color: var(--text-dark, #2c3e50);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state-modern p {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+    /* تحسين العرض على الموبايل */
+    @@media (max-width: 768px) {
+        .stats-number
+
+    {
+        font-size: 1.4rem;
+    }
+
+    .stats-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+
+    .products-table .table thead th,
+    .products-table .table tbody td {
+        padding: 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .btn-outline-primary-custom,
+    .btn-outline-danger-custom {
+        padding: 0.25rem 0.6rem;
+        font-size: 0.75rem;
+    }
+
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .search-form {
+        flex-direction: column;
+    }
+
+    .btn-search {
+        width: 100%;
+        justify-content: center;
+    }
+
+    }
+
+    /* تأثيرات */
+    .fade-in {
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    @@keyframes fadeInUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    @@keyframes slideDown {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .results-count {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+</style>
+
+<div class="container-fluid p-3 p-md-4 fade-in">
+
+    <!-- Header Section with Stats -->
+    <div class="page-header">
+        <div class="row g-3 mb-4">
+            <div class="col-md-8">
+                <h2 class="h3 mb-2" style="color: var(--primary-color, #2c7da0);">
+                    <i class="bi bi-boxes me-2"></i>
+                    المنتجات
+                </h2>
+                <p class="text-muted mb-0">إدارة جميع المنتجات في النظام</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a class="btn btn-primary-custom" asp-action="Create">
+                    <i class="bi bi-plus-lg me-2"></i>
+                    إضافة منتج جديد
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        @{
+            var totalProducts = Model.TotalCount;
+            var productTypes = Model.Products?.GroupBy(p => p.Type).Count() ?? 0;
+            var avgDescriptionLength = Model.Products?.Average(p => p.Description?.Length ?? 0) ?? 0;
+        }
+
+        <div class="row g-3 mb-4">
+            <div class="col-sm-6 col-lg-4">
+                <div class="stats-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="stats-number">@totalProducts.ToString("N0")</div>
+                            <div class="stats-label">إجمالي المنتجات</div>
+                        </div>
+                        <div class="stats-icon">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+                <div class="stats-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="stats-number">@productTypes</div>
+                            <div class="stats-label">أنواع المنتجات</div>
+                        </div>
+                        <div class="stats-icon">
+                            <i class="bi bi-tags"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+                <div class="stats-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="stats-number">@(totalProducts > 0 ? (totalProducts / (Model.TotalPages > 0 ? Model.TotalPages : 1)).ToString("N0") : "0")</div>
+                            <div class="stats-label">متوسط لكل صفحة</div>
+                        </div>
+                        <div class="stats-icon">
+                            <i class="bi bi-table"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <!-- Alert Messages -->
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success">@TempData["Success"]</div>
+        <div class="alert-custom alert-success-custom mb-3">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["Success"]
+        </div>
     }
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger">@TempData["Error"]</div>
+        <div class="alert-custom alert-danger-custom mb-3">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @TempData["Error"]
+        </div>
     }
 
-    <form method="get" class="mb-3 d-flex gap-2 align-items-center">
-        <input type="search" name="search" value="@Model.Search" class="form-control" placeholder="ابحث عن منتج..." />
-        <button class="btn btn-outline-primary" type="submit">بحث</button>
-        <div class="ms-auto text-muted small">العناصر: <strong>@Model.TotalCount</strong></div>
+    <!-- Search Form -->
+    <form method="get" class="search-form mb-4">
+        <div class="row g-2">
+            <div class="col-md-8 flex-grow-1">
+                <div class="search-wrapper">
+                    <i class="bi bi-search search-icon"></i>
+                    <input type="search" name="search" value="@Model.Search" class="search-box-modern" placeholder="ابحث عن منتج بالاسم أو الوصف..." />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button class="btn-search w-100" type="submit">
+                    <i class="bi bi-search"></i>
+                    بحث
+                </button>
+            </div>
+            <div class="col-md-2 text-md-end">
+                <div class="results-count mt-2 mt-md-0">
+                    <i class="bi bi-database"></i>
+                    العناصر: <strong>@Model.TotalCount.ToString("N0")</strong>
+                </div>
+            </div>
+        </div>
     </form>
 
-    <div class="table-responsive">
-        <table class="table table-striped align-middle">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>الاسم</th>
-                    <th>الوصف</th>
-                    <th>النوع</th>
-                    <th>الاجراءات</th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach(var p in Model.Products) {
-                <tr>
-                        <td>@p.Id</td>
-                    <td>@p.Name</td>
-                    <td>@(p.Description ?? "-")</td>
-                    <td>@p.Type</td>
-                    <td>
-                        <div class="d-flex gap-2">
-                            <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@p.Id">تعديل</a>
-                            <form asp-action="Delete" method="post" asp-route-id="@p.Id" onsubmit="return confirm('هل أنت متأكد من حذف هذا المنتج؟');">
-                                @Html.AntiForgeryToken()
-                                <button class="btn btn-sm btn-outline-danger" type="submit">حذف</button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
+    <!-- Products Table -->
+    <div class="products-table">
+        @if (Model.Products != null && Model.Products.Any())
+        {
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%">#</th>
+                            <th style="width: 25%">الاسم</th>
+                            <th style="width: 30%">الوصف</th>
+                            <th style="width: 15%">النوع</th>
+                            <th style="width: 20%">الإجراءات</th>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in Model.Products)
+                        {
+                            <tr>
+                                <td>
+                                    <span class="product-id-badge" style="background: rgba(44,125,160,0.1); color: var(--primary-color); padding: 0.25rem 0.5rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem;">
+                                        @p.Id
+                                    </span>
+                                </td>
+                                <td class="fw-semibold">
+                                    <div class="d-flex align-items-center justify-content-center gap-2">
+                                        <div class="product-icon">
+                                            <i class="bi bi-cube"></i>
+                                        </div>
+                                        <span>@p.Name</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(p.Description))
+                                    {
+                                        <div class="text-muted small" style="max-width: 250px; margin: 0 auto;">
+                                            <i class="bi bi-file-text me-1"></i>
+                                            @p.Description
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">—</span>
+                                    }
+                                </td>
+                                <td>
+                                    @{
+                                        var typeClass = p.Type switch
+                                        {
+                                            Hassann_Khala.Domain.ProductType.Fish => "product-type-1",
+                                            Hassann_Khala.Domain.ProductType.Meat => "product-type-2",
+                                            _ => "product-type-4"
+                                        };
+                                    }
+                                    <span class="product-type-badge @typeClass">
+                                        <i class="bi bi-tag me-1"></i>
+                                        @p.Type
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a class="btn-outline-primary-custom" asp-action="Edit" asp-route-id="@p.Id">
+                                            <i class="bi bi-pencil"></i>
+                                            تعديل
+                                        </a>
+                                        <form asp-action="Delete" method="post" asp-route-id="@p.Id" onsubmit="return confirm('⚠️ هل أنت متأكد من حذف هذا المنتج؟\n\nسيتم حذف جميع بيانات المنتج المرتبطة.');" style="display:inline-block;">
+                                            @Html.AntiForgeryToken()
+                                            <button class="btn-outline-danger-custom" type="submit">
+                                                <i class="bi bi-trash"></i>
+                                                حذف
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state-modern">
+                <i class="bi bi-box"></i>
+                <h5>لا توجد منتجات</h5>
+                @if (!string.IsNullOrEmpty(Model.Search))
+                {
+                    <p>لم يتم العثور على منتجات تطابق "@Model.Search"</p>
+                    <a class="btn btn-primary-custom mt-3" asp-action="Index">
+                        <i class="bi bi-arrow-repeat me-2"></i>
+                        عرض جميع المنتجات
+                    </a>
+                }
+                else
+                {
+                    <p>قم بإضافة أول منتج في النظام</p>
+                    <a class="btn btn-primary-custom mt-3" asp-action="Create">
+                        <i class="bi bi-plus-lg me-2"></i>
+                        إضافة منتج جديد
+                    </a>
+                }
+            </div>
+        }
     </div>
 
+    <!-- Pagination -->
     @if (Model.TotalPages > 1)
     {
         <nav aria-label="Page navigation">
-            <ul class="pagination">
+            <ul class="pagination-custom">
                 <li class="page-item @(Model.Page <= 1 ? "disabled" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-search="@Model.Search" asp-route-page="@(Model.Page-1)" asp-route-pageSize="@Model.PageSize">السابق</a>
+                    <a class="page-link" asp-action="Index" asp-route-search="@Model.Search" asp-route-page="@(Model.Page - 1)" asp-route-pageSize="@Model.PageSize">
+                        <i class="bi bi-chevron-right"></i>
+                        السابق
+                    </a>
                 </li>
-                @for (int i = 1; i <= Model.TotalPages; i++)
-                {
-                    <li class="page-item @(i == Model.Page ? "active" : "")">
-                        <a class="page-link" asp-action="Index" asp-route-search="@Model.Search" asp-route-page="@i" asp-route-pageSize="@Model.PageSize">@i</a>
-                    </li>
+
+                @{
+                    int startPage = Math.Max(1, Model.Page - 2);
+                    int endPage = Math.Min(Model.TotalPages, Model.Page + 2);
+
+                    if (startPage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Index" asp-route-search="@Model.Search" asp-route-page="1" asp-route-pageSize="@Model.PageSize">1</a>
+                        </li>
+                        if (startPage > 2)
+                        {
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        }
+                    }
+
+                    for (int i = startPage; i <= endPage; i++)
+                    {
+                        <li class="page-item @(i == Model.Page ? "active" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-search="@Model.Search" asp-route-page="@i" asp-route-pageSize="@Model.PageSize">@i</a>
+                        </li>
+                    }
+
+                    if (endPage < Model.TotalPages)
+                    {
+                        if (endPage < Model.TotalPages - 1)
+                        {
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        }
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Index" asp-route-search="@Model.Search" asp-route-page="@Model.TotalPages" asp-route-pageSize="@Model.PageSize">@Model.TotalPages</a>
+                        </li>
+                    }
                 }
+
                 <li class="page-item @(Model.Page >= Model.TotalPages ? "disabled" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-search="@Model.Search" asp-route-page="@(Model.Page+1)" asp-route-pageSize="@Model.PageSize">التالي</a>
+                    <a class="page-link" asp-action="Index" asp-route-search="@Model.Search" asp-route-page="@(Model.Page + 1)" asp-route-pageSize="@Model.PageSize">
+                        التالي
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
                 </li>
             </ul>
         </nav>
+
+        <div class="text-center mt-2">
+            <small class="text-muted">
+                <i class="bi bi-info-circle"></i>
+                صفحة @Model.Page من @Model.TotalPages | عرض @Model.Products?.Count() منتج من أصل @Model.TotalCount
+            </small>
+        </div>
+    }
+    else if (Model.Products != null && Model.Products.Any())
+    {
+        <div class="text-center mt-3">
+            <small class="text-muted">
+                <i class="bi bi-info-circle"></i>
+                إجمالي @Model.TotalCount منتج | آخر تحديث: @DateTime.Now.ToLocalTime().ToString("dd MMMM yyyy - hh:mm tt")
+            </small>
+        </div>
     }
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('صفحة المنتجات جاهزة');
+
+        // Auto-hide alerts after 5 seconds
+        const alerts = document.querySelectorAll('.alert-custom');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                alert.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => {
+                    if (alert.parentNode) alert.remove();
+                }, 500);
+            }, 5000);
+        });
+
+        // Add staggered animation to table rows
+        const rows = document.querySelectorAll('.products-table tbody tr');
+        rows.forEach((row, index) => {
+            row.style.animationDelay = `${index * 0.03}s`;
+            row.style.animation = 'fadeInUp 0.3s ease-out backwards';
+        });
+
+        // Clear search on escape key
+        const searchInput = document.querySelector('input[name="search"]');
+        if (searchInput) {
+            searchInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    this.value = '';
+                    this.form.submit();
+                }
+            });
+        }
+    });
+</script>

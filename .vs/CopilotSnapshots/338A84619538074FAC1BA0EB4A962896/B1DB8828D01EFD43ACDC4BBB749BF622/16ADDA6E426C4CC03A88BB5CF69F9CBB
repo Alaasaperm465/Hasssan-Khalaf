@@ -1,0 +1,659 @@
+﻿@model MVC.ViewModels.Inbound.InboundCreateVM
+@{
+    ViewData["Title"] = "إنشاء إذن مشتريات";
+}
+
+<style>
+    /* تنسيقات متناسقة مع التصميم العام الهادئ */
+    .form-container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-header {
+        background: linear-gradient(135deg, var(--primary-color, #2c7da0) 0%, var(--secondary-color, #2e8b57) 100%);
+        padding: 1.2rem 1.5rem;
+        color: white;
+    }
+    
+    .form-body {
+        padding: 1.5rem;
+    }
+    
+    /* تنسيق الحقول */
+    .form-group-modern {
+        margin-bottom: 1rem;
+    }
+    
+    .form-label-modern {
+        font-weight: 600;
+        color: var(--text-dark, #2c3e50);
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .form-control-modern, .form-select-modern {
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 0.6rem 1rem;
+        transition: all 0.2s ease;
+        background-color: white;
+    }
+    
+    .form-control-modern:focus, .form-select-modern:focus {
+        border-color: var(--primary-light, #61a5c2);
+        box-shadow: 0 0 0 0.2rem rgba(44,125,160,0.1);
+        outline: none;
+    }
+    
+    .form-control-modern[readonly], .form-control-modern:disabled {
+        background-color: #f8f9fa;
+        cursor: not-allowed;
+    }
+    
+    /* تنسيق الجدول */
+    .lines-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        margin-top: 1.5rem;
+    }
+    
+    .lines-header {
+        background: #f8f9fa;
+        padding: 1rem 1.5rem;
+        border-bottom: 2px solid var(--primary-light, #61a5c2);
+        border-radius: 15px 15px 0 0;
+    }
+    
+    .lines-table-container {
+        padding: 1.5rem;
+    }
+    
+    .table-lines {
+        margin-bottom: 0;
+    }
+    
+    .table-lines thead th {
+        background: #f8f9fa;
+        color: var(--text-dark, #2c3e50);
+        font-weight: 600;
+        border-bottom: 2px solid var(--primary-light, #61a5c2);
+        padding: 1rem;
+        text-align: center;
+        font-size: 0.9rem;
+    }
+    
+    .table-lines tbody td {
+        padding: 0.75rem;
+        vertical-align: middle;
+        text-align: center;
+    }
+    
+    .table-lines tbody tr {
+        transition: all 0.2s ease;
+        background-color: white;
+    }
+    
+    .table-lines tbody tr.table-success {
+        background-color: #d4edda !important;
+        transition: background-color 0.3s ease;
+    }
+    
+    /* تنسيق الأزرار */
+    .btn-primary-gradient {
+        background: linear-gradient(135deg, var(--primary-color, #2c7da0) 0%, var(--secondary-color, #2e8b57) 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 0.6rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        color: white;
+    }
+    
+    .btn-primary-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(44,125,160,0.3);
+        color: white;
+    }
+    
+    .btn-outline-secondary-custom {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        padding: 0.5rem 1.2rem;
+        transition: all 0.2s ease;
+        color: var(--text-dark, #2c3e50);
+    }
+    
+    .btn-outline-secondary-custom:hover {
+        background: #f8f9fa;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .btn-add-line {
+        background: transparent;
+        border: 2px dashed var(--primary-light, #61a5c2);
+        border-radius: 10px;
+        padding: 0.5rem 1.2rem;
+        color: var(--primary-color, #2c7da0);
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-add-line:hover {
+        background: rgba(44,125,160,0.05);
+        border-color: var(--primary-color, #2c7da0);
+        transform: translateY(-1px);
+    }
+    
+    .btn-remove-line {
+        background: #dc3545;
+        border: none;
+        border-radius: 8px;
+        padding: 0.25rem 0.8rem;
+        font-size: 0.8rem;
+        transition: all 0.2s ease;
+        color: white;
+    }
+    
+    .btn-remove-line:hover {
+        background: #c82333;
+        transform: scale(1.05);
+    }
+    
+    /* تنسيق الإجماليات والمخزون */
+    .info-cards {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin: 1rem 0;
+    }
+    
+    .stock-card {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        flex: 1;
+        min-width: 150px;
+    }
+    
+    .totals-card {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        flex: 1;
+        min-width: 150px;
+    }
+    
+    .info-label {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-bottom: 0.5rem;
+    }
+    
+    .info-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color, #2c7da0);
+    }
+    
+    .stock-value {
+        color: var(--secondary-color, #2e8b57);
+    }
+    
+    /* تنسيق الـ info text */
+    .info-text {
+        background: #e7f3ff;
+        border-right: 3px solid var(--primary-color, #2c7da0);
+        padding: 0.75rem 1rem;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        color: #2c3e50;
+    }
+    
+    /* تنسيق الفاليديشن */
+    .text-danger {
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+    }
+    
+    /* تحسين العرض على الموبايل */
+    @@media (max-width: 768px) {
+        .form-body {
+            padding: 1rem;
+        }
+        
+        .lines-table-container {
+            padding: 1rem;
+        }
+        
+        .table-lines thead th,
+        .table-lines tbody td {
+            padding: 0.5rem;
+            font-size: 0.8rem;
+        }
+        
+        .info-value {
+            font-size: 1.2rem;
+        }
+        
+        .stock-card, .totals-card {
+            min-width: 100%;
+        }
+        
+        .btn-primary-gradient,
+        .btn-outline-secondary-custom {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+    }
+    
+    /* تأثيرات */
+    .fade-in {
+        animation: fadeInUp 0.5s ease-out;
+    }
+    
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    textarea.form-control-modern {
+        resize: vertical;
+        min-height: 60px;
+    }
+</style>
+
+<div class="container-fluid p-3 p-md-4 fade-in">
+    <div class="form-container">
+        <div class="form-header">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="bi bi-plus-circle fs-3"></i>
+                    <div>
+                        <h4 class="mb-0 fw-bold">إذن مشتريات جديد</h4>
+                        <p class="mb-0 opacity-75 small">إدخال بيانات إذن المشتريات</p>
+                    </div>
+                </div>
+                <div>
+                    <a class="btn-outline-secondary-custom text-decoration-none" asp-action="Index">
+                        <i class="bi bi-arrow-right me-2"></i>
+                        العودة للقائمة
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-body">
+            <form asp-action="Create" method="post" id="outboundForm">
+                @Html.AntiForgeryToken()
+                
+                <!-- الصف الأول: العميل والمفوض والعنبر -->
+                <div class="row g-3 mb-4">
+                    <div class="col-12 col-md-4">
+                        <div class="form-group-modern">
+                            <label asp-for="ClientId" class="form-label-modern">
+                                <i class="bi bi-building me-1"></i>
+                                العميل
+                            </label>
+                            <select asp-for="ClientId" id="clientSelect" class="form-select-modern w-100" asp-items="Model.Clients">
+                                <option value="">-- اختر العميل --</option>
+                            </select>
+                            <span asp-validation-for="ClientId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12 col-md-4">
+                        <div class="form-group-modern">
+                            <label asp-for="DelegateId" class="form-label-modern">
+                                <i class="bi bi-person-badge me-1"></i>
+                                المفوض
+                            </label>
+                            <select asp-for="DelegateId" id="delegateSelect" class="form-select-modern w-100" asp-items="Model.Delegates">
+                                <option value="">-- اختر المفوض --</option>
+                            </select>
+                            <span asp-validation-for="DelegateId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12 col-md-4">
+                        <div class="form-group-modern">
+                            <label asp-for="SectionId" class="form-label-modern">
+                                <i class="bi bi-archive me-1"></i>
+                                العنبر (المخزن)
+                            </label>
+                            <select asp-for="SectionId" id="topSectionSelect" class="form-select-modern w-100" asp-items="Model.Sections">
+                                <option value="">-- اختر المخزن --</option>
+                            </select>
+                            <span asp-validation-for="SectionId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- الصف الثاني: أمين المخزن ورقم المستند والتاريخ -->
+                <div class="row g-3 mb-4">
+                    <div class="col-12 col-md-4">
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">
+                                <i class="bi bi-person-circle me-1"></i>
+                                أمين المخزن
+                            </label>
+                            <input type="text" class="form-control-modern w-100"
+                                   value="@Model.CreatedByName"
+                                   disabled />
+                            <input type="hidden" name="CreatedById" value="@Model.CreatedById" />
+                        </div>
+                    </div>
+                    
+                    <div class="col-12 col-md-4">
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">
+                                <i class="bi bi-receipt me-1"></i>
+                                رقم المستند
+                            </label>
+                            <input asp-for="Id" class="form-control-modern w-100" readonly />
+                        </div>
+                    </div>
+                    
+                    <div class="col-12 col-md-4">
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">
+                                <i class="bi bi-calendar3 me-1"></i>
+                                تاريخ المستند
+                            </label>
+                            <input asp-for="CreatedAt" class="form-control-modern w-100" readonly />
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- الفتح الإضافي والملاحظات -->
+                <div class="row g-3 mb-4">
+                    <div class="col-12 col-md-6">
+                        <div class="form-group-modern">
+                            <label asp-for="AdditionalEntry" class="form-label-modern">
+                                <i class="bi bi-plus-square me-1"></i>
+                                الفتح الإضافي
+                            </label>
+                            <input asp-for="AdditionalEntry" class="form-control-modern w-100" type="number" step="0.01" />
+                            <span asp-validation-for="AdditionalEntry" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12 col-md-6">
+                        <div class="form-group-modern">
+                            <label asp-for="Notes" class="form-label-modern">
+                                <i class="bi bi-pencil-square me-1"></i>
+                                ملاحظات
+                            </label>
+                            <textarea asp-for="Notes" class="form-control-modern w-100" rows="2"></textarea>
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- محتويات الاذن -->
+                <div class="lines-card">
+                    <div class="lines-header">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-list-check fs-5"></i>
+                            <h5 class="mb-0 fw-semibold">محتويات الاذن</h5>
+                        </div>
+                    </div>
+                    
+                    <div class="lines-table-container">
+                        <div class="table-responsive">
+                            <table class="table table-lines" id="linesTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40%">المنتج</th>
+                                        <th style="width: 20%">عدد الكرتون</th>
+                                        <th style="width: 20%">عدد البالتات</th>
+                                        <th style="width: 10%">العمليات</th>
+                                    </thead>
+                                <tbody>
+                                    @for (int i = 0; i < Model.Details.Count; i++)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <select name="Details[@i].ProductId" class="form-select-modern w-100 line-input">
+                                                    <option value="">-- اختر المنتج --</option>
+                                                    @foreach (var p in Model.Products)
+                                                    {
+                                                        @Html.Raw(p.Value == Model.Details[i].ProductId.ToString() 
+                                                            ? $"<option value=\"{p.Value}\" selected=\"selected\">{System.Net.WebUtility.HtmlEncode(p.Text)}</option>"
+                                                            : $"<option value=\"{p.Value}\">{System.Net.WebUtility.HtmlEncode(p.Text)}</option>");
+                                                    }
+                                                </select>
+                                             </td>
+                                             <td>
+                                                <input type="number" name="Details[@i].Cartons" class="form-control-modern w-100 line-input" value="@Model.Details[i].Cartons" min="0" />
+                                             </td>
+                                             <td>
+                                                <input type="number" name="Details[@i].Pallets" class="form-control-modern w-100 line-input" value="@Model.Details[i].Pallets" min="0" />
+                                             </td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-remove-line remove-line">
+                                                    <i class="bi bi-trash3"></i>
+                                                </button>
+                                             </td>
+                                            <input type="hidden" name="Details[@i].SectionId" value="@(Model.SectionId ?? 0)" class="line-section-hidden" />
+                                         }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="d-flex flex-wrap gap-2 mt-3">
+                            <button type="button" id="addLine" class="btn-add-line">
+                                <i class="bi bi-plus-lg me-2"></i>
+                                إضافة سطر جديد
+                            </button>
+                            <div class="info-text flex-grow-1">
+                                <i class="bi bi-info-circle me-2"></i>
+                                اضغط Enter في آخر خانة لحفظ السطر والانتقال للسطر التالي، وزر الحذف سيحذف السطر من قاعدة البيانات ويعيد الرصيد.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- الإجماليات والمخزون المتاح -->
+                <div class="info-cards mt-4">
+                    <div class="stock-card">
+                        <div class="info-label">
+                            <i class="bi bi-box-seam"></i>
+                            المتاح في المخزون
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="info-label small">كرتون</div>
+                                <div class="info-value stock-value" id="availableCartons">0</div>
+                            </div>
+                            <div>
+                                <div class="info-label small">بالتات</div>
+                                <div class="info-value stock-value" id="availablePallets">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="totals-card">
+                        <div class="info-label">
+                            <i class="bi bi-calculator"></i>
+                            إجمالي الطلب
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="info-label small">كرتون</div>
+                                <div class="info-value" id="totalCartons">0</div>
+                            </div>
+                            <div>
+                                <div class="info-label small">بالتات</div>
+                                <div class="info-value" id="totalPallets">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- زر الحفظ -->
+                <div class="mt-4 text-end">
+                    <button type="submit" class="btn-primary-gradient">
+                        <i class="bi bi-check-lg me-2"></i>
+                        حفظ إذن المشتريات
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function(){
+            const products = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Products.Select(p=> new { value = p.Value, text = p.Text })));
+            const clientSelect = document.getElementById('clientSelect');
+            const delegateSelect = document.getElementById('delegateSelect');
+            const topSectionSelect = document.getElementById('topSectionSelect');
+            const tbody = document.querySelector('#linesTable tbody');
+            const MAX_ROWS = 6;
+            let pairs = [];
+            let currentInboundId = null;
+
+            function productOptionsForSection() {
+                const selectedSection = topSectionSelect.value;
+                let list = products;
+                if (selectedSection) {
+                    const allowedProductIds = pairs.filter(p => String(p.sectionId) === String(selectedSection)).map(p => String(p.productId));
+                    list = products.filter(p => allowedProductIds.includes(String(p.value)));
+                }
+                return '<option value="">-- اختر المنتج --</option>' + list.map(p => `<option value="${p.value}">${p.text}</option>`).join('');
+            }
+
+            function refreshAllProductDropdowns(){ document.querySelectorAll('select[name$=".ProductId"]').forEach(sel => sel.innerHTML = productOptionsForSection()); }
+
+            async function fetchDelegates(clientId){ try{ const r = await fetch(`/Inbound/GetDelegatesForClient?clientId=${clientId}`); if(!r.ok) return []; return await r.json(); } catch { return []; } }
+
+            async function onClientChange(){
+                const clientId = clientSelect.value;
+                if(!clientId){ delegateSelect.innerHTML = '<option value="">-- اختر المفوض --</option>'; topSectionSelect.innerHTML = '<option value="">-- اختر المخزن --</option>'; topSectionSelect.disabled = true; pairs = []; refreshAllProductDropdowns(); return; }
+
+                const del = await fetchDelegates(clientId);
+                const delHtml = '<option value="">-- اختر المفوض --</option>' + (del||[]).map(d => `<option value="${d.value}">${d.text}</option>`).join('');
+                delegateSelect.innerHTML = delHtml;
+
+                try{
+                    const r = await fetch(`/Stock/GetClientStocks?clientId=${clientId}`);
+                    const data = await r.json();
+                    pairs = data.pairs || [];
+                    if(data.sections && data.sections.length>0){ topSectionSelect.innerHTML = '<option value="">-- اختر المخزن --</option>' + data.sections.map(s => `<option value="${s.value}">${s.text}</option>`).join(''); topSectionSelect.disabled = false; }
+                    else { topSectionSelect.innerHTML = '<option value="">-- لا توجد مخازن متاحة لهذا العميل --</option>'; topSectionSelect.disabled = true; }
+
+                    document.getElementById('availableCartons').innerText = data.clientCartons || 0;
+                    document.getElementById('availablePallets').innerText = data.clientPallets || 0;
+                }catch{ topSectionSelect.innerHTML = '<option value="">-- خطأ في تحميل البيانات --</option>'; topSectionSelect.disabled = true; pairs = []; document.getElementById('availableCartons').innerText = 0; document.getElementById('availablePallets').innerText = 0; }
+
+                refreshAllProductDropdowns(); document.querySelectorAll('.line-section-hidden').forEach(h => h.value = topSectionSelect.value || 0);
+            }
+
+            function updateTotals(){ const cartons = Array.from(document.querySelectorAll('input[name$=".Cartons"]')).reduce((s,i)=> s + (parseInt(i.value||'0')||0),0); const pallets = Array.from(document.querySelectorAll('input[name$=".Pallets"]')).reduce((s,i)=> s + (parseInt(i.value||'0')||0),0); document.getElementById('totalCartons').innerText = cartons; document.getElementById('totalPallets').innerText = pallets; }
+
+            function attachRowEvents(tr){
+                const inputs = Array.from(tr.querySelectorAll('.line-input'));
+                inputs.forEach((inp, idx) => {
+                    inp.addEventListener('input', ()=>{ updateTotals(); });
+                    inp.addEventListener('change', ()=>{ updateTotals(); });
+                    inp.addEventListener('keydown', async function(ev){
+                        if(ev.key === 'Enter'){
+                            ev.preventDefault();
+                            if(idx < inputs.length -1){ inputs[idx+1].focus(); return; }
+
+                            const clientId = parseInt(document.querySelector('[name="ClientId"]').value || '0');
+                            const productId = parseInt(tr.querySelector('select[name$=".ProductId"]').value || '0');
+                            const cartons = parseInt(tr.querySelector('input[name$=".Cartons"]').value || '0');
+                            const pallets = parseInt(tr.querySelector('input[name$=".Pallets"]').value || '0');
+                            const sectionId = parseInt(topSectionSelect.value || tr.querySelector('input[name$=".SectionId"]')?.value || '0');
+                            if(!clientId || !productId || !sectionId){ alert('الرجاء تحديد العميل والمخزن والمنتج قبل الحفظ.'); return; }
+
+                            const rowInputs = Array.from(tr.querySelectorAll('select, input')); rowInputs.forEach(el=> el.disabled = true);
+                            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+                            try{
+                                const resp = await fetch('/Inbound/AddLineAjax', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'RequestVerificationToken': token||'' }, body: JSON.stringify({ inboundId: currentInboundId, clientId, productId, sectionId, cartons, pallets }) });
+                                const data = await resp.json().catch(()=>null);
+                                if(!resp.ok || !data || !data.success){ const err = data && data.error ? data.error : 'Server error'; alert('فشل الحفظ: '+err); rowInputs.forEach(el=> el.disabled = false); return; }
+                                if(data.id) currentInboundId = data.id; if(data.detailId) tr.setAttribute('data-detail-id', data.detailId); tr.setAttribute('data-saved','true');
+                                tr.classList.add('table-success');
+                                setTimeout(()=> tr.classList.remove('table-success'), 800);
+                                const next = tr.nextElementSibling; if(next) next.querySelector('.line-input')?.focus(); else if(tbody.children.length < MAX_ROWS) addLine();
+                                updateTotals();
+                            }catch(e){ alert('Network error: '+(e.message||e)); rowInputs.forEach(el=> el.disabled = false); return; }
+                        }
+                    });
+
+                    const sel = tr.querySelector('select[name$=".ProductId"]');
+                    if(sel) sel.addEventListener('change', function(){ fetchAvailableStock(this.value); });
+                });
+
+                const btn = tr.querySelector('.remove-line'); if(btn) btn.addEventListener('click', async function(){ const detailId = parseInt(tr.getAttribute('data-detail-id')||'0'); if(detailId>0){ if(!confirm('هل تريد حذف هذا السطر واسترجاع الكميات من المخزون؟')) return; const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value; try{ const resp = await fetch('/Inbound/DeleteLineAjax', { method:'POST', credentials:'same-origin', headers:{ 'Content-Type':'application/json', 'RequestVerificationToken': token||'' }, body: JSON.stringify({ detailId }) }); const data = await resp.json().catch(()=>null); if(!resp.ok || !data || !data.success){ alert('فشل الحذف'); return; } tr.remove(); updateTotals(); }catch{ alert('Network error'); } } else { tr.remove(); updateTotals(); } document.querySelectorAll('#linesTable tbody tr').forEach((r,i)=>{ r.querySelectorAll('select, input').forEach(el=>{ const name = el.getAttribute('name'); if(!name) return; el.setAttribute('name', name.replace(/Details\[\d+\]/, `Details[${i}]`)); }); }); });
+            }
+
+            function addLine(){ if(tbody.children.length >= MAX_ROWS) return; const index = tbody.children.length; const tr = document.createElement('tr'); tr.innerHTML = `\
+                <td>\
+                    <select name="Details[${index}].ProductId" class="form-select-modern w-100 line-input">\
+                        ${productOptionsForSection()}\
+                    </select>\
+                 </td>\
+                 <td><input type="number" name="Details[${index}].Cartons" class="form-control-modern w-100 line-input" value="0" min="0" /></td>\
+                 <td><input type="number" name="Details[${index}].Pallets" class="form-control-modern w-100 line-input" value="0" min="0" /></td>\
+                <td class="text-center"><button type="button" class="btn btn-remove-line remove-line"><i class="bi bi-trash3"></i></button></td>\
+                <input type="hidden" name="Details[${index}].SectionId" value="${topSectionSelect ? topSectionSelect.value : 0}" class="line-section-hidden" />\
+            `; tbody.appendChild(tr); attachRowEvents(tr); }
+
+            document.querySelectorAll('#linesTable tbody tr').forEach(tr => attachRowEvents(tr)); clientSelect.addEventListener('change', onClientChange); topSectionSelect.addEventListener('change', function(){ document.querySelectorAll('select[name$=".ProductId"]').forEach(sel => sel.innerHTML = productOptionsForSection()); }); document.getElementById('addLine').addEventListener('click', addLine); if(clientSelect && clientSelect.value) onClientChange();
+
+            async function fetchAvailableStock(productId) {
+                const clientId = parseInt(clientSelect.value || '0');
+                const sectionId = parseInt(topSectionSelect.value || '0');
+                if (!clientId || !sectionId || !productId) {
+                    document.getElementById('availableCartons').innerText = 0;
+                    document.getElementById('availablePallets').innerText = 0;
+                    return;
+                }
+
+                try {
+                    const r = await fetch(`/Outbound/GetAvailableStock?clientId=${clientId}&productId=${productId}&sectionId=${sectionId}`);
+                    if (!r.ok) throw new Error('Server error');
+                    const data = await r.json();
+                    document.getElementById('availableCartons').innerText = data.cartons || 0;
+                    document.getElementById('availablePallets').innerText = data.pallets || 0;
+                } catch (e) {
+                    document.getElementById('availableCartons').innerText = 0;
+                    document.getElementById('availablePallets').innerText = 0;
+                }
+            }
+
+            topSectionSelect.addEventListener('change', function(){
+                document.querySelectorAll('select[name$=".ProductId"]').forEach(sel => sel.innerHTML = productOptionsForSection());
+                const firstSel = document.querySelector('select[name$=".ProductId"]');
+                if (firstSel && firstSel.value) fetchAvailableStock(firstSel.value);
+            });
+
+            clientSelect.addEventListener('change', async function(){
+                await onClientChange();
+                const firstSel = document.querySelector('select[name$=".ProductId"]');
+                if (firstSel && firstSel.value) fetchAvailableStock(firstSel.value);
+            });
+            
+            // Initial update of totals
+            updateTotals();
+        })();
+    </script>
+}

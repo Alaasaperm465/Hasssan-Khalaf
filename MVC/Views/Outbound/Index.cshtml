@@ -4,96 +4,308 @@
 }
 
 <style>
-    .glass-card {
-        backdrop-filter: blur(14px);
-        background: rgba(255,255,255,.75);
-        border-radius: 18px;
-        border: 1px solid rgba(255,255,255,.3);
-        box-shadow: 0 8px 32px rgba(0,0,0,.07);
-        transition: .3s;
+    /* تنسيقات متناسقة مع التصميم العام الهادئ */
+    .page-header {
+        margin-bottom: 1.5rem;
     }
 
-    .glass-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 30px rgba(0,0,0,.1);
+    .stats-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        transition: all 0.2s ease;
+        border: 1px solid rgba(44,125,160,0.1);
     }
 
-    .table thead {
-        background: #f8f9fc;
+        .stats-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+    .stats-icon {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, rgba(44,125,160,0.1) 0%, rgba(46,139,87,0.1) 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color, #2c7da0);
+        font-size: 1.5rem;
     }
 
-    .dark-mode {
-        background: #0f172a !important;
-        color: #f1f5f9 !important;
+    .stats-number {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--text-dark, #2c3e50);
+        line-height: 1.2;
     }
 
-    .dark-mode .glass-card {
-        background: rgba(30,41,59,.7);
-        border: 1px solid rgba(255,255,255,.08);
+    .stats-label {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
     }
 
-    .dark-mode .table {
-        color: #f1f5f9;
+    /* تنسيق الجدول المحسن */
+    .sales-table {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
 
-    .dark-mode .table thead {
-        background: #1e293b;
+        .sales-table .table {
+            margin-bottom: 0;
+        }
+
+            .sales-table .table thead th {
+                background: #f8f9fa;
+                color: var(--text-dark, #2c3e50);
+                font-weight: 600;
+                border-bottom: 2px solid var(--primary-light, #61a5c2);
+                padding: 1rem;
+                font-size: 0.9rem;
+                text-align: center;
+            }
+
+            .sales-table .table tbody td {
+                padding: 1rem;
+                vertical-align: middle;
+                text-align: center;
+                color: #4a5568;
+            }
+
+            .sales-table .table tbody tr {
+                transition: all 0.2s ease;
+                border-bottom: 1px solid #e9ecef;
+            }
+
+                .sales-table .table tbody tr:hover {
+                    background-color: #f8f9fc;
+                    transform: scale(1.01);
+                }
+
+    /* تنسيق الأزرار */
+    .btn-outline-primary-custom {
+        color: var(--primary-color, #2c7da0);
+        border: 1px solid var(--primary-color, #2c7da0);
+        background: transparent;
+        border-radius: 20px;
+        padding: 0.35rem 1.2rem;
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
     }
 
-    .dark-mode .text-muted {
-        color: #cbd5e1 !important;
+        .btn-outline-primary-custom:hover {
+            background: var(--primary-color, #2c7da0);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(44,125,160,0.2);
+        }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--primary-color, #2c7da0) 0%, var(--secondary-color, #2e8b57) 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 0.5rem 1.2rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        color: white;
     }
 
-    .fade-in {
-        animation: fadeIn .6s ease-in-out;
-    }
+        .btn-primary-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(44,125,160,0.3);
+            color: white;
+        }
 
-    @@keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .empty-state {
+    /* حالة عدم وجود بيانات */
+    .empty-state-modern {
         text-align: center;
-        padding: 30px;
-        color: #9ca3af;
+        padding: 3rem;
+        background: white;
+        border-radius: 15px;
     }
 
-    .toggle-dark { cursor: pointer; }
+        .empty-state-modern i {
+            font-size: 4rem;
+            color: var(--primary-light, #61a5c2);
+            opacity: 0.5;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state-modern h5 {
+            color: var(--text-dark, #2c3e50);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state-modern p {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+    /* أيقونات العمود */
+    .client-icon {
+        width: 32px;
+        height: 32px;
+        background: rgba(44,125,160,0.1);
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 8px;
+        color: var(--primary-color, #2c7da0);
+    }
+
+    /* تنسيق عدد السطور */
+    .lines-badge {
+        background: rgba(46,139,87,0.1);
+        color: var(--secondary-color, #2e8b57);
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        display: inline-block;
+    }
+
+    /* تاريخ */
+    .date-text {
+        font-size: 0.85rem;
+        color: #6c757d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+    }
+
+        .date-text i {
+            font-size: 0.9rem;
+        }
+
+    /* تحسين العرض على الموبايل */
+    @@media (max-width: 768px) {
+        .stats-number
+
+    {
+        font-size: 1.4rem;
+    }
+
+    .stats-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+
+    .sales-table .table thead th,
+    .sales-table .table tbody td {
+        padding: 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .btn-outline-primary-custom {
+        padding: 0.25rem 0.8rem;
+        font-size: 0.75rem;
+    }
+
+    }
+
+    /* تأثير fade-in */
+    .fade-in {
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    @@keyframes fadeInUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
 </style>
 
-<div class="container-fluid mt-3 fade-in">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="h5 mb-0">المبيعات</h2>
-        <div class="d-flex gap-2">
-            <a class="btn btn-outline-secondary d-md-none" href="#" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar"><i class="bi bi-list"></i></a>
-            <a class="btn btn-primary" asp-action="Create">اذن مبيعات جديد</a>
-            <button class="btn btn-outline-dark toggle-dark d-none d-md-inline"><i class="bi bi-moon"></i></button>
+<div class="container-fluid p-0 fade-in">
+
+    <!-- Header Section with Stats -->
+    <div class="page-header">
+        <div class="row g-3 mb-4">
+            <div class="col-md-8">
+                <h2 class="h3 mb-2" style="color: var(--primary-color, #2c7da0);">
+                    <i class="bi bi-arrow-up-circle me-2"></i>
+                    المبيعات
+                </h2>
+                <p class="text-muted mb-0">إدارة فواتير المبيعات وأذون الصرف</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a class="btn btn-primary-custom" asp-action="Create">
+                    <i class="bi bi-plus-lg me-2"></i>
+                    اذن مبيعات جديد
+                </a>
+            </div>
         </div>
+
+        <!-- Stats Cards -->
+        @{
+            var totalSales = Model?.Count() ?? 0;
+            var totalItems = Model?.Sum(x => x.Details?.Count ?? 0) ?? 0;
+            var totalClients = Model?.Select(x => x.ClientId).Distinct().Count() ?? 0;
+            var lastSaleDate = Model?.OrderByDescending(x => x.CreatedAt).FirstOrDefault()?.CreatedAt.ToLocalTime();
+        }
+
     </div>
 
-    <div class="glass-card p-3">
+    <!-- Sales Table -->
+    <div class="sales-table">
         @if (Model != null && Model.Any())
         {
             <div class="table-responsive">
-                <table class="table table-striped table-hover table-bordered align-middle mb-0">
-                    <thead class="table-light">
+                <table class="table">
+                    <thead>
                         <tr>
                             <th>العميل</th>
                             <th class="d-none d-sm-table-cell">تاريخ الإنشاء</th>
                             <th>عدد السطور</th>
-                            <th></th>
+                            <th style="width: 100px;"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach(var o in Model)
+                        @foreach (var o in Model.OrderByDescending(x => x.CreatedAt))
                         {
                             <tr>
-                                <td class="align-middle">@(o.Client != null ? o.Client.Name : o.ClientId.ToString())</td>
-                                <td class="align-middle d-none d-sm-table-cell">@o.CreatedAt.ToLocalTime().ToString("g")</td>
-                                <td class="align-middle">@(o.Details?.Count ?? 0)</td>
-                                <td class="align-middle text-end">
-                                    <a class="btn btn-sm btn-outline-primary rounded-pill" asp-action="Details" asp-route-id="@o.Id">تفاصيل</a>
+                                <td>
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <div class="client-icon">
+                                            <i class="bi bi-building"></i>
+                                        </div>
+                                        <span class="fw-medium">@(o.Client != null ? o.Client.Name : o.ClientId.ToString())</span>
+                                    </div>
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                    <div class="date-text">
+                                        <i class="bi bi-calendar3"></i>
+                                        <span>@o.CreatedAt.ToLocalTime().ToString("dd MMMM yyyy - hh:mm tt")</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="lines-badge">
+                                        <i class="bi bi-list-ul me-1"></i>
+                                        @(o.Details?.Count ?? 0)
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <a class="btn btn-outline-primary-custom" asp-action="Details" asp-route-id="@o.Id">
+                                        <i class="bi bi-eye me-1"></i>
+                                        تفاصيل
+                                    </a>
                                 </td>
                             </tr>
                         }
@@ -103,14 +315,40 @@
         }
         else
         {
-            <div class="empty-state">
-                <i class="bi bi-inbox fs-2"></i>
-                <div class="mt-2">لا توجد مبيعات بعد</div>
+            <div class="empty-state-modern">
+                <i class="bi bi-inbox"></i>
+                <h5>لا توجد مبيعات بعد</h5>
+                <p>قم بإضافة أول اذن مبيعات جديد</p>
+                <a class="btn btn-primary-custom mt-3" asp-action="Create">
+                    <i class="bi bi-plus-lg me-2"></i>
+                    إضافة مبيعات جديدة
+                </a>
             </div>
         }
     </div>
+
+    <!-- Optional: Recent Activity Hint -->
+    @if (Model != null && Model.Any())
+    {
+        <div class="mt-3 text-center">
+            <small class="text-muted">
+                <i class="bi bi-info-circle"></i>
+                آخر تحديث: @DateTime.Now.ToLocalTime().ToString("dd MMMM yyyy - hh:mm tt")
+            </small>
+        </div>
+    }
 </div>
 
 <script>
-    document.querySelectorAll('.toggle-dark').forEach(btn => btn.addEventListener('click', () => document.body.classList.toggle('dark-mode')));
+    // أي سكريبتات إضافية يمكن إضافتها هنا
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('صفحة المبيعات جاهزة');
+
+        // يمكن إضافة تأثيرات إضافية إذا لزم الأمر
+        const rows = document.querySelectorAll('.sales-table tbody tr');
+        rows.forEach((row, index) => {
+            row.style.animationDelay = `${index * 0.05}s`;
+            row.style.animation = 'fadeInUp 0.3s ease-out backwards';
+        });
+    });
 </script>

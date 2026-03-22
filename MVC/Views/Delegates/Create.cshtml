@@ -1,33 +1,347 @@
 ﻿@model Hassann_Khala.Domain.Delegate
 @{
-    ViewData["Title"] = "Add Delegate";
+    ViewData["Title"] = "إضافة مفوض جديد";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-3">
-    <div class="card p-3">
-        <h4>إضافة مفوض جديد</h4>
-        <form asp-action="Create" method="post">
-            @Html.AntiForgeryToken()
-            <div class="mb-3">
-                <label class="form-label">الاسم</label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+<style>
+    /* تنسيقات متناسقة مع التصميم العام الهادئ */
+    .form-container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, var(--primary-color, #2c7da0) 0%, var(--secondary-color, #2e8b57) 100%);
+        padding: 1.2rem 1.5rem;
+        color: white;
+    }
+
+    .form-body {
+        padding: 2rem;
+    }
+
+    /* تنسيق الحقول */
+    .form-group-modern {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label-modern {
+        font-weight: 600;
+        color: var(--text-dark, #2c3e50);
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .form-label-modern i {
+            color: var(--primary-color, #2c7da0);
+            font-size: 1rem;
+        }
+
+    .required-field::after {
+        content: "*";
+        color: #dc3545;
+        margin-right: 4px;
+    }
+
+    .form-control-modern, .form-select-modern {
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 0.6rem 1rem;
+        transition: all 0.2s ease;
+        background-color: white;
+        width: 100%;
+    }
+
+        .form-control-modern:focus, .form-select-modern:focus {
+            border-color: var(--primary-light, #61a5c2);
+            box-shadow: 0 0 0 0.2rem rgba(44,125,160,0.1);
+            outline: none;
+        }
+
+    /* تنسيق الأزرار */
+    .btn-primary-gradient {
+        background: linear-gradient(135deg, var(--primary-color, #2c7da0) 0%, var(--secondary-color, #2e8b57) 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 0.6rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-primary-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44,125,160,0.3);
+            color: white;
+        }
+
+    .btn-secondary-custom {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        padding: 0.6rem 1.5rem;
+        transition: all 0.2s ease;
+        color: var(--text-dark, #2c3e50);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+        .btn-secondary-custom:hover {
+            background: #f8f9fa;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            color: var(--text-dark, #2c3e50);
+            text-decoration: none;
+        }
+
+    /* تنسيق الفاليديشن */
+    .text-danger {
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+        .text-danger i {
+            font-size: 0.75rem;
+        }
+
+    /* تنسيق الـ Select */
+    select.form-select-modern {
+        cursor: pointer;
+    }
+
+    /* تحسين العرض على الموبايل */
+    @@media (max-width: 768px) {
+        .form-body
+
+    {
+        padding: 1.5rem;
+    }
+
+    .btn-primary-gradient,
+    .btn-secondary-custom {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .d-flex.gap-2 {
+        flex-direction: column;
+        gap: 0.75rem !important;
+    }
+
+    }
+
+    /* تأثيرات */
+    .fade-in {
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    @@keyframes fadeInUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    /* تأثير للـ input focus */
+    .form-control-modern, .form-select-modern {
+        position: relative;
+    }
+
+        .form-control-modern:focus, .form-select-modern:focus {
+            animation: pulse 0.3s ease;
+        }
+
+    @@keyframes pulse {
+        0%
+
+    {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.01);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+
+    }
+
+    /* أيقونات التحقق */
+    .input-icon-wrapper {
+        position: relative;
+    }
+</style>
+
+<div class="container-fluid p-3 p-md-4 fade-in">
+    <div class="form-container">
+        <div class="form-header">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-person-plus fs-3"></i>
+                <div>
+                    <h4 class="mb-0 fw-bold">إضافة مفوض جديد</h4>
+                    <p class="mb-0 opacity-75 small">تسجيل مندوب أو مفوض للعملاء</p>
+                </div>
             </div>
-            <div class="mb-3">
-                <label class="form-label">العميل</label>
-                <select asp-for="ClientId" class="form-select" asp-items="ViewBag.Clients">
-                    <option value="">-- اختر العميل --</option>
-                </select>
-            </div>
-            <div class="d-flex gap-2">
-                <button class="btn btn-primary">حفظ</button>
-                <a asp-action="Index" asp-controller="Clients" class="btn btn-secondary">الغاء</a>
-            </div>
-        </form>
+        </div>
+
+        <div class="form-body">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+
+                <!-- اسم المفوض -->
+                <div class="form-group-modern">
+                    <label asp-for="Name" class="form-label-modern required-field">
+                        <i class="bi bi-person-circle"></i>
+                        الاسم الكامل
+                    </label>
+                    <div class="input-icon-wrapper">
+                        <input asp-for="Name" class="form-control-modern" placeholder="أدخل اسم المفوض..." />
+                    </div>
+                    <span asp-validation-for="Name" class="text-danger">
+                        @* <i class="bi bi-exclamation-circle"></i>
+                        <span></span> *@
+                    </span>
+                </div>
+
+                <!-- العميل -->
+                <div class="form-group-modern">
+                    <label asp-for="ClientId" class="form-label-modern">
+                        <i class="bi bi-building"></i>
+                        العميل التابع له
+                    </label>
+                    <div class="input-icon-wrapper">
+                        <select asp-for="ClientId" class="form-select-modern" asp-items="ViewBag.Clients">
+                            <option value="">-- اختر العميل --</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="ClientId" class="text-danger">
+                        @* <i class="bi bi-exclamation-circle"></i>
+                        <span></span> *@
+                    </span>
+                </div>
+
+                <!-- معلومات إضافية (اختيارية) -->
+                <div class="alert alert-info mt-3 mb-4" style="background: #e7f3ff; border: none; border-radius: 12px;">
+                    <div class="d-flex gap-2">
+                        <i class="bi bi-info-circle-fill" style="color: var(--primary-color);"></i>
+                        <div>
+                            <strong class="small">معلومات مهمة:</strong>
+                            <p class="mb-0 small text-muted">المفوض هو الشخص المخول باستلام وتسليم المنتجات نيابة عن العميل. سيتم استخدام بياناته في عمليات الصرف والإيداع.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- أزرار التحكم -->
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn-primary-gradient">
+                        <i class="bi bi-check-lg"></i>
+                        حفظ المفوض
+                    </button>
+                    <a asp-action="Index" class="btn-secondary-custom">
+                        <i class="bi bi-arrow-right"></i>
+                        إلغاء والعودة
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // تحسينات إضافية للواجهة
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('صفحة إضافة مفوض جاهزة');
+
+            // إضافة تأثير عند التركيز على الحقول
+            const inputs = document.querySelectorAll('.form-control-modern, .form-select-modern');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.parentElement.classList.add('focused');
+                });
+
+                input.addEventListener('blur', function() {
+                    this.parentElement.parentElement.classList.remove('focused');
+                });
+            });
+
+            // تحسين تجربة الـ Select
+            const selectElement = document.querySelector('.form-select-modern');
+            if (selectElement) {
+                selectElement.addEventListener('change', function() {
+                    if (this.value) {
+                        this.style.borderColor = 'var(--primary-light)';
+                    } else {
+                        this.style.borderColor = '#e0e0e0';
+                    }
+                });
+            }
+
+            // إضافة تأكيد قبل الإلغاء إذا كان هناك بيانات مدخلة
+            const form = document.querySelector('form');
+            const cancelBtn = document.querySelector('.btn-secondary-custom');
+            let formDirty = false;
+
+            if (form && cancelBtn) {
+                const inputs = form.querySelectorAll('input, select');
+                inputs.forEach(input => {
+                    input.addEventListener('input', function() {
+                        formDirty = true;
+                    });
+                    input.addEventListener('change', function() {
+                        formDirty = true;
+                    });
+                });
+
+                cancelBtn.addEventListener('click', function(e) {
+                    if (formDirty) {
+                        if (!confirm('هل أنت متأكد من الإلغاء؟ سيتم فقدان البيانات المدخلة.')) {
+                            e.preventDefault();
+                        }
+                    }
+                });
+            }
+
+            // إضافة تأثير على زر الحفظ
+            const submitBtn = document.querySelector('.btn-primary-gradient');
+            if (submitBtn) {
+                submitBtn.addEventListener('click', function(e) {
+                    // إضافة تأثير بسيط
+                    this.style.transform = 'scale(0.98)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            }
+        });
+    </script>
 }

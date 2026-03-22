@@ -6,168 +6,549 @@
 }
 
 <style>
+    /* تنسيقات متناسقة مع التصميم العام الهادئ */
     .page-header {
+        margin-bottom: 1.5rem;
+    }
+    
+    .stats-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        transition: all 0.2s ease;
+        border: 1px solid rgba(44,125,160,0.1);
+    }
+    
+    .stats-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+    
+    .stats-icon {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, rgba(44,125,160,0.1) 0%, rgba(46,139,87,0.1) 100%);
+        border-radius: 12px;
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        margin-bottom: 25px;
+        justify-content: center;
+        color: var(--primary-color, #2c7da0);
+        font-size: 1.5rem;
     }
-
-    .glass-card {
-        backdrop-filter: blur(14px);
-        background: rgba(255,255,255,.7);
-        border-radius: 18px;
-        border: 1px solid rgba(255,255,255,.3);
-        box-shadow: 0 8px 32px rgba(0,0,0,.07);
-        transition: .3s;
+    
+    .stats-number {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--text-dark, #2c3e50);
+        line-height: 1.2;
     }
-
-        .glass-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 40px rgba(0,0,0,.12);
-        }
-
-    .modern-table thead {
-        background: #f8f9fc;
+    
+    .stats-label {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
     }
-
-    .modern-table tbody tr {
-        transition: .2s;
+    
+    /* تنسيق البحث المحسن */
+    .search-wrapper {
+        position: relative;
+        margin-bottom: 1.5rem;
     }
-
-        .modern-table tbody tr:hover {
-            background-color: rgba(78,115,223,.05);
-            transform: scale(1.01);
-        }
-
-    .search-box {
-        border-radius: 50px;
-        padding: 8px 18px;
+    
+    .search-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9ca3af;
+        pointer-events: none;
     }
-
-    .add-btn {
-        border-radius: 50px;
-        padding: 8px 20px;
-        font-weight: 500;
-        transition: .2s;
+    
+    .search-box-modern {
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 0.75rem 2.5rem 0.75rem 1rem;
+        width: 100%;
+        transition: all 0.2s ease;
+        background: white;
     }
-
-        .add-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,.1);
-        }
-
-    .empty-state {
+    
+    .search-box-modern:focus {
+        border-color: var(--primary-light, #61a5c2);
+        box-shadow: 0 0 0 0.2rem rgba(44,125,160,0.1);
+        outline: none;
+    }
+    
+    /* تنسيق الجدول المحسن */
+    .clients-table {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .clients-table .table {
+        margin-bottom: 0;
+    }
+    
+    .clients-table .table thead th {
+        background: #f8f9fa;
+        color: var(--text-dark, #2c3e50);
+        font-weight: 600;
+        border-bottom: 2px solid var(--primary-light, #61a5c2);
+        padding: 1rem;
+        font-size: 0.9rem;
         text-align: center;
-        padding: 40px 0;
-        color: #888;
+    }
+    
+    .clients-table .table tbody td {
+        padding: 1rem;
+        vertical-align: middle;
+        text-align: center;
+        color: #4a5568;
+    }
+    
+    .clients-table .table tbody tr {
+        transition: all 0.2s ease;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .clients-table .table tbody tr:hover {
+        background-color: #f8f9fc;
+        transform: scale(1.01);
+    }
+    
+    /* تنسيق الأزرار */
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--primary-color, #2c7da0) 0%, var(--secondary-color, #2e8b57) 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 0.5rem 1.2rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .btn-primary-custom:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(44,125,160,0.3);
+        color: white;
+    }
+    
+    .btn-outline-primary-custom {
+        color: var(--primary-color, #2c7da0);
+        border: 1px solid var(--primary-color, #2c7da0);
+        background: transparent;
+        border-radius: 8px;
+        padding: 0.35rem 0.8rem;
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        text-decoration: none;
+    }
+    
+    .btn-outline-primary-custom:hover {
+        background: var(--primary-color, #2c7da0);
+        color: white;
+        transform: translateY(-1px);
+        text-decoration: none;
+    }
+    
+    .btn-outline-danger-custom {
+        color: #dc3545;
+        border: 1px solid #dc3545;
+        background: transparent;
+        border-radius: 8px;
+        padding: 0.35rem 0.8rem;
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        text-decoration: none;
+    }
+    
+    .btn-outline-danger-custom:hover {
+        background: #dc3545;
+        color: white;
+        transform: translateY(-1px);
+        text-decoration: none;
+    }
+    
+    /* أيقونات */
+    .client-id-badge {
+        background: rgba(44,125,160,0.1);
+        color: var(--primary-color, #2c7da0);
+        padding: 0.25rem 0.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        display: inline-block;
+    }
+    
+    .contact-info {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        font-size: 0.9rem;
+    }
+    
+    .contact-info i {
+        color: var(--primary-color, #2c7da0);
+    }
+    
+    /* حالة عدم وجود بيانات */
+    .empty-state-modern {
+        text-align: center;
+        padding: 3rem;
+        background: white;
+        border-radius: 15px;
+    }
+    
+    .empty-state-modern i {
+        font-size: 4rem;
+        color: var(--primary-light, #61a5c2);
+        opacity: 0.5;
+        margin-bottom: 1rem;
+    }
+    
+    .empty-state-modern h5 {
+        color: var(--text-dark, #2c3e50);
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .empty-state-modern p {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    
+    /* تحسين العرض على الموبايل */
+    @@media (max-width: 768px) {
+        .stats-number {
+            font-size: 1.4rem;
+        }
+        
+        .stats-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+        }
+        
+        .clients-table .table thead th,
+        .clients-table .table tbody td {
+            padding: 0.75rem;
+            font-size: 0.85rem;
+        }
+        
+        .btn-outline-primary-custom,
+        .btn-outline-danger-custom {
+            padding: 0.25rem 0.6rem;
+            font-size: 0.75rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .action-buttons a,
+        .action-buttons form {
+            width: 100%;
+        }
+        
+        .action-buttons button {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+    
+    /* تأثيرات */
+    .fade-in {
+        animation: fadeInUp 0.5s ease-out;
+    }
+    
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* تنسيق مجموعة الأزرار */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
     }
 </style>
 
-<div class="container-fluid">
-
-    <!-- Header -->
+<div class="container-fluid p-3 p-md-4 fade-in">
+    
+    <!-- Header Section with Stats -->
     <div class="page-header">
-        <div>
-            <h2 class="fw-bold mb-1">العملاء</h2>
-            <div class="text-muted small">إدارة جميع العملاء في النظام</div>
+        <div class="row g-3 mb-4">
+            <div class="col-md-8">
+                <h2 class="h3 mb-2" style="color: var(--primary-color, #2c7da0);">
+                    <i class="bi bi-people me-2"></i>
+                    العملاء
+                </h2>
+                <p class="text-muted mb-0">إدارة جميع عملاء النظام ومعلوماتهم</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a class="btn btn-primary-custom" asp-controller="Clients" asp-action="Create">
+                    <i class="bi bi-person-plus me-2"></i>
+                    إضافة عميل جديد
+                </a>
+            </div>
         </div>
-
-        <a class="btn btn-primary add-btn d-flex align-items-center"
-           asp-controller="Clients"
-           asp-action="Create">
-            <i class="bi bi-person-plus me-2"></i>
-            إضافة عميل
-        </a>
+        
+        <!-- Stats Cards -->
+        @{
+            var totalClients = Model?.Count() ?? 0;
+            var clientsWithPhone = Model?.Count(c => c.PhoneNumber != 0) ?? 0;
+            var clientsWithAddress = Model?.Count(c => !string.IsNullOrEmpty(c.Address)) ?? 0;
+        }
+        
+        <div class="row g-3 mb-4">
+            <div class="col-sm-6 col-lg-4">
+                <div class="stats-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="stats-number">@totalClients</div>
+                            <div class="stats-label">إجمالي العملاء</div>
+                        </div>
+                        <div class="stats-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+                <div class="stats-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="stats-number">@clientsWithPhone</div>
+                            <div class="stats-label">عملاء لديهم هاتف</div>
+                        </div>
+                        <div class="stats-icon">
+                            <i class="bi bi-telephone"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+                <div class="stats-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="stats-number">@clientsWithAddress</div>
+                            <div class="stats-label">عملاء لديهم عنوان</div>
+                        </div>
+                        <div class="stats-icon">
+                            <i class="bi bi-geo-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <!-- Search -->
-    <div class="mb-3">
+    
+    <!-- Search Box -->
+    <div class="search-wrapper">
+        <i class="bi bi-search search-icon"></i>
         <input type="text"
                id="clientSearch"
-               class="form-control search-box shadow-sm"
-               placeholder="🔍 بحث عن عميل..." />
+               class="search-box-modern"
+               placeholder="بحث عن عميل بالاسم، الهاتف، أو العنوان..." />
     </div>
-
-    <!-- Table -->
-    <div class="glass-card p-4">
-        <div class="table-responsive">
-            <table class="table modern-table align-middle mb-0">
-                <thead>
-                    <tr>
-                        <th>id</th>
-                        <th>الاسم</th>
-                        <th>العنوان</th>
-                        <th>الهاتف</th>
-                        <th>الاجراءات</th>
-                    </tr>
-                </thead>
-                <tbody id="clientsTable">
-                    @if (Model != null && Model.Any())
-                    {
-                        foreach (var c in Model)
+    
+    <!-- Clients Table -->
+    <div class="clients-table">
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%">#</th>
+                            <th style="width: 25%">اسم العميل</th>
+                            <th style="width: 25%">العنوان</th>
+                            <th style="width: 20%">رقم الهاتف</th>
+                            <th style="width: 20%">الإجراءات</th>
+                        </thead>
+                    <tbody id="clientsTable">
+                        @foreach (var c in Model.OrderBy(x => x.Id))
                         {
                             <tr>
-                                <td class="fw-semibold">@Html.DisplayFor(m => c.Id)</td>
-                                <td class="fw-semibold">@Html.DisplayFor(m => c.Name)</td>
-                                <td class="fw-semibold">@Html.DisplayFor(m => c.Address)</td>
-                                <td class="fw-semibold">@Html.DisplayFor(m => c.PhoneNumber)</td>
                                 <td>
-                                    <div class="btn-group" role="group" aria-label="Client actions">
-                                        <a asp-controller="Clients"
-                                        asp-action="Details"
+                                    <span class="client-id-badge">@c.Id</span>
+                                 </td>
+                                <td class="fw-semibold">
+                                    <div class="d-flex align-items-center justify-content-center gap-2">
+                                        <i class="bi bi-person-circle" style="color: var(--primary-color);"></i>
+                                        <span>@c.Name</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(c.Address))
+                                    {
+                                        <div class="contact-info">
+                                            <i class="bi bi-geo-alt"></i>
+                                            <span>@c.Address</span>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">—</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (c.PhoneNumber != 0)
+                                    {
+                                        <div class="contact-info">
+                                            <i class="bi bi-telephone"></i>
+                                            <span dir="ltr">@c.PhoneNumber</span>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">—</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a class="btn-outline-primary-custom"
+                                           asp-controller="Clients"
+                                           asp-action="Details"
                                            asp-route-id="@c.Id">
-                                            <i class="bi bi-pencil-square me-1"></i>
-                                           التفاصيل</a>
-                                        <a class="btn btn-sm btn-outline-primary"
+                                            <i class="bi bi-eye"></i>
+                                            تفاصيل
+                                        </a>
+                                        <a class="btn-outline-primary-custom"
                                            asp-controller="Clients"
                                            asp-action="Edit"
                                            asp-route-id="@c.Id">
-                                            <i class="bi bi-pencil-square me-1"></i>
+                                            <i class="bi bi-pencil"></i>
                                             تعديل
                                         </a>
-
-                                        <form asp-controller="Clients" asp-action="Delete" asp-route-id="@c.Id" method="post" onsubmit="return confirm('هل أنت متأكد من حذف هذا العميل؟');" style="display:inline-block;">
+                                        <form asp-controller="Clients" 
+                                              asp-action="Delete" 
+                                              asp-route-id="@c.Id" 
+                                              method="post" 
+                                              onsubmit="return confirm('⚠️ هل أنت متأكد من حذف هذا العميل؟\n\nسيتم حذف جميع بيانات العميل المرتبطة.');" 
+                                              style="display:inline-block;">
                                             @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                <i class="bi bi-trash me-1"></i>
+                                            <button type="submit" class="btn-outline-danger-custom">
+                                                <i class="bi bi-trash"></i>
                                                 حذف
                                             </button>
                                         </form>
                                     </div>
                                 </td>
-                            </tr>
+                             </tr>
                         }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="4">
-                                <div class="empty-state">
-                                    <i class="bi bi-people fs-1 d-block mb-3"></i>
-                                    لا يوجد عملاء حالياً
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state-modern">
+                <i class="bi bi-people"></i>
+                <h5>لا يوجد عملاء</h5>
+                <p>قم بإضافة أول عميل في النظام</p>
+                <a class="btn btn-primary-custom mt-3" asp-controller="Clients" asp-action="Create">
+                    <i class="bi bi-person-plus me-2"></i>
+                    إضافة عميل جديد
+                </a>
+            </div>
+        }
     </div>
-
+    
+    <!-- Optional: Results Count -->
+    @if (Model != null && Model.Any())
+    {
+        <div class="mt-3 text-center">
+            <small class="text-muted">
+                <i class="bi bi-info-circle"></i>
+                إجمالي @totalClients عميل | آخر تحديث: @DateTime.Now.ToLocalTime().ToString("dd MMMM yyyy - hh:mm tt")
+            </small>
+        </div>
+    }
 </div>
 
 <script>
-    // Live Search
-    document.getElementById("clientSearch").addEventListener("keyup", function () {
-        let filter = this.value.toLowerCase();
-        let rows = document.querySelectorAll("#clientsTable tr");
-
-        rows.forEach(row => {
-            // skip empty-state row
-            if (row.querySelector('.empty-state')) return;
-            let text = row.innerText.toLowerCase();
-            row.style.display = text.includes(filter) ? "" : "none";
+    // Live Search محسن
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById("clientSearch");
+        const tableBody = document.getElementById("clientsTable");
+        
+        if (searchInput && tableBody) {
+            searchInput.addEventListener("keyup", function () {
+                let filter = this.value.toLowerCase().trim();
+                let rows = tableBody.querySelectorAll("tr");
+                let visibleCount = 0;
+                
+                rows.forEach(row => {
+                    let text = row.innerText.toLowerCase();
+                    let shouldShow = text.includes(filter);
+                    row.style.display = shouldShow ? "" : "none";
+                    if (shouldShow) visibleCount++;
+                });
+                
+                // Show/hide a message when no results
+                let noResultsMsg = document.getElementById('noResultsMsg');
+                if (visibleCount === 0 && rows.length > 0) {
+                    if (!noResultsMsg) {
+                        const msg = document.createElement('div');
+                        msg.id = 'noResultsMsg';
+                        msg.className = 'empty-state-modern';
+                        msg.style.marginTop = '2rem';
+                        msg.innerHTML = `
+                            <i class="bi bi-search"></i>
+                            <h5>لا توجد نتائج</h5>
+                            <p>لم يتم العثور على عملاء تطابق "${filter}"</p>
+                        `;
+                        tableBody.parentElement.parentElement.appendChild(msg);
+                    } else {
+                        noResultsMsg.style.display = 'block';
+                        noResultsMsg.querySelector('p').innerHTML = `لم يتم العثور على عملاء تطابق "${filter}"`;
+                    }
+                } else {
+                    if (noResultsMsg) noResultsMsg.style.display = 'none';
+                }
+            });
+        }
+        
+        // إضافة تأثير متدرج للصفوف
+        const rows = document.querySelectorAll('.clients-table tbody tr');
+        rows.forEach((row, index) => {
+            row.style.animationDelay = `${index * 0.03}s`;
+            row.style.animation = 'fadeInUp 0.3s ease-out backwards';
         });
+        
+        // تحسين تجربة البحث
+        if (searchInput) {
+            searchInput.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.01)';
+                this.parentElement.style.transition = 'transform 0.2s ease';
+            });
+            searchInput.addEventListener('blur', function() {
+                this.parentElement.style.transform = '';
+            });
+        }
     });
 </script>

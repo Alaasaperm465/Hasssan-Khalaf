@@ -1,63 +1,403 @@
-@model MVC.ViewModels.Issuance.IssuanceCreateVM
+﻿@model MVC.ViewModels.Issuance.IssuanceCreateVM
 @{
-    ViewData["Title"] = "Create Issuance";
+    ViewData["Title"] = "إنشاء إذن صرف";
 }
 
-<div class="container mt-3">
-    <h3>??? ??? (Issuance Form)</h3>
-    <form asp-action="Create" method="post" id="issuanceForm">
-        @Html.AntiForgeryToken()
+<style>
+    /* تنسيقات متناسقة مع التصميم العام الهادئ */
+    .form-container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
 
-        <div class="mb-3">
-            <label class="form-label">Serial Number / ??? ?????</label>
-            <input asp-for="SerialNumber" class="form-control" />
-            <span asp-validation-for="SerialNumber" class="text-danger"></span>
+    .form-header {
+        background: linear-gradient(135deg, var(--primary-color, #2c7da0) 0%, var(--secondary-color, #2e8b57) 100%);
+        padding: 1.2rem 1.5rem;
+        color: white;
+    }
+
+    .form-body {
+        padding: 2rem;
+    }
+
+    /* تنسيق الحقول */
+    .form-group-modern {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label-modern {
+        font-weight: 600;
+        color: var(--text-dark, #2c3e50);
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .form-label-modern i {
+            color: var(--primary-color, #2c7da0);
+            font-size: 1rem;
+        }
+
+    .required-field::after {
+        content: "*";
+        color: #dc3545;
+        margin-right: 4px;
+    }
+
+    .form-control-modern, .form-select-modern {
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 0.6rem 1rem;
+        transition: all 0.2s ease;
+        background-color: white;
+        width: 100%;
+    }
+
+        .form-control-modern:focus, .form-select-modern:focus {
+            border-color: var(--primary-light, #61a5c2);
+            box-shadow: 0 0 0 0.2rem rgba(44,125,160,0.1);
+            outline: none;
+        }
+
+    /* تنسيق الجدول */
+    .issuance-table-container {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        margin: 1.5rem 0;
+        border: 1px solid #e9ecef;
+    }
+
+    .issuance-table {
+        margin-bottom: 0;
+    }
+
+        .issuance-table thead th {
+            background: #f8f9fa;
+            color: var(--text-dark, #2c3e50);
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary-light, #61a5c2);
+            padding: 1rem;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .issuance-table tbody td {
+            padding: 0.75rem;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .issuance-table tbody tr {
+            transition: all 0.2s ease;
+            background-color: white;
+        }
+
+            .issuance-table tbody tr:hover {
+                background-color: #f8f9fc;
+            }
+
+    /* تنسيق الأزرار */
+    .btn-primary-gradient {
+        background: linear-gradient(135deg, var(--primary-color, #2c7da0) 0%, var(--secondary-color, #2e8b57) 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 0.6rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-primary-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44,125,160,0.3);
+            color: white;
+        }
+
+    .btn-outline-secondary-custom {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        padding: 0.6rem 1.5rem;
+        transition: all 0.2s ease;
+        color: var(--text-dark, #2c3e50);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-outline-secondary-custom:hover {
+            background: #f8f9fa;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+    .btn-danger-custom {
+        background: #dc3545;
+        border: none;
+        border-radius: 8px;
+        padding: 0.35rem 0.8rem;
+        font-size: 0.8rem;
+        transition: all 0.2s ease;
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+        .btn-danger-custom:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+    .btn-add-row {
+        background: transparent;
+        border: 2px dashed var(--primary-light, #61a5c2);
+        border-radius: 10px;
+        padding: 0.5rem 1.2rem;
+        color: var(--primary-color, #2c7da0);
+        font-weight: 500;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-add-row:hover {
+            background: rgba(44,125,160,0.05);
+            border-color: var(--primary-color, #2c7da0);
+            transform: translateY(-1px);
+        }
+
+    /* تنسيق الـ Help Text */
+    .help-text {
+        font-size: 0.75rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+        .help-text i {
+            font-size: 0.7rem;
+        }
+
+    /* تنسيق الفاليديشن */
+    .text-danger {
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    /* تحسين العرض على الموبايل */
+    @@media (max-width: 768px) {
+        .form-body
+
+    {
+        padding: 1rem;
+    }
+
+    .issuance-table thead th,
+    .issuance-table tbody td {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .btn-primary-gradient,
+    .btn-outline-secondary-custom,
+    .btn-add-row {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    }
+
+    /* تأثيرات */
+    .fade-in {
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    @@keyframes fadeInUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    /* رقم الصف */
+    .row-number {
+        font-weight: 600;
+        color: var(--primary-color, #2c7da0);
+        background: rgba(44,125,160,0.1);
+        width: 30px;
+        height: 30px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+    }
+
+    /* تنسيق معلومات العميل */
+    .client-info {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid #e9ecef;
+    }
+</style>
+
+<div class="container-fluid p-3 p-md-4 fade-in">
+    <div class="form-container">
+        <div class="form-header">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-file-text fs-3"></i>
+                <div>
+                    <h4 class="mb-0 fw-bold">إنشاء إذن صرف</h4>
+                    <p class="mb-0 opacity-75 small">إدخال بيانات إذن الصرف (Issuance Form)</p>
+                </div>
+            </div>
         </div>
 
-        <input type="hidden" asp-for="ClientId" />
+        <div class="form-body">
+            <form asp-action="Create" method="post" id="issuanceForm">
+                @Html.AntiForgeryToken()
 
-        <table class="table table-bordered" id="issuanceTable">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Field / ????</th>
-                    <th>Product (optional)</th>
-                    <th>Section (optional)</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model.Items.Count == 0)
-                {
-                    <tr>
-                        <td>1</td>
-                        <td><input name="Items[0].FieldValue" class="form-control issuance-input" /></td>
-                        <td><input name="Items[0].ProductId" class="form-control" /></td>
-                        <td><input name="Items[0].SectionId" class="form-control" /></td>
-                        <td><button type="button" class="btn btn-sm btn-danger remove-row">???</button></td>
-                    </tr>
-                }
-                else
-                {
-                    for (int i = 0; i < Model.Items.Count; i++)
-                    {
-                        <tr>
-                            <td>@(i+1)</td>
-                            <td><input name="Items[@i].FieldValue" value="@Model.Items[i].FieldValue" class="form-control issuance-input" /></td>
-                            <td><input name="Items[@i].ProductId" value="@Model.Items[i].ProductId" class="form-control" /></td>
-                            <td><input name="Items[@i].SectionId" value="@Model.Items[i].SectionId" class="form-control" /></td>
-                            <td><button type="button" class="btn btn-sm btn-danger remove-row">???</button></td>
-                        </tr>
-                    }
-                }
-            </tbody>
-        </table>
+                <!-- Serial Number -->
+                <div class="form-group-modern">
+                    <label asp-for="SerialNumber" class="form-label-modern required-field">
+                        <i class="bi bi-hash"></i>
+                        الرقم التسلسلي / Serial Number
+                    </label>
+                    <input asp-for="SerialNumber" class="form-control-modern" placeholder="أدخل الرقم التسلسلي..." />
+                    <div class="help-text">
+                        <i class="bi bi-info-circle"></i>
+                        الرقم التسلسلي الفريد للإذن
+                    </div>
+                    <span asp-validation-for="SerialNumber" class="text-danger">
+                        <i class="bi bi-exclamation-circle"></i>
+                        <span></span>
+                    </span>
+                </div>
 
-        <div class="mb-3">
-            <button type="button" id="addRow" class="btn btn-outline-secondary">Add Row / ????? ????</button>
-            <button type="submit" class="btn btn-primary">Save Issuance / ???</button>
+                <!-- Client Info (Hidden) -->
+                <input type="hidden" asp-for="ClientId" />
+
+                <!-- Client Information Display -->
+                @if (Model.ClientId > 0)
+                {
+                    <div class="client-info">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <i class="bi bi-building" style="color: var(--primary-color);"></i>
+                            <strong class="small">معلومات العميل:</strong>
+                        </div>
+                        <div class="text-muted small">
+                            <i class="bi bi-person-circle"></i> معرف العميل: @Model.ClientId
+                        </div>
+                    </div>
+                }
+
+                <!-- Issuance Items Table -->
+                <div class="issuance-table-container">
+                    <div class="table-responsive">
+                        <table class="table issuance-table" id="issuanceTable">
+                            <thead>
+                                <tr>
+                                    <th style="width: 8%">#</th>
+                                    <th style="width: 35%">القيمة / Field Value</th>
+                                    <th style="width: 25%">المنتج (اختياري)</th>
+                                    <th style="width: 25%">المخزن (اختياري)</th>
+                                    <th style="width: 7%">الإجراءات</th>
+                            </thead>
+                            <tbody>
+                                @if (Model.Items.Count == 0)
+                                {
+                                    <tr>
+                                        <td class="text-center"><span class="row-number">1</span></td>
+                                        <td><input name="Items[0].FieldValue" class="form-control-modern issuance-input" placeholder="أدخل القيمة..." /></td>
+                                        <td><input name="Items[0].ProductId" class="form-control-modern" placeholder="معرف المنتج" /></td>
+                                        <td><input name="Items[0].SectionId" class="form-control-modern" placeholder="معرف المخزن" /></td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-danger-custom remove-row">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < Model.Items.Count; i++)
+                                    {
+                                        <tr>
+                                            <td class="text-center"><span class="row-number">@(i + 1)</span></td>
+                                            <td><input name="Items[@i].FieldValue" value="@Model.Items[i].FieldValue" class="form-control-modern issuance-input" placeholder="أدخل القيمة..." /></td>
+                                            <td><input name="Items[@i].ProductId" value="@Model.Items[i].ProductId" class="form-control-modern" placeholder="معرف المنتج" /></td>
+                                            <td><input name="Items[@i].SectionId" value="@Model.Items[i].SectionId" class="form-control-modern" placeholder="معرف المخزن" /></td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-danger-custom remove-row">
+                                                    <i class="bi bi-trash3"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                    <button type="button" id="addRow" class="btn-add-row">
+                        <i class="bi bi-plus-lg"></i>
+                        إضافة سطر جديد / Add Row
+                    </button>
+                    <div class="help-text ms-auto">
+                        <i class="bi bi-keyboard"></i>
+                        اضغط Enter في آخر خانة لإضافة سطر جديد
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="d-flex flex-wrap gap-2 mt-4">
+                    <button type="submit" class="btn-primary-gradient">
+                        <i class="bi bi-check-lg"></i>
+                        حفظ الإذن / Save Issuance
+                    </button>
+                    <a asp-action="Index" class="btn-outline-secondary-custom text-decoration-none">
+                        <i class="bi bi-arrow-right"></i>
+                        إلغاء / Cancel
+                    </a>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 
 @section Scripts {
@@ -68,7 +408,9 @@
 
             function reindex(){
                 Array.from(table.children).forEach((tr, idx) => {
-                    tr.querySelector('td:first-child').innerText = idx+1;
+                    const rowNumberSpan = tr.querySelector('.row-number');
+                    if (rowNumberSpan) rowNumberSpan.innerText = idx+1;
+
                     tr.querySelectorAll('input, select').forEach(el => {
                         const name = el.getAttribute('name');
                         if(!name) return;
@@ -82,14 +424,18 @@
                 const idx = table.children.length;
                 const tr = document.createElement('tr');
                 tr.innerHTML = `\
-                    <td>${idx+1}</td>\
-                    <td><input name="Items[${idx}].FieldValue" class="form-control issuance-input" value="${escapeHtml(value)}" /></td>\
-                    <td><input name="Items[${idx}].ProductId" class="form-control" /></td>\
-                    <td><input name="Items[${idx}].SectionId" class="form-control" /></td>\
-                    <td><button type="button" class="btn btn-sm btn-danger remove-row">???</button></td>\
+                    <td class="text-center"><span class="row-number">${idx+1}</span></td>\
+                    <td><input name="Items[${idx}].FieldValue" class="form-control-modern issuance-input" placeholder="أدخل القيمة..." value="${escapeHtml(value)}" /></td>\
+                    <td><input name="Items[${idx}].ProductId" class="form-control-modern" placeholder="معرف المنتج" /></td>\
+                    <td><input name="Items[${idx}].SectionId" class="form-control-modern" placeholder="معرف المخزن" /></td>\
+                    <td class="text-center"><button type="button" class="btn btn-danger-custom remove-row"><i class="bi bi-trash3"></i></button></td>\
                 `;
                 table.appendChild(tr);
                 attachRow(tr);
+
+                // Focus the new row's first input
+                const firstInput = tr.querySelector('.issuance-input');
+                if (firstInput) firstInput.focus();
             }
 
             function attachRow(tr){
@@ -107,17 +453,40 @@
                                 // add new row and focus its input
                                 addRow();
                                 const updated = Array.from(document.querySelectorAll('.issuance-input'));
-                                updated[updated.length-1].focus();
+                                if(updated[updated.length-1]) updated[updated.length-1].focus();
                             }
+                        }
+                    });
+
+                    // Add input event for visual feedback
+                    inp.addEventListener('input', function() {
+                        if (this.value.trim()) {
+                            this.style.borderColor = 'var(--primary-light)';
+                        } else {
+                            this.style.borderColor = '#e0e0e0';
                         }
                     });
                 });
 
                 const btn = tr.querySelector('.remove-row');
-                btn.addEventListener('click', function(){
-                    tr.remove();
-                    reindex();
-                });
+                if (btn) {
+                    btn.addEventListener('click', function(){
+                        if (table.children.length > 1) {
+                            tr.remove();
+                            reindex();
+                        } else {
+                            // Clear the last row instead of removing it
+                            const inputs = tr.querySelectorAll('input');
+                            inputs.forEach(input => {
+                                if (input.type !== 'hidden') {
+                                    input.value = '';
+                                }
+                            });
+                            tr.querySelector('.issuance-input')?.focus();
+                            alert('لا يمكن حذف السطر الأخير. يمكنك تفريغ المحتوى بدلاً من ذلك.');
+                        }
+                    });
+                }
             }
 
             // attach existing rows
@@ -126,7 +495,12 @@
             addRowBtn.addEventListener('click', function(){ addRow(); });
 
             // helper
-            function escapeHtml(str){ return String(str).replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]; }); }
+            function escapeHtml(str){
+                if (!str) return '';
+                return String(str).replace(/[&<>"']/g, function(m){
+                    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m];
+                });
+            }
 
             // client-side validation before submit
             document.getElementById('issuanceForm').addEventListener('submit', function(ev){
@@ -134,10 +508,54 @@
                 const hasEmpty = inputs.some(i => !i.value.trim());
                 if(hasEmpty){
                     ev.preventDefault();
-                    alert('Please fill all fields before saving.\n?????? ????? ???? ??????? ??? ?????.');
-                    inputs.find(i=>!i.value.trim()).focus();
+                    const emptyInput = inputs.find(i => !i.value.trim());
+                    emptyInput.focus();
+                    emptyInput.style.borderColor = '#dc3545';
+
+                    // Show error message
+                    let errorDiv = document.getElementById('validationError');
+                    if (!errorDiv) {
+                        errorDiv = document.createElement('div');
+                        errorDiv.id = 'validationError';
+                        errorDiv.className = 'alert alert-danger mt-3';
+                        errorDiv.style.borderRadius = '12px';
+                        errorDiv.style.border = 'none';
+                        errorDiv.style.backgroundColor = '#f8d7da';
+                        errorDiv.style.color = '#721c24';
+                        errorDiv.style.padding = '1rem';
+                        errorDiv.style.display = 'flex';
+                        errorDiv.style.alignItems = 'center';
+                        errorDiv.style.gap = '8px';
+                        document.querySelector('.form-body').prepend(errorDiv);
+                    }
+                    errorDiv.innerHTML = '<i class="bi bi-exclamation-triangle-fill"></i> الرجاء تعبئة جميع الحقول قبل الحفظ. Please fill all fields before saving.';
+                    errorDiv.style.display = 'flex';
+
+                    setTimeout(() => {
+                        if (errorDiv) errorDiv.style.display = 'none';
+                    }, 5000);
+                } else {
+                    // Show loading state
+                    const submitBtn = document.querySelector('.btn-primary-gradient');
+                    if (submitBtn) {
+                        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> جاري الحفظ...';
+                        submitBtn.disabled = true;
+                    }
                 }
+            });
+
+            // Clear validation error when user starts typing
+            document.querySelectorAll('.issuance-input').forEach(input => {
+                input.addEventListener('input', function() {
+                    const errorDiv = document.getElementById('validationError');
+                    if (errorDiv) errorDiv.style.display = 'none';
+                    this.style.borderColor = '#e0e0e0';
+                });
             });
         })();
     </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
