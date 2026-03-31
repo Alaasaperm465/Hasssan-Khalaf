@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\MVC.csproj": {}
+    "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\MVC\\MVC.csproj": {}
   },
   "projects": {
-    "F:\\.net\\Hassan\\Hassann_Khala\\Application\\Application.csproj": {
+    "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\Application\\Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\.net\\Hassan\\Hassann_Khala\\Application\\Application.csproj",
+        "projectUniqueName": "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\Application\\Application.csproj",
         "projectName": "Application",
-        "projectPath": "F:\\.net\\Hassan\\Hassann_Khala\\Application\\Application.csproj",
+        "projectPath": "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\Application\\Application.csproj",
         "packagesPath": "C:\\Users\\louts\\.nuget\\packages\\",
-        "outputPath": "F:\\.net\\Hassan\\Hassann_Khala\\Application\\obj\\",
+        "outputPath": "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\Application\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -32,8 +32,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Domain.csproj": {
-                "projectPath": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Domain.csproj"
+              "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\Domain\\Domain.csproj": {
+                "projectPath": "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\Domain\\Domain.csproj"
               }
             }
           }
@@ -53,6 +53,12 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
+          "dependencies": {
+            "QuestPDF": {
+              "target": "Package",
+              "version": "[2024.11.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -73,14 +79,14 @@
         }
       }
     },
-    "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Domain.csproj": {
+    "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\Domain\\Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Domain.csproj",
+        "projectUniqueName": "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\Domain\\Domain.csproj",
         "projectName": "Domain",
-        "projectPath": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Domain.csproj",
+        "projectPath": "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\Domain\\Domain.csproj",
         "packagesPath": "C:\\Users\\louts\\.nuget\\packages\\",
-        "outputPath": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\obj\\",
+        "outputPath": "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -138,14 +144,14 @@
         }
       }
     },
-    "F:\\.net\\Hassan\\Hassann_Khala\\InfraStructure\\InfraStructure.csproj": {
+    "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\InfraStructure\\InfraStructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\.net\\Hassan\\Hassann_Khala\\InfraStructure\\InfraStructure.csproj",
+        "projectUniqueName": "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\InfraStructure\\InfraStructure.csproj",
         "projectName": "InfraStructure",
-        "projectPath": "F:\\.net\\Hassan\\Hassann_Khala\\InfraStructure\\InfraStructure.csproj",
+        "projectPath": "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\InfraStructure\\InfraStructure.csproj",
         "packagesPath": "C:\\Users\\louts\\.nuget\\packages\\",
-        "outputPath": "F:\\.net\\Hassan\\Hassann_Khala\\InfraStructure\\obj\\",
+        "outputPath": "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\InfraStructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -166,11 +172,11 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "F:\\.net\\Hassan\\Hassann_Khala\\Application\\Application.csproj": {
-                "projectPath": "F:\\.net\\Hassan\\Hassann_Khala\\Application\\Application.csproj"
+              "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\Application\\Application.csproj": {
+                "projectPath": "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\Application\\Application.csproj"
               },
-              "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Domain.csproj": {
-                "projectPath": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Domain.csproj"
+              "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\Domain\\Domain.csproj": {
+                "projectPath": "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\Domain\\Domain.csproj"
               }
             }
           }
@@ -220,14 +226,14 @@
         }
       }
     },
-    "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\MVC.csproj": {
+    "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\MVC\\MVC.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\MVC.csproj",
+        "projectUniqueName": "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\MVC\\MVC.csproj",
         "projectName": "MVC",
-        "projectPath": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\MVC.csproj",
+        "projectPath": "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\MVC\\MVC.csproj",
         "packagesPath": "C:\\Users\\louts\\.nuget\\packages\\",
-        "outputPath": "F:\\.net\\Hassan\\Hassann_Khala\\MVC\\obj\\",
+        "outputPath": "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\MVC\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -248,14 +254,14 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "F:\\.net\\Hassan\\Hassann_Khala\\Application\\Application.csproj": {
-                "projectPath": "F:\\.net\\Hassan\\Hassann_Khala\\Application\\Application.csproj"
+              "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\Application\\Application.csproj": {
+                "projectPath": "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\Application\\Application.csproj"
               },
-              "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Domain.csproj": {
-                "projectPath": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Domain.csproj"
+              "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\Domain\\Domain.csproj": {
+                "projectPath": "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\Domain\\Domain.csproj"
               },
-              "F:\\.net\\Hassan\\Hassann_Khala\\InfraStructure\\InfraStructure.csproj": {
-                "projectPath": "F:\\.net\\Hassan\\Hassann_Khala\\InfraStructure\\InfraStructure.csproj"
+              "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\InfraStructure\\InfraStructure.csproj": {
+                "projectPath": "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\InfraStructure\\InfraStructure.csproj"
               }
             }
           }
@@ -301,6 +307,10 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[9.0.0, )"
+            },
+            "QuestPDF": {
+              "target": "Package",
+              "version": "[2024.11.0, )"
             }
           },
           "imports": [

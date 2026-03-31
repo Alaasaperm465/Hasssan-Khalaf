@@ -524,7 +524,6 @@ namespace MVC.Controllers
                 return StatusCode(500, new { success = false, error = ex.Message, detail = inner });
             }
         }
-
         public async Task<IActionResult> Details(int id)
         {
             var inbounds = await _inboundService.GetAllInboundsAsync();
@@ -534,7 +533,6 @@ namespace MVC.Controllers
             var vm = _mapper.Map<InboundDetailsVM>(inbound);
             return View(vm);
         }
-
         [HttpGet]
         public IActionResult GetDelegatesForClient(int clientId)
         {
@@ -543,7 +541,6 @@ namespace MVC.Controllers
                 .ToList();
             return Json(list);
         }
-
         [HttpGet]
         public IActionResult GetClientSections(int clientId)
         {
@@ -557,6 +554,11 @@ namespace MVC.Controllers
                 .ToList();
 
             return Json(sections);
+        }
+        public IActionResult Print(int id)
+        {
+            var model = _inboundService.GetAllInboundsAsync();
+            return View("Print", model);
         }
     }
 }

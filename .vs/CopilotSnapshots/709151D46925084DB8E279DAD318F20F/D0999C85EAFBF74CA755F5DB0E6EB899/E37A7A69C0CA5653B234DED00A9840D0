@@ -1,0 +1,16 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace Hassann_Khala.Application.DTOs.Reports
+{
+    public class MovementGroupDto
+    {
+        public string GroupKey { get; set; } = string.Empty; // e.g. Warehouse-1 or Customer-1 or Product-1
+        public string GroupName { get; set; } = string.Empty;
+        public List<MovementDto> Movements { get; set; } = new();
+
+        public decimal TotalIncoming => Movements.Where(m => m.MovementType == "Inbound").Sum(m => m.Quantity);
+        public decimal TotalOutgoing => Movements.Where(m => m.MovementType == "Outbound").Sum(m => m.Quantity);
+        public decimal Net => TotalIncoming - TotalOutgoing;
+    }
+}

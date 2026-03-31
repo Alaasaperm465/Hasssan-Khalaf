@@ -1,8 +1,23 @@
 {
   "version": 2,
-  "dgSpecHash": "g76+X5+7y9Q=",
+  "dgSpecHash": "D4RTIdl7veE=",
   "success": true,
-  "projectFilePath": "F:\\.net\\Hassan\\Hassann_Khala\\Application\\Application.csproj",
-  "expectedPackageFiles": [],
-  "logs": []
+  "projectFilePath": "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\Application\\Application.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\louts\\.nuget\\packages\\questpdf\\2024.12.0\\questpdf.2024.12.0.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1603",
+      "level": "Warning",
+      "message": "Application depends on QuestPDF (>= 2024.11.0) but QuestPDF 2024.11.0 was not found. QuestPDF 2024.12.0 was resolved instead.",
+      "projectPath": "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\Application\\Application.csproj",
+      "warningLevel": 1,
+      "filePath": "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\Application\\Application.csproj",
+      "libraryId": "QuestPDF",
+      "targetGraphs": [
+        "net9.0"
+      ]
+    }
+  ]
 }

@@ -1,0 +1,154 @@
+﻿using Hassann_Khala.Application.DTOs.Reports;
+using Hassann_Khala.Application.Interfaces.IServices;
+using Hassann_Khala.Domain.Interfaces;
+using InfraStructure.Context;
+using Microsoft.EntityFrameworkCore;
+
+namespace Hassann_Khala.Application.Services
+{
+    public class MovementDetailsService : IMovementDetailsService
+    {
+        private readonly DBContext _db;
+        private readonly IUnitOfWork _uow;
+
+        public MovementDetailsService(DBContext db, IUnitOfWork uow)
+        {
+            _db = db;
+            _uow = uow;
+        }
+
+        public async Task<MovementDetailsDto> GetMovementDetailsAsync(MovementFilterDto filter)
+        {
+            var from = filter.From?.Date.ToUniversalTime() ?? DateTime.MinValue;
+            var to = filter.To?.Date.AddDays(1).ToUniversalTime() ?? DateTime.MaxValue;
+
+            // Query inbound movements
+            var inboundQuery = _db.InboundDetails
+                .Where(d => d.Inbound != null && d.Inbound.CreatedAt >= from && d.Inbound.CreatedAt < to)
+                .Include(d => d.Inbound)
+                    .ThenInclude(i => i.Client)
+                .Include(d => d.Section)
+                .Include(d => d.Product)
+                .AsNoTracking()
+                .Select(d => new Hassann_Khala.Application.DTOs.Reports.MovementDto
+                {
+                    ClientId = d.Inbound.ClientId,
+                    ClientName = d.Inbound.Client.Name,
+                    SectionId = d.SectionId,
+                    SectionName = d.Section.Name,
+                    ProductId = d.ProductId,
+                    ProductName = d.Product.Name,
+                    MovementType = "Inbound",
+                    Quantity = d.Quantity,
+                    Date = d.Inbound.CreatedAt
+                });
+
+            // Query outbound movements
+            var outboundQuery = _db.OutboundDetails
+                .Where(d => d.Outbound != null && d.Outbound.CreatedAt >= from && d.Outbound.CreatedAt < to)
+                .Include(d => d.Outbound)
+                    .ThenInclude(o => o.Client)
+                .Include(d => d.Section)
+                .Include(d => d.Product)
+                .AsNoTracking()
+                .Select(d => new Hassann_Khala.Application.DTOs.Reports.MovementDto
+                {
+                    ClientId = d.Outbound.ClientId,
+                    ClientName = d.Outbound.Client.Name,
+                    SectionId = d.SectionId,
+                    SectionName = d.Section.Name,
+                    ProductId = d.ProductId,
+                    ProductName = d.Product.Name,
+                    MovementType = "Outbound",
+                    Quantity = d.Quantity,
+                    Date = d.Outbound.CreatedAt
+                });
+
+            // Combine
+            var combined = inboundQuery.Union(outboundQuery);
+
+            // Apply filters
+            if (filter.ClientId.HasValue && filter.ClientId.Value > 0)
+                combined = combined.Where(m => m.ClientId == filter.ClientId.Value);
+            if (filter.SectionId.HasValue && filter.SectionId.Value > 0)
+                combined = combined.Where(m => m.SectionId == filter.SectionId.Value);
+            if (filter.ProductId.HasValue && filter.ProductId.Value > 0)
+                combined = combined.Where(m => m.ProductId == filter.ProductId.Value);
+
+            var list = await combined.OrderBy(m => m.Date).ToListAsync();
+
+            var result = new MovementDetailsDto { Filter = filter };
+
+            // Determine grouping strategy
+            // Case 1: Client only -> group by Section (warehouses)
+            // Case 2: Section only -> group by Client
+            // Case 3: Client + Section -> group by Product
+            // Case 4: Client + Section + Product -> single group for product
+
+            if (filter.ClientId.HasValue && !filter.SectionId.HasValue)
+            {
+                // Customer only -> group by Section
+                var groups = list.GroupBy(m => new { m.SectionId, m.SectionName })
+                    .Select(g => new MovementGroupDto
+                    {
+                        GroupKey = g.Key.SectionId.ToString(),
+                        GroupName = g.Key.SectionName,
+                        Movements = g.OrderBy(x => x.Date).ToList()
+                    }).ToList();
+                result.Groups = groups;
+            }
+            else if (filter.SectionId.HasValue && !filter.ClientId.HasValue)
+            {
+                // Section only -> group by Client
+                var groups = list.GroupBy(m => new { m.ClientId, m.ClientName })
+                    .Select(g => new MovementGroupDto
+                    {
+                        GroupKey = g.Key.ClientId.ToString(),
+                        GroupName = g.Key.ClientName,
+                        Movements = g.OrderBy(x => x.Date).ToList()
+                    }).ToList();
+                result.Groups = groups;
+            }
+            else if (filter.ClientId.HasValue && filter.SectionId.HasValue && !filter.ProductId.HasValue)
+            {
+                // Client inside Section -> group by Product
+                var groups = list.GroupBy(m => new { m.ProductId, m.ProductName })
+                    .Select(g => new MovementGroupDto
+                    {
+                        GroupKey = g.Key.ProductId.ToString(),
+                        GroupName = g.Key.ProductName,
+                        Movements = g.OrderBy(x => x.Date).ToList()
+                    }).ToList();
+                result.Groups = groups;
+            }
+            else if (filter.ClientId.HasValue && filter.SectionId.HasValue && filter.ProductId.HasValue)
+            {
+                // Specific product
+                var groups = new List<MovementGroupDto>
+                {
+                    new MovementGroupDto
+                    {
+                        GroupKey = filter.ProductId.Value.ToString(),
+                        GroupName = list.FirstOrDefault()?.ProductName ?? string.Empty,
+                        Movements = list.OrderBy(x => x.Date).ToList()
+                    }
+                };
+                result.Groups = groups;
+            }
+            else
+            {
+                // Fallback: group by Client
+                var groups = list.GroupBy(m => new { m.ClientId, m.ClientName })
+                    .Select(g => new MovementGroupDto
+                    {
+                        GroupKey = g.Key.ClientId.ToString(),
+                        GroupName = g.Key.ClientName,
+                        Movements = g.OrderBy(x => x.Date).ToList()
+                    }).ToList();
+                result.Groups = groups;
+            }
+
+            return result;
+        }
+    }
+}

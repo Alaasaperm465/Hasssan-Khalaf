@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Domain.csproj",
+      "projectUniqueName": "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\Domain\\Domain.csproj",
       "projectName": "Domain",
-      "projectPath": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\Domain.csproj",
+      "projectPath": "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\Domain\\Domain.csproj",
       "packagesPath": "C:\\Users\\louts\\.nuget\\packages\\",
-      "outputPath": "F:\\.net\\Hassan\\Hassann_Khala\\Domain\\obj\\",
+      "outputPath": "F:\\Hassan_Khalaf\\Hasssan-Khalaf\\Domain\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

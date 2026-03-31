@@ -73,6 +73,8 @@ builder.Services.AddScoped<IProductStockRepository, ProductStockRepository>();
 builder.Services.AddScoped<ISectionStockRepository, SectionStockRepository>();
 // register generic inbound repository used by InboundService
 builder.Services.AddScoped<Hassann_Khala.Domain.Interfaces.IRepository<Hassann_Khala.Domain.Inbound>, InboundRepository>();
+// register outbound repository
+builder.Services.AddScoped<Hassann_Khala.Domain.Interfaces.IRepository<Hassann_Khala.Domain.Outbound>, OutboundRepository>();
 
 // register services
 builder.Services.AddScoped<IClientService, ClientService>();
@@ -84,6 +86,10 @@ builder.Services.AddScoped<IStockService, StockService>();
 
 // unit of work
 builder.Services.AddScoped<Hassann_Khala.Domain.Interfaces.IUnitOfWork, UnitOfWork>();
+
+// Register movement details and PDF services
+builder.Services.AddScoped<Hassann_Khala.Application.Interfaces.IServices.IMovementDetailsService, Hassann_Khala.Application.Services.MovementDetailsService>();
+builder.Services.AddScoped<Hassann_Khala.Application.Interfaces.IServices.IPdfService, Hassann_Khala.Application.Services.PdfService>();
 
 var app = builder.Build();
 

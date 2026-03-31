@@ -22,3 +22,15 @@ F:\.net\Hassan\Hassann_Khala\Domain\obj\Debug\net9.0\Domain.dll
 F:\.net\Hassan\Hassann_Khala\Domain\obj\Debug\net9.0\refint\Domain.dll
 F:\.net\Hassan\Hassann_Khala\Domain\obj\Debug\net9.0\Domain.pdb
 F:\.net\Hassan\Hassann_Khala\Domain\obj\Debug\net9.0\ref\Domain.dll
+F:\Hassan_Khalaf\Hasssan-Khalaf\Domain\bin\Debug\net9.0\Domain.deps.json
+F:\Hassan_Khalaf\Hasssan-Khalaf\Domain\bin\Debug\net9.0\Domain.dll
+F:\Hassan_Khalaf\Hasssan-Khalaf\Domain\bin\Debug\net9.0\Domain.pdb
+F:\Hassan_Khalaf\Hasssan-Khalaf\Domain\obj\Debug\net9.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+F:\Hassan_Khalaf\Hasssan-Khalaf\Domain\obj\Debug\net9.0\Domain.AssemblyInfoInputs.cache
+F:\Hassan_Khalaf\Hasssan-Khalaf\Domain\obj\Debug\net9.0\Domain.AssemblyInfo.cs
+F:\Hassan_Khalaf\Hasssan-Khalaf\Domain\obj\Debug\net9.0\Domain.csproj.CoreCompileInputs.cache
+F:\Hassan_Khalaf\Hasssan-Khalaf\Domain\obj\Debug\net9.0\Domain.sourcelink.json
+F:\Hassan_Khalaf\Hasssan-Khalaf\Domain\obj\Debug\net9.0\Domain.dll
+F:\Hassan_Khalaf\Hasssan-Khalaf\Domain\obj\Debug\net9.0\refint\Domain.dll
+F:\Hassan_Khalaf\Hasssan-Khalaf\Domain\obj\Debug\net9.0\Domain.pdb
+F:\Hassan_Khalaf\Hasssan-Khalaf\Domain\obj\Debug\net9.0\ref\Domain.dll

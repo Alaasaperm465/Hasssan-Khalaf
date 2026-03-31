@@ -1,0 +1,17 @@
+﻿using System;
+
+namespace Hassann_Khala.Application.DTOs.Reports
+{
+    public class MovementDto
+    {
+        public int ClientId { get; set; }
+        public string ClientName { get; set; } = string.Empty;
+        public int SectionId { get; set; }
+        public string SectionName { get; set; } = string.Empty;
+        public int ProductId { get; set; }
+        public string ProductName { get; set; } = string.Empty;
+        public string MovementType { get; set; } = string.Empty; // "Inbound" / "Outbound"
+        public decimal Quantity { get; set; }
+        public DateTime Date { get; set; }
+    }
+}

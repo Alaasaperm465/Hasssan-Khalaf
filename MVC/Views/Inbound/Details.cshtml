@@ -227,42 +227,21 @@
 
     /* تنسيق الطباعة */
     @@media print {
-        body
 
-    {
-        background: white !important;
-        padding: 0 !important;
-        margin: 0 !important;
-    }
+        body * {
+            visibility: hidden;
+        }
 
-    .no-print {
-        display: none !important;
-    }
+        #printArea, #printArea * {
+            visibility: visible;
+        }
 
-    .details-card {
-        box-shadow: none !important;
-        border: 1px solid #ddd !important;
-    }
-
-    .details-header {
-        background: #f8f9fa !important;
-        color: black !important;
-        border-bottom: 2px solid #ddd;
-    }
-
-    .info-icon {
-        background: #f0f0f0 !important;
-    }
-
-    .details-table .table thead th {
-        background: #f0f0f0 !important;
-        border-bottom: 2px solid #ddd;
-    }
-
-    .btn-print, .btn-back {
-        display: none !important;
-    }
-
+        #printArea {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
     }
 
     /* تأثير fade-in */
@@ -288,119 +267,118 @@
 
 <div class="container-fluid p-3 p-md-4 fade-in">
     <div class="details-card">
+        <div id="printArea">
         <!-- Header with ID and Actions -->
-        <div class="details-header">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                <div class="d-flex align-items-center gap-3">
-                    <i class="bi bi-receipt fs-3"></i>
-                    <div>
-                        <div class="small opacity-75">رقم الإذن</div>
-                        <div class="purchase-id">#@Model.Id</div>
-                    </div>
-                </div>
-                <div class="d-flex gap-2 no-print">
-                    <button id="printBtn" class="btn-print">
-                        <i class="bi bi-printer me-2"></i>
-                        طباعة
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Information Section -->
-        <div class="info-section">
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <div class="info-item">
-                        <div class="info-icon">
-                            <i class="bi bi-building"></i>
-                        </div>
+            <div class="details-header">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-receipt fs-3"></i>
                         <div>
-                            <div class="info-label">العميل</div>
-                            <div class="info-value">@Model.ClientName</div>
+                            <div class="small opacity-75">رقم الإذن</div>
+                            <div class="purchase-id">#@Model.Id</div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="info-item">
-                        <div class="info-icon">
-                            <i class="bi bi-calendar3"></i>
-                        </div>
-                        <div>
-                            <div class="info-label">تاريخ الإنشاء</div>
-                            <div class="info-value">@Model.CreatedAt.ToLocalTime().ToString("dddd, dd MMMM yyyy - hh:mm tt")</div>
-                        </div>
+                    <div class="d-flex gap-2 no-print">
+                        <button id="printBtn" class="btn-print">
+                            <i class="bi bi-printer me-2"></i>
+                            طباعة
+                        </button>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Details Table -->
-        <div class="details-table">
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th style="width: 40%">المنتج</th>
-                            <th style="width: 30%">المخزن</th>
-                            <th style="width: 15%" class="text-end">عدد الكرتون</th>
-                            <th style="width: 15%" class="text-end">عدد البالتات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var d in Model.Details)
-                        {
+            <!-- Information Section -->
+            <div class="info-section">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="bi bi-building"></i>
+                            </div>
+                            <div>
+                                <div class="info-label">العميل</div>
+                                <div class="info-value">@Model.ClientName</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="bi bi-calendar3"></i>
+                            </div>
+                            <div>
+                                <div class="info-label">تاريخ الإنشاء</div>
+                                <div class="info-value">@Model.CreatedAt.ToLocalTime().ToString("dddd, dd MMMM yyyy - hh:mm tt")</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Details Table -->
+            <div class="details-table">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
                             <tr>
-                                <td>
-                                    <div class="product-name">
-                                        <div class="product-icon">
-                                            <i class="bi bi-box"></i>
+                                <th style="width: 40%">المنتج</th>
+                                <th style="width: 30%">المخزن</th>
+                                <th style="width: 15%" class="text-end">عدد الكرتون</th>
+                                <th style="width: 15%" class="text-end">عدد البالتات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var d in Model.Details)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="product-name">
+                                            <div class="product-icon">
+                                                <i class="bi bi-box"></i>
+                                            </div>
+                                            <span>@(string.IsNullOrWhiteSpace(d.ProductName) ? d.ProductId.ToString() : d.ProductName)</span>
                                         </div>
-                                        <span>@(string.IsNullOrWhiteSpace(d.ProductName) ? d.ProductId.ToString() : d.ProductName)</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="section-badge">
-                                        <i class="bi bi-building me-1"></i>
-                                        @(string.IsNullOrWhiteSpace(d.SectionName) ? d.SectionId.ToString() : d.SectionName)
-                                    </span>
-                                </td>
-                                <td class="text-end">
+                                    </td>
+                                    <td>
+                                        <span class="section-badge">
+                                            <i class="bi bi-building me-1"></i>
+                                            @(string.IsNullOrWhiteSpace(d.SectionName) ? d.SectionId.ToString() : d.SectionName)
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <span class="quantity-badge carton-badge">
+                                            <i class="bi bi-box-seam me-1"></i>
+                                            @d.Cartons.ToString("N0")
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <span class="quantity-badge pallet-badge">
+                                            <i class="bi bi-cube me-1"></i>
+                                            @d.Pallets.ToString("N0")
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="2" class="text-start">الإجمالي الكلي</th>
+                                <th class="text-end">
                                     <span class="quantity-badge carton-badge">
                                         <i class="bi bi-box-seam me-1"></i>
-                                        @d.Cartons.ToString("N0")
+                                        @Model.TotalCartons.ToString("N0")
                                     </span>
-                                </td>
-                                <td class="text-end">
+                                </th>
+                                <th class="text-end">
                                     <span class="quantity-badge pallet-badge">
                                         <i class="bi bi-cube me-1"></i>
-                                        @d.Pallets.ToString("N0")
+                                        @Model.TotalPallets.ToString("N0")
                                     </span>
-                                </td>
+                                </th>
                             </tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th colspan="2" class="text-start">الإجمالي الكلي</th>
-                            <th class="text-end">
-                                <span class="quantity-badge carton-badge">
-                                    <i class="bi bi-box-seam me-1"></i>
-                                    @Model.TotalCartons.ToString("N0")
-                                </span>
-                            </th>
-                            <th class="text-end">
-                                <span class="quantity-badge pallet-badge">
-                                    <i class="bi bi-cube me-1"></i>
-                                    @Model.TotalPallets.ToString("N0")
-                                </span>
-                            </th>
-                        </tr>
-                    </tfoot>
-                </table>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
         </div>
-
         <!-- Footer Actions -->
         <div class="p-3 border-top no-print" style="background: #f8f9fa;">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
@@ -421,7 +399,8 @@
 
 <script>
     // تهيئة الطباعة
-    document.getElementById('printBtn').addEventListener('click', function () {
+        document.getElementById('printBtn').addEventListener('click', function () {
+        document.title = "تفاصيل المشتريات - " + @Model.Id;
         window.print();
     });
 

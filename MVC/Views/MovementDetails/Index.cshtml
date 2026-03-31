@@ -1,0 +1,83 @@
+﻿@model object
+@{
+    ViewData["Title"] = "Movement Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <h2>تفاصيل الحركة </h2>
+
+    <form id="filterForm" method="post" asp-action="GetData">
+        <div class="row g-2">
+            <div class="col-md-3">
+                <label>العميل </label>
+                <select name="ClientId" class="form-select">
+                    <option value="">-- __ --</option>
+                    @foreach (var c in (IEnumerable<SelectListItem>)ViewBag.Clients)
+                    {
+                        <option value="@c.Value">@c.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label>العنبر</label>
+                <select name="SectionId" class="form-select">
+                    <option value="">-- __ --</option>
+                    @foreach (var s in (IEnumerable<SelectListItem>)ViewBag.Sections)
+                    {
+                        <option value="@s.Value">@s.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label>المنتج </label>
+                <select name="ProductId" class="form-select">
+                    <option value="">-- __ --</option>
+                    @foreach (var p in (IEnumerable<SelectListItem>)ViewBag.Products)
+                    {
+                        <option value="@p.Value">@p.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label>من </label>
+                <input type="date" name="From" class="form-control" />
+                <label>الي</label>
+                <input type="date" name="To" class="form-control" />
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">طباعة</button>
+            @* <button type="button" id="exportPdf" class="btn btn-secondary">Export PDF</button> *@
+        </div>
+    </form>
+
+    <div id="resultArea" class="mt-4"></div>
+</div>
+
+@section Scripts {
+    <script>
+        const form = document.getElementById('filterForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = new FormData(form);
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+            const resp = await fetch(form.action, { method: 'POST', body: data, headers: token ? { 'RequestVerificationToken': token } : {} });
+            const html = await resp.text();
+            document.getElementById('resultArea').innerHTML = html;
+        });
+
+        document.getElementById('exportPdf').addEventListener('click', async () => {
+            const data = new FormData(form);
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+            const resp = await fetch('/MovementDetails/ExportPdf', { method: 'POST', body: data, headers: token ? { 'RequestVerificationToken': token } : {} });
+            if (!resp.ok) { alert('Export failed'); return; }
+            const blob = await resp.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'movement-details.pdf'; a.click();
+            URL.revokeObjectURL(url);
+        });
+    </script>
+}

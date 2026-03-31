@@ -1,0 +1,138 @@
+using System;
+using System.Linq;
+using Hassann_Khala.Application.DTOs.Reports;
+using Hassann_Khala.Application.Interfaces.IServices;
+using Hassann_Khala.Domain.Interfaces;
+
+namespace Hassann_Khala.Application.Services
+{
+    public class MovementDetailsService : IMovementDetailsService
+    {
+        private readonly IRepository<Hassann_Khala.Domain.Inbound> _inboundRepo;
+        private readonly IRepository<Hassann_Khala.Domain.Outbound> _outboundRepo;
+        private readonly IUnitOfWork _uow;
+
+        public MovementDetailsService(
+            IRepository<Hassann_Khala.Domain.Inbound> inboundRepo,
+            IRepository<Hassann_Khala.Domain.Outbound> outboundRepo,
+            IUnitOfWork uow)
+        {
+            _inboundRepo = inboundRepo;
+            _outboundRepo = outboundRepo;
+            _uow = uow;
+        }
+
+        public async Task<MovementDetailsDto> GetMovementDetailsAsync(MovementFilterDto filter)
+        {
+            var from = filter.From?.Date.ToUniversalTime() ?? DateTime.MinValue;
+            var to = filter.To?.Date.AddDays(1).ToUniversalTime() ?? DateTime.MaxValue;
+
+            // Use repository GetByDateRangeAsync implementations (they include navigation properties)
+            var inbounds = (await _inboundRepo.GetByDateRangeAsync(from, to)).ToList();
+            var outbounds = (await _outboundRepo.GetByDateRangeAsync(from, to)).ToList();
+
+            var inboundMovements = inbounds.SelectMany(i => i.Details.Select(d => new MovementDto
+            {
+                ClientId = i.ClientId,
+                ClientName = i.Client?.Name ?? string.Empty,
+                SectionId = d.SectionId,
+                SectionName = d.Section?.Name ?? string.Empty,
+                ProductId = d.ProductId,
+                ProductName = d.Product?.Name ?? string.Empty,
+                MovementType = "Inbound",
+                Quantity = d.Quantity,
+                Cartons = d.Cartons,
+                Pallets = d.Pallets,
+                Date = i.CreatedAt
+            }));
+
+            var outboundMovements = outbounds.SelectMany(o => o.Details.Select(d => new MovementDto
+            {
+                ClientId = o.ClientId,
+                ClientName = o.Client?.Name ?? string.Empty,
+                SectionId = d.SectionId,
+                SectionName = d.Section?.Name ?? string.Empty,
+                ProductId = d.ProductId,
+                ProductName = d.Product?.Name ?? string.Empty,
+                MovementType = "Outbound",
+                Quantity = d.Quantity,
+                Cartons = d.Cartons,
+                Pallets = d.Pallets,
+                Date = o.CreatedAt
+            }));
+
+            var combinedEnumerable = inboundMovements.Concat(outboundMovements);
+
+            if (filter.ClientId.HasValue && filter.ClientId.Value > 0)
+                combinedEnumerable = combinedEnumerable.Where(m => m.ClientId == filter.ClientId.Value);
+            if (filter.SectionId.HasValue && filter.SectionId.Value > 0)
+                combinedEnumerable = combinedEnumerable.Where(m => m.SectionId == filter.SectionId.Value);
+            if (filter.ProductId.HasValue && filter.ProductId.Value > 0)
+                combinedEnumerable = combinedEnumerable.Where(m => m.ProductId == filter.ProductId.Value);
+
+            var list = combinedEnumerable.OrderBy(m => m.Date).ToList();
+
+            var result = new MovementDetailsDto { Filter = filter };
+
+            if (filter.ClientId.HasValue && !filter.SectionId.HasValue)
+            {
+                var groups = list.GroupBy(m => new { m.SectionId, m.SectionName })
+                    .Select(g => new MovementGroupDto
+                    {
+                        GroupKey = g.Key.SectionId.ToString(),
+                        GroupName = g.Key.SectionName,
+                        Movements = g.OrderBy(x => x.Date).ToList()
+                    }).ToList();
+                result.Groups = groups;
+            }
+            else if (filter.SectionId.HasValue && !filter.ClientId.HasValue)
+            {
+                var groups = list.GroupBy(m => new { m.ClientId, m.ClientName })
+                    .Select(g => new MovementGroupDto
+                    {
+                        GroupKey = g.Key.ClientId.ToString(),
+                        GroupName = g.Key.ClientName,
+                        Movements = g.OrderBy(x => x.Date).ToList()
+                    }).ToList();
+                result.Groups = groups;
+            }
+            else if (filter.ClientId.HasValue && filter.SectionId.HasValue && !filter.ProductId.HasValue)
+            {
+                var groups = list.GroupBy(m => new { m.ProductId, m.ProductName })
+                    .Select(g => new MovementGroupDto
+                    {
+                        GroupKey = g.Key.ProductId.ToString(),
+                        GroupName = g.Key.ProductName,
+                        Movements = g.OrderBy(x => x.Date).ToList()
+                    }).ToList();
+                result.Groups = groups;
+            }
+            else if (filter.ClientId.HasValue && filter.SectionId.HasValue && filter.ProductId.HasValue)
+            {
+                var groups = new List<MovementGroupDto>
+                {
+                    new MovementGroupDto
+                    {
+                        GroupKey = filter.ProductId.Value.ToString(),
+                        GroupName = list.FirstOrDefault()?.ProductName ?? string.Empty,
+                        Movements = list.OrderBy(x => x.Date).ToList()
+                    }
+                };
+                result.Groups = groups;
+            }
+            else
+            {
+                var groups = list.GroupBy(m => new { m.ClientId, m.ClientName })
+                    .Select(g => new MovementGroupDto
+                    {
+                        GroupKey = g.Key.ClientId.ToString(),
+                        GroupName = g.Key.ClientName,
+                        Movements = g.OrderBy(x => x.Date).ToList()
+                    }).ToList();
+                result.Groups = groups;
+            }
+
+            return result;
+        }
+    }
+}

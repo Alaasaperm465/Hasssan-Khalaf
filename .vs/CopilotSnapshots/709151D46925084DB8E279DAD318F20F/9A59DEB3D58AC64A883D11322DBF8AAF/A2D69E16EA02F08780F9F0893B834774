@@ -1,0 +1,64 @@
+﻿@model Hassann_Khala.Application.DTOs.Reports.MovementDetailsDto
+
+@if (Model == null || !Model.Groups.Any())
+{
+    <div class="alert alert-info">No data found for selected filters.</div>
+}
+else
+{
+    foreach (var g in Model.Groups)
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                <strong>@g.GroupName</strong>
+                <span class="float-end">Incoming: @g.TotalIncoming - Outgoing: @g.TotalOutgoing - Net: @g.Net</span>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th class="text-end">Incoming Quantity</th>
+                            <th class="text-end">Outgoing Quantity</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ var idx = 1; }
+                        @foreach (var m in g.Movements)
+                        {
+                            <tr>
+                                <td>@m.ProductName</td>
+                                <td class="text-end">
+                                    @if (m.MovementType == "Inbound")
+                                    {
+                                        @m.Quantity.ToString("0.##")
+                                    }
+                                    else
+                                    {
+                                        <text>-</text>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    @if (m.MovementType == "Outbound")
+                                    {
+                                        @m.Quantity.ToString("0.##")
+                                    }
+                                    else
+                                    {
+                                        <text>-</text>
+                                    }
+                                </td>
+                                <td>@m.Date.ToString("yyyy-MM-dd")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+
+    <div class="mt-3">
+        <h5>Totals: Incoming: @Model.TotalIncoming - Outgoing: @Model.TotalOutgoing - Net: @Model.Net</h5>
+    </div>
+}
