@@ -350,6 +350,11 @@
                         <i class="bi bi-wallet2 me-2"></i> <span>الحسابات</span>
                     </a>
                 </li>
+                <li class="nav-item mb-1">
+                    <a href="@Url.Action("Index", "MovementDetails")" class="nav-link">
+                        <i class="bi bi-wallet2 me-2"></i> <span>تقارير الحركة </span>
+                    </a>
+                </li>
             </ul>
             <div class="mt-auto p-3 text-muted small user-info border-top border-secondary">
                 <i class="bi bi-person-circle me-1"></i>
@@ -424,46 +429,7 @@
 
             <main class="main-content container-fluid p-3 p-md-4">
                 <!-- عرض عنوان الصفحة بشكل أنيق -->
-                <div class="mb-4">
-                    <h2 class="h3 mb-0" style="color: var(--primary-color);">
-                        @if (ViewData["Title"] as string == "Dashboard")
-                        {
-                            <i class="bi bi-speedometer2 me-2"></i>
-                            <span>لوحة التحكم</span>
-                        }
-                        else if (ViewData["Title"] as string == "Clients")
-                        {
-                            <i class="bi bi-people me-2"></i>
-                            <span>العملاء</span>
-                        }
-                        else if (ViewData["Title"] as string == "Products")
-                        {
-                            <i class="bi bi-boxes me-2"></i>
-                            <span>المنتجات</span>
-                        }
-                        else if (ViewData["Title"] as string == "Inbounds")
-                        {
-                            <i class="bi bi-arrow-down-circle me-2"></i>
-                            <span>المشتريات</span>
-                        }
-                        else if (ViewData["Title"] as string == "Outbound")
-                        {
-                            <i class="bi bi-arrow-up-circle me-2"></i>
-                            <span>المبيعات</span>
-                        }
-                        else if (ViewData["Title"] as string == "HighSens — Stock Dashboard")
-                        {
-                            <i class="bi bi-bar-chart-line me-2"></i>
-                            <span>المخزون</span>
-                        }
-                        else
-                        {
-                            <i class="bi bi-grid me-2"></i>
-                            <span>@title</span>
-                        }
-                    </h2>
-                    <hr class="mt-2 mb-0" style="border-color: var(--primary-light); width: 60px; opacity: 0.5;">
-                </div>
+                
 
                 @RenderBody()
             </main>

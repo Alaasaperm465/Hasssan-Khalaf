@@ -428,62 +428,13 @@
                     <i class="bi bi-boxes me-2"></i>
                     المنتجات
                 </h2>
-                <p class="text-muted mb-0">إدارة جميع المنتجات في النظام</p>
+                @* <p class="text-muted mb-0">إدارة جميع المنتجات في النظام</p> *@
             </div>
             <div class="col-md-4 text-md-end">
                 <a class="btn btn-primary-custom" asp-action="Create">
                     <i class="bi bi-plus-lg me-2"></i>
                     إضافة منتج جديد
                 </a>
-            </div>
-        </div>
-
-        <!-- Stats Cards -->
-        @{
-            var totalProducts = Model.TotalCount;
-            var productTypes = Model.Products?.GroupBy(p => p.Type).Count() ?? 0;
-            var avgDescriptionLength = Model.Products?.Average(p => p.Description?.Length ?? 0) ?? 0;
-        }
-
-        <div class="row g-3 mb-4">
-            <div class="col-sm-6 col-lg-4">
-                <div class="stats-card">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <div class="stats-number">@totalProducts.ToString("N0")</div>
-                            <div class="stats-label">إجمالي المنتجات</div>
-                        </div>
-                        <div class="stats-icon">
-                            <i class="bi bi-box-seam"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-4">
-                <div class="stats-card">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <div class="stats-number">@productTypes</div>
-                            <div class="stats-label">أنواع المنتجات</div>
-                        </div>
-                        <div class="stats-icon">
-                            <i class="bi bi-tags"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-4">
-                <div class="stats-card">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <div class="stats-number">@(totalProducts > 0 ? (totalProducts / (Model.TotalPages > 0 ? Model.TotalPages : 1)).ToString("N0") : "0")</div>
-                            <div class="stats-label">متوسط لكل صفحة</div>
-                        </div>
-                        <div class="stats-icon">
-                            <i class="bi bi-table"></i>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -519,12 +470,6 @@
                     بحث
                 </button>
             </div>
-            <div class="col-md-2 text-md-end">
-                <div class="results-count mt-2 mt-md-0">
-                    <i class="bi bi-database"></i>
-                    العناصر: <strong>@Model.TotalCount.ToString("N0")</strong>
-                </div>
-            </div>
         </div>
     </form>
 
@@ -553,9 +498,7 @@
                                 </td>
                                 <td class="fw-semibold">
                                     <div class="d-flex align-items-center justify-content-center gap-2">
-                                        <div class="product-icon">
-                                            <i class="bi bi-cube"></i>
-                                        </div>
+                                        
                                         <span>@p.Name</span>
                                     </div>
                                 </td>
@@ -696,12 +639,12 @@
     }
     else if (Model.Products != null && Model.Products.Any())
     {
-        <div class="text-center mt-3">
+        @* <div class="text-center mt-3">
             <small class="text-muted">
                 <i class="bi bi-info-circle"></i>
-                إجمالي @Model.TotalCount منتج | آخر تحديث: @DateTime.Now.ToLocalTime().ToString("dd MMMM yyyy - hh:mm tt")
+             منتج | آخر تحديث: @DateTime.Now.ToLocalTime().ToString("dd MMMM yyyy - hh:mm tt")
             </small>
-        </div>
+        </div> *@
     }
 </div>
 

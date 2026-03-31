@@ -323,12 +323,7 @@
                         <i class="bi bi-pencil-square fs-3"></i>
                         <div>
                             <h4 class="mb-0 fw-bold">تعديل المنتج</h4>
-                            <p class="mb-0 opacity-75 small">تحديث معلومات المنتج</p>
                         </div>
-                    </div>
-                    <div class="product-id-badge">
-                        <i class="bi bi-hash"></i>
-                        معرف المنتج: @Model.Id
                     </div>
                 </div>
             </div>
@@ -346,14 +341,7 @@
                             اسم المنتج
                         </label>
                         <input asp-for="Name" class="form-control-modern" placeholder="أدخل اسم المنتج..." />
-                        <div class="help-text">
-                            <i class="bi bi-info-circle"></i>
-                            الاسم الظاهر للمنتج في النظام
-                        </div>
-                        <span asp-validation-for="Name" class="text-danger">
-                            <i class="bi bi-exclamation-circle"></i>
-                            <span></span>
-                        </span>
+                       
                     </div>
 
                     <!-- السعر -->
@@ -366,14 +354,6 @@
                             <input asp-for="Price" class="form-control-modern" type="number" step="0.01" placeholder="0.00" />
                             <span class="price-suffix">ج.م</span>
                         </div>
-                        <div class="help-text">
-                            <i class="bi bi-info-circle"></i>
-                            سعر الوحدة من المنتج
-                        </div>
-                        <span asp-validation-for="Price" class="text-danger">
-                            <i class="bi bi-exclamation-circle"></i>
-                            <span></span>
-                        </span>
                     </div>
 
                     <!-- نوع المنتج -->
@@ -385,118 +365,7 @@
                         <select asp-for="Type" class="form-select-modern" asp-items="@(Html.GetEnumSelectList(typeof(Hassann_Khala.Domain.ProductType)))">
                             <option value="">-- اختر نوع المنتج --</option>
                         </select>
-                        <div class="help-text">
-                            <i class="bi bi-info-circle"></i>
-                            تحديد نوع المنتج (كرتون / بالات / آخر)
-                        </div>
-                        <span asp-validation-for="Type" class="text-danger">
-                            <i class="bi bi-exclamation-circle"></i>
-                            <span></span>
-                        </span>
                     </div>
-
-                    <!-- الوصف -->
-                    <div class="form-group-modern">
-                        <label asp-for="Description" class="form-label-modern">
-                            <i class="bi bi-file-text"></i>
-                            الوصف
-                        </label>
-                        <textarea asp-for="Description" class="form-control-modern" placeholder="أدخل وصف المنتج (اختياري)..."></textarea>
-                        <div class="help-text">
-                            <i class="bi bi-info-circle"></i>
-                            معلومات إضافية عن المنتج
-                        </div>
-                        <span asp-validation-for="Description" class="text-danger">
-                            <i class="bi bi-exclamation-circle"></i>
-                            <span></span>
-                        </span>
-                    </div>
-
-                    <!-- الصورة الحالية -->
-                    <div class="form-group-modern">
-                        <label class="form-label-modern">
-                            <i class="bi bi-image"></i>
-                            الصورة الحالية
-                        </label>
-                        <div class="image-preview">
-                            @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
-                            {
-                                <img src="@Model.ImageUrl" alt="@Model.Name" class="current-image" />
-                                <div class="help-text mt-2">
-                                    <i class="bi bi-info-circle"></i>
-                                    الصورة الحالية للمنتج
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="no-image">
-                                    <i class="bi bi-image"></i>
-                                    <div>لا توجد صورة مرفقة</div>
-                                </div>
-                            }
-                        </div>
-                    </div>
-
-                    <!-- رفع صورة جديدة -->
-                    <div class="form-group-modern">
-                        <label class="form-label-modern">
-                            <i class="bi bi-cloud-upload"></i>
-                            رفع صورة جديدة (اختياري)
-                        </label>
-                        <input type="file" name="imageFile" accept="image/*" class="form-control-modern" id="imageFile" />
-                        <div class="help-text">
-                            <i class="bi bi-info-circle"></i>
-                            يمكنك رفع صورة جديدة لاستبدال الصورة الحالية
-                        </div>
-                    </div>
-
-                    <!-- رابط الصورة -->
-                    <div class="form-group-modern">
-                        <label asp-for="ImageUrl" class="form-label-modern">
-                            <i class="bi bi-link"></i>
-                            رابط الصورة (اختياري)
-                        </label>
-                        <input asp-for="ImageUrl" class="form-control-modern" placeholder="https://example.com/image.jpg" />
-                        <div class="help-text">
-                            <i class="bi bi-info-circle"></i>
-                            رابط خارجي لصورة المنتج (سيتم استخدامه إذا لم يتم رفع صورة)
-                        </div>
-                        <span asp-validation-for="ImageUrl" class="text-danger">
-                            <i class="bi bi-exclamation-circle"></i>
-                            <span></span>
-                        </span>
-                    </div>
-
-                    <!-- حالة المنتج -->
-                    <div class="form-group-modern">
-                        <label class="form-label-modern">
-                            <i class="bi bi-toggle-on"></i>
-                            حالة المنتج
-                        </label>
-                        <label class="form-check-modern">
-                            <input asp-for="IsActive" class="form-check-input" />
-                            <label class="form-check-label" asp-for="IsActive">
-                                <i class="bi bi-check-circle-fill text-success me-1"></i>
-                                نشط / Active
-                            </label>
-                        </label>
-                        <div class="help-text">
-                            <i class="bi bi-info-circle"></i>
-                            تحديد إذا كان المنتج متاح للاستخدام في النظام
-                        </div>
-                    </div>
-
-                    <!-- معلومات إضافية -->
-                    <div class="alert alert-info mt-4 mb-4" style="background: #e7f3ff; border: none; border-radius: 12px;">
-                        <div class="d-flex gap-2">
-                            <i class="bi bi-info-circle-fill" style="color: var(--primary-color); font-size: 1.2rem;"></i>
-                            <div>
-                                <strong class="small">معلومات مهمة:</strong>
-                                <p class="mb-0 small text-muted">تعديل المنتج سيؤثر على جميع الحركات المرتبطة به. تأكد من صحة البيانات قبل الحفظ.</p>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- أزرار التحكم -->
                     <div class="d-flex gap-2 mt-4">
                         <button type="submit" class="btn-primary-gradient" id="submitBtn">
