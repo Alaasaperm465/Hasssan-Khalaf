@@ -24,8 +24,29 @@ namespace Hassann_Khala.Application.Services
 
         public async Task<MovementDetailsDto> GetMovementDetailsAsync(MovementFilterDto filter)
         {
-            var from = filter.From?.Date.ToUniversalTime() ?? DateTime.MinValue;
-            var to = filter.To?.Date.AddDays(1).ToUniversalTime() ?? DateTime.MaxValue;
+            // Interpret incoming filter dates as local dates (user-selected) and convert to UTC range
+            DateTime from;
+            DateTime to;
+            if (filter.From.HasValue)
+            {
+                var localFromDate = filter.From.Value.Date;
+                from = DateTime.SpecifyKind(localFromDate, DateTimeKind.Local).ToUniversalTime();
+            }
+            else
+            {
+                from = DateTime.MinValue;
+            }
+
+            if (filter.To.HasValue)
+            {
+                // include the whole 'To' day by adding one day and using exclusive upper bound
+                var localToExclusive = filter.To.Value.Date.AddDays(1);
+                to = DateTime.SpecifyKind(localToExclusive, DateTimeKind.Local).ToUniversalTime();
+            }
+            else
+            {
+                to = DateTime.MaxValue;
+            }
 
             // Use repository GetByDateRangeAsync implementations (they include navigation properties)
             var inbounds = (await _inboundRepo.GetByDateRangeAsync(from, to)).ToList();

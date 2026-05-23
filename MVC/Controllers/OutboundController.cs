@@ -33,6 +33,14 @@ namespace MVC.Controllers
                 Details = Enumerable.Range(0, 6).Select(_ => new OutboundDetailVM()).ToList()
             };
 
+            // set current user info for CreatedBy fields
+            try
+            {
+                vm.CreatedByName = User.Identity?.Name;
+                vm.CreatedById = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            }
+            catch { }
+
             // If clientId provided, pre-load delegates for that client so the select shows names server-side
             if (clientId.HasValue && clientId.Value > 0)
             {
@@ -56,6 +64,14 @@ namespace MVC.Controllers
             vm.Products = _db.Products.OrderBy(p => p.Name).Select(p => new SelectListItem(p.Name, p.Id.ToString())).ToList();
             vm.Sections = _db.Sections.OrderBy(s => s.Name).Select(s => new SelectListItem(s.Name, s.Id.ToString())).ToList();
             vm.Delegates = vm.ClientId > 0 ? _db.Delegates.Where(d => d.ClientId == vm.ClientId).OrderBy(d => d.Name).Select(d => new SelectListItem(d.Name, d.Id.ToString())).ToList() : Enumerable.Empty<SelectListItem>();
+
+            // ensure CreatedBy fields populated when returning view
+            try
+            {
+                vm.CreatedByName = vm.CreatedByName ?? User.Identity?.Name;
+                vm.CreatedById = vm.CreatedById ?? User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            }
+            catch { }
 
             if (vm.Details == null || vm.Details.Count == 0)
             {
@@ -265,6 +281,10 @@ namespace MVC.Controllers
                 try
                 {
                     var outbound = new Outbound { ClientId = req.ClientId, CreatedAt = DateTime.UtcNow };
+
+                    // set user id when creating via AJAX
+                    try { outbound.UserId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var uid) ? uid : (int?)null; } catch { }
+
                     var detail = new OutboundDetail { ProductId = req.ProductId, SectionId = req.SectionId, Cartons = req.Cartons, Pallets = req.Pallets, Quantity = req.Cartons + (req.Pallets * 100m) };
                     outbound.Details.Add(detail);
 

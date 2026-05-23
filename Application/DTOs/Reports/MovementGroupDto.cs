@@ -17,5 +17,10 @@ namespace Hassann_Khala.Application.DTOs.Reports
         public int TotalIncomingPallets => Movements.Where(m => m.MovementType == "Inbound").Sum(m => m.Pallets);
         public int TotalOutgoingPallets => Movements.Where(m => m.MovementType == "Outbound").Sum(m => m.Pallets);
         public int NetPallets => TotalIncomingPallets - TotalOutgoingPallets;
+
+        // Carton totals (separate from Quantity which is cartons + pallets*100)
+        public int TotalIncomingCartons => Movements.Where(m => m.MovementType == "Inbound").Sum(m => m.Cartons);
+        public int TotalOutgoingCartons => Movements.Where(m => m.MovementType == "Outbound").Sum(m => m.Cartons);
+        public int NetCartons => TotalIncomingCartons - TotalOutgoingCartons;
     }
 }

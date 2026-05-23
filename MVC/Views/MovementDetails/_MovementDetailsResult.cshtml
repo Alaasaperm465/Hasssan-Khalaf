@@ -9,19 +9,15 @@ else
     foreach (var g in Model.Groups)
     {
         <div class="card mb-3">
-            @* <div class="card-header">
-                <strong>@g.GroupName</strong>
-                <span class="float-end">Incoming: @g.TotalIncoming - Outgoing: @g.TotalOutgoing - Net: @g.Net</span>
-            </div> *@
             <div class="card-body">
                 <table class="table table-sm table-striped">
                     <thead>
                         <tr>
                             <th>اسم المنتج</th>
-                            <th class="text-end"> الوارد</th>
-                            <th class="text-end"> وارد بالتات</th>
-                            <th class="text-end"> الصادر</th>
-                            <th class="text-end"> صادر بالتات</th>
+                            <th class="text-end">الوارد (كرتون)</th>
+                            <th class="text-end">الوارد (بالتات)</th>
+                            <th class="text-end">الصادر (كرتون)</th>
+                            <th class="text-end">الصادر (بالتات)</th>
                             <th>التاريخ</th>
                         </tr>
                     </thead>
@@ -34,8 +30,7 @@ else
                                 <td class="text-end">
                                     @if (m.MovementType == "Inbound")
                                     {
-                                        @m.Quantity.ToString("0.##")
-                                        
+                                        @m.Cartons.ToString("N0")
                                     }
                                     else
                                     {
@@ -45,7 +40,7 @@ else
                                 <td class="text-end">
                                     @if (m.MovementType == "Inbound")
                                     {
-                                        @m.Pallets.ToString()
+                                        @m.Pallets.ToString("N0")
                                     }
                                     else
                                     {
@@ -55,7 +50,7 @@ else
                                 <td class="text-end">
                                     @if (m.MovementType == "Outbound")
                                     {
-                                        @m.Quantity.ToString("0.##")
+                                        @m.Cartons.ToString("N0")
                                     }
                                     else
                                     {
@@ -65,7 +60,7 @@ else
                                 <td class="text-end">
                                     @if (m.MovementType == "Outbound")
                                     {
-                                        @m.Pallets.ToString()
+                                        @m.Pallets.ToString("N0")
                                     }
                                     else
                                     {
@@ -80,13 +75,13 @@ else
                         <tr>
                             <td>الاجمالي</td>
                             <td class="text-end">
-                                @g.TotalIncoming
+                                @g.TotalIncomingCartons
                             </td>
                             <td class="text-end">
                                 @g.TotalIncomingPallets
                             </td>
                             <td class="text-end">
-                                @g.TotalOutgoing
+                                @g.TotalOutgoingCartons
                             </td>
                             <td class="text-end">
                                 @g.TotalOutgoingPallets
@@ -98,7 +93,7 @@ else
                         <tr>
                             <td>الصافي</td>
                             <td class="text-end">
-                                @g.Net
+                                @g.NetCartons
                             </td>
                             <td class="text-end">
                                 @g.NetPallets
@@ -112,8 +107,4 @@ else
             </div>
         </div>
     }
-
-    @* <div class="mt-3">
-        <h5>Totals: Incoming: @Model.TotalIncoming - Outgoing: @Model.TotalOutgoing - Net: @Model.Net</h5>
-    </div> *@
 }

@@ -10,7 +10,7 @@
 
 <div class="container-fluid mt-3">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="h5 mb-0">المبيعات</h2>
+        <h2 class="h5 mb-0">اذن صرف </h2>
         <div>
             <a class="btn btn-secondary" asp-action="Index">عودة</a>
         </div>
@@ -51,11 +51,11 @@
                 <input type="hidden" name="CreatedById" value="@Model.CreatedById" />
             </div>
             <div class="col-12 col-md-4 d-flex align-items-center gap-2">
-                <label class="form-label mb-0"> رقم لمستند</label>
+                <label class="form-label mb-0"> رقم المستند </label>
                 <input asp-for="Id" class="form-control" readonly />
             </div>
             <div class="col-12 col-md-4 d-flex align-items-center gap-2" dir="rtl">
-                <label class="form-label mb-0"> تاريخ لمستند</label>
+                <label class="form-label mb-0"> تاريخ للمستند</label>
                 <input asp-for="CreatedAt" class="form-control" readonly />
             </div>
         </div>
@@ -224,7 +224,14 @@
                                 const resp = await fetch('/Outbound/AddLineAjax', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'RequestVerificationToken': token||'' }, body: JSON.stringify({ outboundId: currentOutboundId, clientId, productId, sectionId, cartons, pallets }) });
                                 const data = await resp.json().catch(()=>null);
                                 if(!resp.ok || !data || !data.success){ const err = data && data.error ? data.error : 'Server error'; alert('فشل الحفظ: '+err); rowInputs.forEach(el=> el.disabled = false); return; }
-                                if(data.id) currentOutboundId = data.id; if(data.detailId) tr.setAttribute('data-detail-id', data.detailId); tr.setAttribute('data-saved','true');
+                                        currentOutboundId = parseInt(data.id || 0);
+
+                                console.log("/////////////////////////////Returned ID:", data.id);
+                                console.log("//////////////////////////Current Outbound:", currentOutboundId);
+                                if(data.detailId) tr.setAttribute('data-detail-id', data.detailId); tr.setAttribute('data-saved','true');
+                                // update document Id field to show created outbound id
+                                const idInput = document.querySelector('input[name="Id"]');
+                                if(idInput && data.id){ idInput.value = data.id; }
                                 const next = tr.nextElementSibling; if(next) next.querySelector('.line-input')?.focus(); else if(tbody.children.length < MAX_ROWS) addLine();
                                 updateTotals();
                             }catch(e){ alert('Network error: '+(e.message||e)); rowInputs.forEach(el=> el.disabled = false); return; }

@@ -270,10 +270,6 @@
                             <i class="bi bi-info-circle"></i>
                             الاسم الظاهر للمنتج في النظام
                         </div>
-                        <span asp-validation-for="Name" class="text-danger">
-                            <i class="bi bi-exclamation-circle"></i>
-                            <span></span>
-                        </span>
                     </div>
 
                     <!-- نوع المنتج -->
@@ -285,33 +281,6 @@
                         <select asp-for="Type" class="form-select-modern" asp-items="@(Html.GetEnumSelectList(typeof(Hassann_Khala.Domain.ProductType)))">
                             <option value="">-- اختر نوع المنتج --</option>
                         </select>
-                        <div class="help-text">
-                            <i class="bi bi-info-circle"></i>
-                            تحديد نوع المنتج (كرتون / بالات / آخر)
-                        </div>
-                        <span asp-validation-for="Type" class="text-danger">
-                            <i class="bi bi-exclamation-circle"></i>
-                            <span></span>
-                        </span>
-
-                        <!-- توضيح أنواع المنتجات -->
-                        <div class="info-note mt-2">
-                            <div class="d-flex flex-wrap gap-2">
-                                <div class="product-type-badge product-type-1">
-                                    <i class="bi bi-box-seam me-1"></i> كرتون
-                                </div>
-                                <div class="product-type-badge product-type-2">
-                                    <i class="bi bi-cube me-1"></i> بالات
-                                </div>
-                                <div class="product-type-badge product-type-4">
-                                    <i class="bi bi-box me-1"></i> آخر
-                                </div>
-                            </div>
-                            <div class="help-text mt-2">
-                                <i class="bi bi-info-circle"></i>
-                                نوع المنتج يحدد كيفية التعامل مع الكميات والتسعير
-                            </div>
-                        </div>
                     </div>
 
                     <!-- الوصف -->
@@ -325,23 +294,7 @@
                             <i class="bi bi-info-circle"></i>
                             معلومات إضافية عن المنتج (مثل المواصفات، الاستخدامات، إلخ)
                         </div>
-                        <span asp-validation-for="Description" class="text-danger">
-                            <i class="bi bi-exclamation-circle"></i>
-                            <span></span>
-                        </span>
                     </div>
-
-                    <!-- معلومات إضافية -->
-                    <div class="alert alert-info mt-4 mb-4" style="background: #e7f3ff; border: none; border-radius: 12px;">
-                        <div class="d-flex gap-2">
-                            <i class="bi bi-info-circle-fill" style="color: var(--primary-color); font-size: 1.2rem;"></i>
-                            <div>
-                                <strong class="small">معلومات مهمة:</strong>
-                                <p class="mb-0 small text-muted">بعد إضافة المنتج، يمكنك إضافة صورة للمنتج من خلال صفحة تعديل المنتج. المنتجات النشطة فقط هي التي تظهر في قوائم الاختيار.</p>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- أزرار التحكم -->
                     <div class="d-flex gap-2 mt-4">
                         <button type="submit" class="btn-primary-gradient" id="submitBtn">
