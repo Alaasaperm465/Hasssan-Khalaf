@@ -34,3 +34,15 @@ F:\Hassan_Khalaf\Hasssan-Khalaf\Domain\obj\Debug\net9.0\Domain.dll
 F:\Hassan_Khalaf\Hasssan-Khalaf\Domain\obj\Debug\net9.0\refint\Domain.dll
 F:\Hassan_Khalaf\Hasssan-Khalaf\Domain\obj\Debug\net9.0\Domain.pdb
 F:\Hassan_Khalaf\Hasssan-Khalaf\Domain\obj\Debug\net9.0\ref\Domain.dll
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\Domain\bin\Debug\net9.0\Domain.deps.json
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\Domain\bin\Debug\net9.0\Domain.dll
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\Domain\bin\Debug\net9.0\Domain.pdb
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\Domain\obj\Debug\net9.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\Domain\obj\Debug\net9.0\Domain.AssemblyInfoInputs.cache
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\Domain\obj\Debug\net9.0\Domain.AssemblyInfo.cs
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\Domain\obj\Debug\net9.0\Domain.csproj.CoreCompileInputs.cache
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\Domain\obj\Debug\net9.0\Domain.sourcelink.json
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\Domain\obj\Debug\net9.0\Domain.dll
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\Domain\obj\Debug\net9.0\refint\Domain.dll
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\Domain\obj\Debug\net9.0\Domain.pdb
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\Domain\obj\Debug\net9.0\ref\Domain.dll

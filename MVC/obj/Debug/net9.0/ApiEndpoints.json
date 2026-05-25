@@ -1,0 +1,54 @@
+[
+  {
+    "ContainingType": "MVC.Controllers.AuthController",
+    "Method": "Login",
+    "RelativePath": "api/Auth/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "MVC.Controllers.Dtos.LoginRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MVC.Controllers.SectionController",
+    "Method": "GetAllSections",
+    "RelativePath": "api/Section",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MVC.Controllers.SectionController",
+    "Method": "AddSection",
+    "RelativePath": "api/Section",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "section",
+        "Type": "Hassann_Khala.Domain.Section",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MVC.Controllers.SectionsController",
+    "Method": "GetAll",
+    "RelativePath": "api/Sections",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  }
+]

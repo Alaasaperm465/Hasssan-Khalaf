@@ -1,0 +1,66 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\louts\\OneDrive\\Desktop\\\u0633\u064A\u0633\u062A\u064A\u0645 \u0645\u062E\u0627\u0632\u0646\\Hasssan-Khalaf\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|c:\\users\\louts\\onedrive\\desktop\\\u0633\u064A\u0633\u062A\u064A\u0645 \u0645\u062E\u0627\u0632\u0646\\hasssan-khalaf\\mvc\\controllers\\inboundcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\controllers\\inboundcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|c:\\users\\louts\\onedrive\\desktop\\\u0633\u064A\u0633\u062A\u064A\u0645 \u0645\u062E\u0627\u0632\u0646\\hasssan-khalaf\\mvc\\views\\inbound\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CFF2D475-C5B5-4280-82A7-58C97C1C5233}|MVC\\MVC.csproj|solutionrelative:mvc\\views\\inbound\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "InboundController.cs",
+              "DocumentMoniker": "C:\\Users\\louts\\OneDrive\\Desktop\\\u0633\u064A\u0633\u062A\u064A\u0645 \u0645\u062E\u0627\u0632\u0646\\Hasssan-Khalaf\\MVC\\Controllers\\InboundController.cs",
+              "RelativeDocumentMoniker": "MVC\\Controllers\\InboundController.cs",
+              "ToolTip": "C:\\Users\\louts\\OneDrive\\Desktop\\\u0633\u064A\u0633\u062A\u064A\u0645 \u0645\u062E\u0627\u0632\u0646\\Hasssan-Khalaf\\MVC\\Controllers\\InboundController.cs",
+              "RelativeToolTip": "MVC\\Controllers\\InboundController.cs",
+              "ViewState": "AgIAABYCAAAAAAAAAAAowCsCAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-25T08:54:33.702Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\louts\\OneDrive\\Desktop\\\u0633\u064A\u0633\u062A\u064A\u0645 \u0645\u062E\u0627\u0632\u0646\\Hasssan-Khalaf\\MVC\\Views\\Inbound\\Create.cshtml",
+              "RelativeDocumentMoniker": "MVC\\Views\\Inbound\\Create.cshtml",
+              "ToolTip": "C:\\Users\\louts\\OneDrive\\Desktop\\\u0633\u064A\u0633\u062A\u064A\u0645 \u0645\u062E\u0627\u0632\u0646\\Hasssan-Khalaf\\MVC\\Views\\Inbound\\Create.cshtml",
+              "RelativeToolTip": "MVC\\Views\\Inbound\\Create.cshtml",
+              "ViewState": "AgIAANYBAAAAAAAAAAAkwPMBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-25T08:53:44.16Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

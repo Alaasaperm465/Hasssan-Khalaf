@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "0jXOPWKWgTU=",
+  "dgSpecHash": "TvcX4dn+ItY=",
   "success": true,
-  "projectFilePath": "F:\\hassan\\Hasssan-Khalaf\\InfraStructure\\InfraStructure.csproj",
+  "projectFilePath": "C:\\Users\\louts\\OneDrive\\Desktop\\سيستيم مخازن\\Hasssan-Khalaf\\InfraStructure\\InfraStructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\louts\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\louts\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
@@ -65,9 +65,9 @@
       "code": "NU1603",
       "level": "Warning",
       "message": "Application depends on QuestPDF (>= 2024.11.0) but QuestPDF 2024.11.0 was not found. QuestPDF 2024.12.0 was resolved instead.",
-      "projectPath": "F:\\hassan\\Hasssan-Khalaf\\InfraStructure\\InfraStructure.csproj",
+      "projectPath": "C:\\Users\\louts\\OneDrive\\Desktop\\سيستيم مخازن\\Hasssan-Khalaf\\InfraStructure\\InfraStructure.csproj",
       "warningLevel": 1,
-      "filePath": "F:\\hassan\\Hasssan-Khalaf\\InfraStructure\\InfraStructure.csproj",
+      "filePath": "C:\\Users\\louts\\OneDrive\\Desktop\\سيستيم مخازن\\Hasssan-Khalaf\\InfraStructure\\InfraStructure.csproj",
       "libraryId": "QuestPDF",
       "targetGraphs": [
         "net9.0"

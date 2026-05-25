@@ -5049,11 +5049,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\hassan\\Hasssan-Khalaf\\MVC\\MVC.csproj",
+      "projectUniqueName": "C:\\Users\\louts\\OneDrive\\Desktop\\سيستيم مخازن\\Hasssan-Khalaf\\MVC\\MVC.csproj",
       "projectName": "MVC",
-      "projectPath": "F:\\hassan\\Hasssan-Khalaf\\MVC\\MVC.csproj",
+      "projectPath": "C:\\Users\\louts\\OneDrive\\Desktop\\سيستيم مخازن\\Hasssan-Khalaf\\MVC\\MVC.csproj",
       "packagesPath": "C:\\Users\\louts\\.nuget\\packages\\",
-      "outputPath": "F:\\hassan\\Hasssan-Khalaf\\MVC\\obj\\",
+      "outputPath": "C:\\Users\\louts\\OneDrive\\Desktop\\سيستيم مخازن\\Hasssan-Khalaf\\MVC\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -5075,14 +5075,14 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "F:\\hassan\\Hasssan-Khalaf\\Application\\Application.csproj": {
-              "projectPath": "F:\\hassan\\Hasssan-Khalaf\\Application\\Application.csproj"
+            "C:\\Users\\louts\\OneDrive\\Desktop\\سيستيم مخازن\\Hasssan-Khalaf\\Application\\Application.csproj": {
+              "projectPath": "C:\\Users\\louts\\OneDrive\\Desktop\\سيستيم مخازن\\Hasssan-Khalaf\\Application\\Application.csproj"
             },
-            "F:\\hassan\\Hasssan-Khalaf\\Domain\\Domain.csproj": {
-              "projectPath": "F:\\hassan\\Hasssan-Khalaf\\Domain\\Domain.csproj"
+            "C:\\Users\\louts\\OneDrive\\Desktop\\سيستيم مخازن\\Hasssan-Khalaf\\Domain\\Domain.csproj": {
+              "projectPath": "C:\\Users\\louts\\OneDrive\\Desktop\\سيستيم مخازن\\Hasssan-Khalaf\\Domain\\Domain.csproj"
             },
-            "F:\\hassan\\Hasssan-Khalaf\\InfraStructure\\InfraStructure.csproj": {
-              "projectPath": "F:\\hassan\\Hasssan-Khalaf\\InfraStructure\\InfraStructure.csproj"
+            "C:\\Users\\louts\\OneDrive\\Desktop\\سيستيم مخازن\\Hasssan-Khalaf\\InfraStructure\\InfraStructure.csproj": {
+              "projectPath": "C:\\Users\\louts\\OneDrive\\Desktop\\سيستيم مخازن\\Hasssan-Khalaf\\InfraStructure\\InfraStructure.csproj"
             }
           }
         }

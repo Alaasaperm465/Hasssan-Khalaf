@@ -90,3 +90,40 @@ F:\hassan\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\LatoFont\Lato-SemiBoldI
 F:\hassan\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\LatoFont\Lato-Thin.ttf
 F:\hassan\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\LatoFont\Lato-ThinItalic.ttf
 F:\hassan\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\LatoFont\OFL.txt
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\LatoFont\Lato-Black.ttf
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\LatoFont\Lato-BlackItalic.ttf
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\LatoFont\Lato-Bold.ttf
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\LatoFont\Lato-BoldItalic.ttf
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\LatoFont\Lato-ExtraBold.ttf
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\LatoFont\Lato-ExtraBoldItalic.ttf
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\LatoFont\Lato-ExtraLight.ttf
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\LatoFont\Lato-ExtraLightItalic.ttf
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\LatoFont\Lato-Italic.ttf
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\LatoFont\Lato-Light.ttf
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\LatoFont\Lato-LightItalic.ttf
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\LatoFont\Lato-Medium.ttf
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\LatoFont\Lato-MediumItalic.ttf
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\LatoFont\Lato-Regular.ttf
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\LatoFont\Lato-SemiBold.ttf
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\LatoFont\Lato-SemiBoldItalic.ttf
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\LatoFont\Lato-Thin.ttf
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\LatoFont\Lato-ThinItalic.ttf
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\LatoFont\OFL.txt
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\InfraStructure.deps.json
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\InfraStructure.dll
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\InfraStructure.pdb
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\Application.dll
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\Domain.dll
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\Application.pdb
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\bin\Debug\net9.0\Domain.pdb
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\obj\Debug\net9.0\InfraStructure.csproj.AssemblyReference.cache
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\obj\Debug\net9.0\InfraStructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\obj\Debug\net9.0\InfraStructure.AssemblyInfoInputs.cache
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\obj\Debug\net9.0\InfraStructure.AssemblyInfo.cs
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\obj\Debug\net9.0\InfraStructure.csproj.CoreCompileInputs.cache
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\obj\Debug\net9.0\InfraStructure.sourcelink.json
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\obj\Debug\net9.0\InfraStr.570FDCE2.Up2Date
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\obj\Debug\net9.0\InfraStructure.dll
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\obj\Debug\net9.0\refint\InfraStructure.dll
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\obj\Debug\net9.0\InfraStructure.pdb
+C:\Users\louts\OneDrive\Desktop\سيستيم مخازن\Hasssan-Khalaf\InfraStructure\obj\Debug\net9.0\ref\InfraStructure.dll
